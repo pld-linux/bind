@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.3
-Release:	1
+Release:	2
 Epoch:		5
 License:	Distributable
 Group:		Networking/Daemons
@@ -24,6 +24,7 @@ BuildRequires:	flex
 BuildRequires:	bison
 BuildRequires:	openssl-devel >= 0.9.6a
 BuildRequires:	autoconf
+BuildRequires:	automake
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 Prereq:		%{name}-libs
@@ -180,6 +181,8 @@ Statyczne biblioteki binda.
 %patch1 -p1
 
 %build
+libtoolize --copy --force
+aclocal
 autoconf
 %configure \
 	--with-openssl=%{_prefix} \
