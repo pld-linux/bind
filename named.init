@@ -54,15 +54,20 @@ case "$1" in
         fi
 	;;
   status)
-# "status" Not implemented yet
-#	/usr/sbin/rndc status
-#	exit $?
 	status named
+	if [ -f /etc/rndc.conf ] ; then
+		/usr/sbin/rndc status
+		RETVAL=$?
+	fi
 	;;
   reload)
         if [ -f /var/lock/subsys/named ]; then
-	        msg_reloading "Named"
-	        killproc named -HUP
+		if [ -f /etc/rndc.conf ] ; then
+			run_cmd "Reloading named" /usr/sbin/rndc reload
+		else
+			msg_reloading "Named"
+			killproc named -HUP
+		fi
 	else
 	        msg_not_running "Named"
 	        exit 1
