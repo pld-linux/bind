@@ -72,10 +72,8 @@ case "$1" in
   reload)
 	if [ -f /var/lock/subsys/named ]; then
 		msg_reloading "Named"
-		busy
 		killproc named -HUP
 		RETVAL=$?
-		[ $RETVAL -eq 0 ] && ok || died
 	else
 		msg_not_running "Named"
 		exit 1

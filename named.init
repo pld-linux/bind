@@ -70,10 +70,8 @@ case "$1" in
 			run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
 		else
 			msg_reloading "Named"
-			busy
 			killproc named -HUP
 			RETVAL=$?
-			[ $RETVAL -eq 0 ] && ok || died
 		fi
 	else
 		msg_not_running "Named"
