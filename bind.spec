@@ -9,7 +9,7 @@ Name:		bind
 Version:	9.1.3
 Release:	6
 Epoch:		5
-License:	Distributable
+License:	distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
