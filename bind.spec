@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.1
-Release:	1
+Release:	6
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -33,10 +33,19 @@ Buildroot:	/tmp/%{name}-%{version}-root
 %define		_sysconfdir	/etc
 
 %description
-Includes the named name server, which is used to define host name
-to IP address translations (and vice versa).  It can be used on
-workstations as a caching name server, but is generally only needed
-on one machine for an entire network.
+BIND (Berkeley Internet Name Domain) is an implementation of the DNS (Domain
+Name System) protocols. BIND includes a DNS server (named), which resolves
+host names to IP addresses, and a resolver library (routines for
+applications to use when interfacing with DNS). A DNS server allows clients
+to name resources or objects and share the information with other network
+machines. The named DNS server can be used on workstations as a caching name
+server, but is generally only needed on one machine for an entire network.
+Note that the configuration files for making BIND act as a simple caching
+nameserver are included in the caching-nameserver package.
+
+Install the bind package if you need a DNS server for your network.  If you
+want bind to act a caching name server, you will also need to install the
+caching-nameserver package.
 
 %description -l de
 Enthält den Namen-Server, der zum Umwandeln von Host-Namen in
@@ -73,9 +82,13 @@ Group:		Networking/Utilities
 Group(pl):	Sieciowe/Narzêdzia
 
 %description utils
-Collection of utilities for querying name servers and looking up hosts.
-These tools let you determine the IP addresses for given host names,
-and find information about registered domains and network addresses.
+Bind-utils contains a collection of utilities for querying DNS (Domain Name
+Service) name servers to find out information about Internet hosts. These
+tools will provide you with the IP addresses for given host names, as well
+as other information about registered domains and network addresses.
+
+You should install bind-utils if you need to get information from DNS name
+servers.
 
 %description -l de utils
 Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts.
@@ -104,8 +117,13 @@ Group:		Development/Libraries
 Group(pl):	Programowanie/Biblioteki
 
 %description devel
-All the include files and the library required for DNS development for
-bind 8.x.x
+The bind-devel package contains all the include files and the 
+library required for DNS (Domain Name Service) development for 
+BIND versions 8.x.x.
+
+You should install bind-devel if you want to develop bind DNS
+applications. If you install bind-devel, you'll also need to install
+bind.
 
 %description -l pl devel
 Pakiet zawiera pliki nag³ówkowe i bibliotekê statyczn±. Je¿eli bêdziesz
@@ -138,8 +156,7 @@ Dokumentacja programu bind
 
 %build
 rm -f compat/include/sys/cdefs.h
-make \
-	clean \
+make 	clean \
 	depend \
 	all \
 	DESTDIR="" \
@@ -170,7 +187,6 @@ make install \
         DESTRUN="/var/run" \
 	INSTALL_LIB=" " \
 	INSTALL_EXEC=" "
-
 
 strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
 
