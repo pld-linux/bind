@@ -15,7 +15,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
 Version:	9.2.2
-Release:	1.2
+Release:	1.3
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -44,16 +44,16 @@ BuildRequires:	libtool
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
-Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	psmisc >= 20.1
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Provides:	nameserver
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
@@ -320,16 +320,14 @@ cd ../..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-rm -f doc/rfc/rfc*
-
-install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig}
-install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
-install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
+install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}} \
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig} \
+	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,S,dev,etc},run,log}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+rm -f doc/rfc/rfc*
 
 install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
