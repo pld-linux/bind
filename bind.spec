@@ -153,7 +153,8 @@ make \
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir}} \
-	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},%{_mandir}/man{1,3,5,7,8}}
+	$RPM_BUILD_ROOT/etc/{sysconfig,logrotate.d,rc.d/init.d} \
+	$RPM_BUILD_ROOT%{_mandir}/man{1,3,5,7,8}
 
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
@@ -248,14 +249,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/named-bootconf
 %attr(755,root,root) %{_bindir}/nsupdate
 
-%{_mandir}/man8/named.8.gz
-%{_mandir}/man8/ndc.8.gz
-%{_mandir}/man8/named-xfer.8.gz
-%{_mandir}/man8/named-bootconf.8.gz
-%{_mandir}/man7/hostname.7.gz
-%{_mandir}/man5/irs.conf.5.gz
-%{_mandir}/man5/named.conf.5.gz
-%{_mandir}/man1/dnskeygen.1.gz
+%{_mandir}/man8/named.8*
+%{_mandir}/man8/ndc.8*
+%{_mandir}/man8/named-xfer.8*
+%{_mandir}/man8/named-bootconf.8*
+%{_mandir}/man7/hostname.7*
+%{_mandir}/man5/irs.conf.5*
+%{_mandir}/man5/named.conf.5*
+%{_mandir}/man1/dnskeygen.1*
 
 %attr(750,root,root) %dir /var/state/named
 %attr(750,root,root) %dir /var/state/named/M
@@ -275,11 +276,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(644,root,root) %{_datadir}/nslookup.help
 
-%{_mandir}/man1/dig.1.gz
-%{_mandir}/man1/host.1.gz
-%{_mandir}/man1/dnsquery.1.gz
-%{_mandir}/man8/nslookup.8.gz
-%{_mandir}/man5/resolver.5.gz
+%{_mandir}/man1/dig.1*
+%{_mandir}/man1/host.1*
+%{_mandir}/man1/dnsquery.1*
+%{_mandir}/man8/nslookup.8*
+%{_mandir}/man5/resolver.5*
 
 %files devel
 %defattr(644,root,root,755)
