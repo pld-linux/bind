@@ -24,6 +24,7 @@ Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
 Patch9:		bind-probe_ipv6.patch
 Patch10:	bind-host-forcetype.patch
+Patch11:	bind-pidfile.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts
@@ -156,6 +157,7 @@ Dokumentacja programu bind
 %patch8 -p0
 %patch9 -p0
 %patch10 -p0
+%patch11 -p1
 
 %build
 rm -f compat/include/sys/cdefs.h
