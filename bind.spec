@@ -22,6 +22,7 @@ Patch3:		bind-nonlist.patch
 Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
+Patch9:		bind-probe_ipv6.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Obsoletes:      caching-nameserver
@@ -133,6 +134,7 @@ Dokumentacja programu bind
 %patch5 -p2
 %patch6 -p2
 %patch8 -p1
+%patch9 -p1
 
 %build
 rm -f compat/include/sys/cdefs.h
