@@ -34,6 +34,7 @@ Patch12:	%{name}-res_randomid.patch
 Patch20:	utils-holelogd-linux.patch
 Patch21:	%{name}-chroot-ndc.patch
 BuildRequires:	flex
+BuildRequires:	glibc-static
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Obsoletes:	caching-nameserver
