@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # named           This shell script takes care of starting and stopping
 #                 named (BIND DNS server).
@@ -20,7 +20,10 @@
 
 [ -f /etc/named.conf ] || exit 0
 
-[ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
+# Try get config..
+if [ -f /etc/sysconfig/named ]; then
+     . /etc/sysconfig/named
+fi     
 	
 # See how we were called.
 case "$1" in
