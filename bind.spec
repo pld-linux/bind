@@ -18,20 +18,20 @@ Source5:	named.logrotate
 Source6:	named.conf
 Source7:	named-chroot.init
 Source8:	ftp://ftp.obtuse.com/pub/utils/utils-1.0.tar.gz
-Patch1:		bind-pselect.patch
-Patch2:		bind-fds.patch
-Patch3:		bind-nonlist.patch
-Patch4:		bind-host.patch
-Patch5:		bind-glibc21.patch
-Patch6:		bind-mkdep.patch
-Patch7:		bind-probe_ipv6.patch
-Patch8:		bind-host-forcetype.patch
-Patch9:		bind-pidfile.patch
-Patch10:	bind-ttl.patch
+Patch1:		%{name}-pselect.patch
+Patch2:		%{name}-fds.patch
+Patch3:		%{name}-nonlist.patch
+Patch4:		%{name}-host.patch
+Patch5:		%{name}-glibc21.patch
+Patch6:		%{name}-mkdep.patch
+Patch7:		%{name}-probe_ipv6.patch
+Patch8:		%{name}-host-forcetype.patch
+Patch9:		%{name}-pidfile.patch
+Patch10:	%{name}-ttl.patch
 Patch11:	ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/host_991529+.diff
-Patch12:	bind-res_randomid.patch
+Patch12:	%{name}-res_randomid.patch
 Patch20:	utils-holelogd-linux.patch
-Patch21:	bind-chroot-ndc.patch
+Patch21:	%{name}-chroot-ndc.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
@@ -253,9 +253,9 @@ cd contrib/host
 
 # Now build stuff for chroot
 cd ../..
-mv src/bin/named/named src/bin/named/named.dynamic
-mv src/bin/named-xfer/named-xfer src/bin/named-xfer/named-xfer.dynamic
-mv src/bin/ndc/ndc src/bin/ndc/ndc.nonc
+mv -f src/bin/named/named src/bin/named/named.dynamic
+mv -f src/bin/named-xfer/named-xfer src/bin/named-xfer/named-xfer.dynamic
+mv -f src/bin/ndc/ndc src/bin/ndc/ndc.nonc
 
 patch -p1 < %{PATCH21}
 
@@ -304,13 +304,13 @@ eval "make -C src/bin/ndc ndc \
 patch -p1 -R < %{PATCH21}
 touch src/bin/ndc/*
 
-mv src/bin/named/named src/bin/named/named.static
-mv src/bin/named-xfer/named-xfer src/bin/named-xfer/named-xfer.static
-mv src/bin/ndc/ndc src/bin/ndc/ndc.chroot
+mv -f src/bin/named/named src/bin/named/named.static
+mv -f src/bin/named-xfer/named-xfer src/bin/named-xfer/named-xfer.static
+mv -f src/bin/ndc/ndc src/bin/ndc/ndc.chroot
 
-mv src/bin/named/named.dynamic src/bin/named/named
-mv src/bin/named-xfer/named-xfer.dynamic src/bin/named-xfer/named-xfer
-mv src/bin/ndc/ndc.nonc src/bin/ndc/ndc
+mv -f src/bin/named/named.dynamic src/bin/named/named
+mv -f src/bin/named-xfer/named-xfer.dynamic src/bin/named-xfer/named-xfer
+mv -f src/bin/ndc/ndc.nonc src/bin/ndc/ndc
 
 cd utils-1.0
 gcc -s $RPM_OPT_FLAGS -o holelogd holelogd.c
@@ -319,7 +319,7 @@ gcc -s $RPM_OPT_FLAGS -o holelogd holelogd.c
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir}/misc} \
-	$RPM_BUILD_ROOT/etc/{sysconfig,logrotate.d,rc.d/init.d} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/{sysconfig,logrotate.d,rc.d/init.d} \
 	$RPM_BUILD_ROOT%{_mandir}/man{1,3,5,7,8}
 
 install -d $RPM_BUILD_ROOT%{_chroot}/{%{_sbindir},%{_datadir}/zoneinfo} \
@@ -366,8 +366,8 @@ cp src/bin/named/named.conf EXAMPLE-CONFIG
 # This will be log daemon for our jail alone so we can easily start and
 # stop it if there are others for other jails.
 install utils-1.0/holelogd $RPM_BUILD_ROOT%{_sbindir}/holelogd.named
-mv utils-1.0/LICENSE LICENSE.holelogd
-mv utils-1.0/README README.holelogd
+mv -f utils-1.0/LICENSE LICENSE.holelogd
+mv -f utils-1.0/README README.holelogd
 
 install src/bin/named/named.static $RPM_BUILD_ROOT%{_chroot}%{_sbindir}/named
 install src/bin/named-xfer/named-xfer.static $RPM_BUILD_ROOT%{_chroot}%{_sbindir}/named-xfer
@@ -378,11 +378,11 @@ install src/bin/named/test/loca* $RPM_BUILD_ROOT%{_chroot}/var/lib/named/M
 install src/conf/workstation/root.* $RPM_BUILD_ROOT%{_chroot}/var/lib/named/root.hint
 install %{SOURCE6} $RPM_BUILD_ROOT%{_chroot}%{_sysconfdir}
 
-ln -sf ../../../etc/localtime $RPM_BUILD_ROOT%{_chroot}%{_datadir}/zoneinfo/localtime
+ln -sf ../../..%{_sysconfdir}/localtime $RPM_BUILD_ROOT%{_chroot}%{_datadir}/zoneinfo/localtime
 ln -sf localtime $RPM_BUILD_ROOT%{_chroot}%{_datadir}/zoneinfo/posixrules
 ln -sf localtime $RPM_BUILD_ROOT%{_chroot}%{_datadir}/zoneinfo/posixtime
 
-touch $RPM_BUILD_ROOT%{_chroot}/etc/{localtime,group}
+touch $RPM_BUILD_ROOT%{_chroot}%{_sysconfdir}/{localtime,group}
 touch $RPM_BUILD_ROOT%{_chroot}/dev/{log,null}
 touch $RPM_BUILD_ROOT%{_chroot}/var/log/named
 # ...continue
@@ -393,7 +393,7 @@ install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/named
 touch $RPM_BUILD_ROOT/var/log/named
 
-mv $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
+mv -f $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb \
 	$RPM_BUILD_ROOT%{_mandir}/man5/resolver.5
 
@@ -557,7 +557,7 @@ fi
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,root) %ghost %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_chroot}/etc/named.conf
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_chroot}%{_sysconfdir}/named.conf
 
 %attr(755,root,root) %{_sbindir}/dnskeygen
 %attr(755,root,root) %{_sbindir}/holelogd.named
@@ -578,12 +578,12 @@ fi
 
 %attr(770,named,named) %dir /var/lib/named
 %attr(770,named,named) %dir %{_chroot}
-%attr(770,named,named) %dir %{_chroot}/etc
+%attr(770,named,named) %dir %{_chroot}%{_sysconfdir}
 %attr(770,named,named) %dir %{_chroot}/dev
-%attr(770,named,named) %dir %{_chroot}/usr
-%attr(770,named,named) %dir %{_chroot}/usr/sbin
-%attr(770,named,named) %dir %{_chroot}/usr/share
-%attr(770,named,named) %dir %{_chroot}/usr/share/zoneinfo
+%attr(770,named,named) %dir %{_chroot}%{_prefix}
+%attr(770,named,named) %dir %{_chroot}%{_sbindir}
+%attr(770,named,named) %dir %{_chroot}%{_datadir}
+%attr(770,named,named) %dir %{_chroot}%{_datadir}/zoneinfo
 %attr(770,named,named) %dir %{_chroot}/var
 %attr(770,named,named) %dir %{_chroot}/var/lib
 %attr(770,named,named) %dir %{_chroot}/var/lib/named
@@ -598,11 +598,11 @@ fi
 %attr(660,named,named) %{_chroot}/var/lib/named/M/*
 %attr(660,named,named) %{_chroot}/var/lib/named/root.*
 
-%attr(775,named,named) %dir %{_chroot}/usr/sbin/*
-%attr(644,named,named) %dir %{_chroot}/usr/share/zoneinfo/*
+%attr(775,named,named) %dir %{_chroot}%{_sbindir}/*
+%attr(644,named,named) %dir %{_chroot}%{_datadir}/zoneinfo/*
 
-%ghost %verify(not md5 size mtime) %{_chroot}/etc/group
-%ghost %verify(not md5 size mtime) %{_chroot}/etc/localtime
+%ghost %verify(not md5 size mtime) %{_chroot}%{_sysconfdir}/group
+%ghost %verify(not md5 size mtime) %{_chroot}%{_sysconfdir}/localtime
 
 %attr(10666,root,root) %ghost %{_chroot}/dev/log
 %attr(20666,root,root) %ghost %{_chroot}/dev/null
