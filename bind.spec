@@ -200,7 +200,7 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	README Version CHANGES EXAMPLE-CONFIG 
 
 %pre
-if [ -f /etc/named.boot ]
+if [ -f /etc/named.boot ]; then
 	cp /etc/named.boot /etc/named.boot.2conf
 	mv -f /etc/named.boot /etc/named.rpmsave
 	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
