@@ -48,8 +48,8 @@ Requires(pre): /usr/bin/getgid
 Requires(pre): /bin/id
 Requires(pre): /usr/sbin/groupadd
 Requires(pre): /usr/sbin/useradd
-Requires(postun):      /usr/sbin/userdel
-Requires(postun):      /usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	psmisc >= 20.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -343,7 +343,7 @@ install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
 
-ln -sf %{_var}/lib/named/%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
+ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
@@ -362,22 +362,22 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
 fi
 if [ -n "`getgid named`" ]; then
-       if [ "`getgid named`" != "58" ]; then
-               echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
-               exit 1
-       fi
+	if [ "`getgid named`" != "58" ]; then
+		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
+		exit 1
+	fi
 else
-       echo "Adding group named GID=58."
-       /usr/sbin/groupadd -g 58 named || exit 1
+	echo "Adding group named GID=58."
+	/usr/sbin/groupadd -g 58 named || exit 1
 fi
 if [ -n "`id -u named 2>/dev/null`" ]; then
-       if [ "`id -u named`" != "58" ]; then
-               echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
-               exit 1
-       fi
+	if [ "`id -u named`" != "58" ]; then
+		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
+		exit 1
+	fi
 else
-       echo "Adding user named UID=58."
-       /usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
+	echo "Adding user named UID=58."
+	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
 fi
 
 %post
@@ -398,10 +398,10 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-       echo "Removing user named."
-       %{_sbindir}/userdel named
-       echo "Removing group named."
-       %{_sbindir}/groupdel named
+	echo "Removing user named."
+	%{_sbindir}/userdel named
+	echo "Removing group named."
+	%{_sbindir}/groupdel named
 fi
 
 %post   libs -p /sbin/ldconfig
@@ -411,10 +411,10 @@ fi
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index
 
-%attr(754,root,root)  /etc/rc.d/init.d/named
-%attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
+%attr(754,root,root) /etc/rc.d/init.d/named
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root)  %config %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
@@ -464,7 +464,7 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root)  %{_libdir}/*.so.*.*
+%attr(755,root,root) %{_libdir}/*.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
