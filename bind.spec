@@ -245,7 +245,7 @@ fi
 %post
 /sbin/chkconfig --add named
 
-if [ -f /var/run/named.pid ]; then
+if [ -f /var/lock/subsys/named ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
 	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
@@ -258,10 +258,13 @@ fi
 
 umask 137
 /bin/touch /var/log/named
+chown root.named /var/log/named
 
 %preun
 if [ "$1" = "0" ]; then
-	/etc/rc.d/init.d/named stop 1>&2
+	if [ -f /var/lock/subsys/named ]; then
+		/etc/rc.d/init.d/named stop 1>&2
+	fi
 	/sbin/chkconfig --del named
 fi    
 
@@ -303,7 +306,7 @@ rm -rf $RPM_BUILD_ROOT
 /var/state/named/M/*
 /var/state/named/root.*
 
-%attr(640,root,root) %ghost /var/log/named
+%attr(660,root,named) %ghost /var/log/named
 
 %files utils
 %defattr(644,root,root,755)
