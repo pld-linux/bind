@@ -248,7 +248,7 @@ cd src
 	depend \
 	all \
 	DESTDIR="" \
-	CDEBUG="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g}" \
+	CDEBUG="%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}" \
 	DESTBIN="%{_bindir}" \
 	DESTSBIN="%{_sbindir}" \
 	DESTMAN="%{_mandir}" \
@@ -269,7 +269,7 @@ patch -p1 < %{PATCH21}
 
 eval "make -C src/bin/named named \
 	'DESTDIR=' \
-	'CDEBUG=%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g}' \
+	'CDEBUG=%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}' \
 	'DESTBIN=%{_bindir}' \
 	'DESTSBIN=%{_sbindir}' \
 	'DESTMAN=%{_mandir}' \
@@ -283,7 +283,7 @@ eval "make -C src/bin/named named \
 
 eval "make -C src/bin/named-xfer named-xfer \
 	'DESTDIR=' \
-	'CDEBUG=%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g}' \
+	'CDEBUG=%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}' \
 	'DESTBIN=%{_bindir}' \
 	'DESTSBIN=%{_sbindir}' \
 	'DESTMAN=%{_mandir}' \
@@ -297,7 +297,7 @@ eval "make -C src/bin/named-xfer named-xfer \
 
 eval "make -C src/bin/ndc ndc \
 	'DESTDIR=' \
-	'CDEBUG=%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g}' \
+	'CDEBUG=%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}' \
 	'DESTBIN=%{_bindir}' \
 	'DESTSBIN=%{_sbindir}' \
 	'DESTMAN=%{_mandir}' \
