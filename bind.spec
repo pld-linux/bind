@@ -9,7 +9,7 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
 Version:	9.2.0
-Release:	6
+Release:	7
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -376,14 +376,12 @@ fi
 %attr(640,root,root)  %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
-%attr(755,root,root) %{_bindir}/nsupdate
 
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
 %{_mandir}/man8/named*
 %{_mandir}/man8/rndc*
 %{_mandir}/man5/rndc*
-%{_mandir}/man8/nsupdate*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
@@ -403,9 +401,11 @@ fi
 %attr(755,root,root) %{_bindir}/dig
 %attr(755,root,root) %{_bindir}/host
 %attr(755,root,root) %{_bindir}/nslookup
+%attr(755,root,root) %{_bindir}/nsupdate
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man8/nslookup.8*
+%{_mandir}/man8/nsupdate*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
