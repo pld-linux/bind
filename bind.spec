@@ -199,6 +199,7 @@ fi
 
 %post
 /sbin/chkconfig --add named
+/sbin/ldconfig
 
 if [ -f /var/lock/subsys/named ]; then
 	%{_sysconfdir}/rc.d/init.d/named restart 1>&2
@@ -211,8 +212,8 @@ chown named.named	%{_var}/lib/named/named.log
 ln -s %{_var}/lib/named/named.log	%{_var}/log/named
 
 umask 022
-/bin/mknod -m u+rw,go+r	%{_var}/lib/named/dev/random c 1 8
-/bin/mknod -m a+rw		%{_var}/lib/named/dev/null c 1 3
+/bin/mknod -m u+rw,go+r		%{_var}/lib/named/dev/random c 1 8 > /dev/null 2>&1
+/bin/mknod -m a+rw		%{_var}/lib/named/dev/null c 1 3 > /dev/null 2>&1
 
 %preun
 if [ "$1" = "0" ]; then
@@ -226,10 +227,11 @@ fi
 if [ "$1" = "0" ]; then
 	%{_sbindir}/userdel named
 	%{_sbindir}/groupdel named
+	/sbin/ldconfig
 fi
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
