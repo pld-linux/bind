@@ -14,6 +14,7 @@ Source1:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-doc.tar.gz
 Source2:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-contrib.tar.gz
 Source3:	named.init
 Source4:	named.sysconfig
+Source5:	named.logrotate
 Patch1:		bind-pselect.patch
 Patch2:		bind-fds.patch
 Patch3:		bind-nonlist.patch
@@ -21,6 +22,7 @@ Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
 Prereq:		/sbin/chkconfig
+Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
 Buildroot:	/tmp/%{name}-%{version}-root
 
@@ -177,16 +179,28 @@ make install \
 	DESTMAN=%{_mandir} \
 	MANDIR=man
 
+cd ../../
+install -d $RPM_BUILD_ROOT/var/{log,state/named/{M,S}}
+
+install bin/named/test/127.*    $RPM_BUILD_ROOT/var/state/named/M
+install bin/named/test/loca*    $RPM_BUILD_ROOT/var/state/named/M
+install conf/workstation/root.* $RPM_BUILD_ROOT/var/state/named/root.hint
+install named.conf              $RPM_BUILD_ROOT/etc
+
+cp bin/named/named.conf EXAMPLE-CONFIG
+
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
-touch $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+touch $RPM_BUILD_ROOT/var/log/named
 
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
-	../../{README,Version,CHANGES} 
+	README Version CHANGES EXAMPLE-CONFIG 
 
 %pre
-if test ( ! -f /etc/named.conf ) -a ( -f /etc/named.boot ) 
+if [ -f /etc/named.boot ]
 	cp /etc/named.boot /etc/named.boot.2conf
+	mv -f /etc/named.boot /etc/named.rpmsave
+	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
 
 %post
@@ -195,14 +209,17 @@ fi
 if [ -f /var/run/named.pid ]; then
 	/etc/rc.d/init.d/named restart >&2
 else
-	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" >&2
+	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" 1>&2
 fi
 
 if [ -f /etc/named.boot.2conf ]
 	/usr/sbin/named-bootconf </etc/named.boot.2conf >/etc/named.conf
 	rm /etc/named.boot.2conf
 fi
-    
+
+umask 137
+/bin/touch /var/log/named
+
 %preun
 if [ $1 = 0 ]; then
 	/etc/rc.d/init.d/named stop >&2
@@ -214,11 +231,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc {README,Version,CHANGES}.gz
+%doc {README,Version,CHANGES,EXAMPLE-CONFIG}.gz
 
 %attr(755,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
+%attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-xfer
@@ -236,6 +254,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/irs.conf.5.gz
 %{_mandir}/man5/named.conf.5.gz
 %{_mandir}/man1/dnskeygen.1.gz
+
+%attr(750,root,root) %dir /var/state/named
+%attr(750,root,root) %dir /var/state/named/M
+%attr(750,root,root) %dir /var/state/named/S
+
+/var/state/named/M/*
+/var/state/named/root.*
+
+%attr(640,root,root) %ghost /var/log/named
 
 %files utils
 %defattr(644,root,root,755)
