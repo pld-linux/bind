@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	13
+Release:	14
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -210,11 +210,11 @@ make install \
 	MANDIR=man
 
 cd ../../
-install -d $RPM_BUILD_ROOT/var/{log,state/named/{M,S}}
+install -d $RPM_BUILD_ROOT/var/{log,lib/named/{M,S}}
 
-install src/bin/named/test/127.*    $RPM_BUILD_ROOT/var/state/named/M
-install src/bin/named/test/loca*    $RPM_BUILD_ROOT/var/state/named/M
-install src/conf/workstation/root.* $RPM_BUILD_ROOT/var/state/named/root.hint
+install src/bin/named/test/127.*    $RPM_BUILD_ROOT/var/lib/named/M
+install src/bin/named/test/loca*    $RPM_BUILD_ROOT/var/lib/named/M
+install src/conf/workstation/root.* $RPM_BUILD_ROOT/var/lib/named/root.hint
 install %{SOURCE6}              $RPM_BUILD_ROOT/etc
 
 cp src/bin/named/named.conf EXAMPLE-CONFIG
@@ -302,12 +302,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/dnskeygen.1*
 %{_mandir}/man8/nsupdate.8*
 
-%attr(770,root,named) %dir /var/state/named
-%attr(750,root,root) %dir /var/state/named/M
-%attr(770,root,named) %dir /var/state/named/S
+%attr(770,root,named) %dir /var/lib/named
+%attr(750,root,root) %dir /var/lib/named/M
+%attr(770,root,named) %dir /var/lib/named/S
 
-/var/state/named/M/*
-/var/state/named/root.*
+/var/lib/named/M/*
+/var/lib/named/root.*
 
 %attr(660,root,named) %ghost /var/log/named
 
