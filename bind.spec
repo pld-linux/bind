@@ -260,6 +260,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %files doc
+%defattr(644,root,root,755)
 %doc doc/html doc/rfc doc/misc doc/notes
 
 %changelog
