@@ -15,7 +15,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.4
-Release:	1.1
+Release:	1.2
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -34,8 +34,9 @@ Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
 Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
+Patch5:		%{name}-destaddr.patch
 # from idnkit
-Patch5:		%{name}-idn.patch
+Patch6:		%{name}-idn.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -304,6 +305,7 @@ BIND.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__libtoolize}
