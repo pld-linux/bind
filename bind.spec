@@ -7,7 +7,7 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(pt_BR):	BIND - Servidor de nomes DNS
 Name:		bind
 Version:	9.1.3
-Release:	5
+Release:	6
 Epoch:		5
 License:	Distributable
 Group:		Networking/Daemons
@@ -219,6 +219,7 @@ Group(pl):	Programowanie/Biblioteki
 Group(pt_BR):	Desenvolvimento/Bibliotecas
 Group(ru):	Разработка/Библиотеки
 Group(uk):	Розробка/Б╕бл╕отеки
+Requires:	%{name}-devel = %{version}
 
 %description static
 Static bind libraries.
