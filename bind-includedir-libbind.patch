@@ -1,0 +1,48 @@
+diff -urN bind-9.2.1.org/lib/bind/include/Makefile.in bind-9.2.1/lib/bind/include/Makefile.in
+--- bind-9.2.1.org/lib/bind/include/Makefile.in	Sun Sep 29 00:00:18 2002
++++ bind-9.2.1/lib/bind/include/Makefile.in	Sun Sep 29 00:01:05 2002
+@@ -31,17 +31,17 @@
+ @BIND9_MAKE_RULES@
+ 
+ installdirs:
+-	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir} \
+-	${DESTDIR}${includedir}/arpa ${DESTDIR}${includedir}/isc
++	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/bind \
++	${DESTDIR}${includedir}/bind/arpa ${DESTDIR}${includedir}/bind/isc
+ 
+ install:: installdirs
+ 	for i in ${HEADERS}; do \
+-		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}; \
++		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/bind; \
+ 	done
+ 	for i in ${IHEADERS}; do \
+-		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/isc; \
++		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/bind/isc; \
+ 	done
+ 	for i in ${AHEADERS}; do \
+-		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/arpa; \
++		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/bind/arpa; \
+ 	done
+ 
+diff -urN bind-9.2.1.org/lib/bind/port/linux/include/Makefile.in bind-9.2.1/lib/bind/port/linux/include/Makefile.in
+--- bind-9.2.1.org/lib/bind/port/linux/include/Makefile.in	Sun Sep 29 00:00:18 2002
++++ bind-9.2.1/lib/bind/port/linux/include/Makefile.in	Sun Sep 29 00:23:32 2002
+@@ -27,13 +27,13 @@
+ @BIND9_MAKE_RULES@
+ 
+ installdirs:
+-	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/net \
+-	${DESTDIR}${includedir}/sys 
++	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/bind/net \
++	${DESTDIR}${includedir}/bind/sys 
+ 
+ install:: installdirs
+ 	for i in ${NHEADERS}; do \
+-		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/net; \
++		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/bind/net; \
+ 	done
+ 	for i in ${SHEADERS}; do \
+-		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/sys; \
++		${INSTALL_DATA} ${srcdir}/$$i ${DESTDIR}${includedir}/bind/sys; \
+ 	done
+
