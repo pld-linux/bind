@@ -10,7 +10,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷ 
 Name:		bind
 Version:	9.2.1
-Release:	7
+Release:	8
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -24,19 +24,24 @@ Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Patch1:		%{name}-time.patch
 Patch2:		%{name}-autoconf.patch
 Patch3:		%{name}-sec-from-833.patch
+URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	openssl-devel
-BuildRequires:	sed
-Prereq:		rc-scripts >= 0.2.0
-Prereq:		/sbin/chkconfig
-Prereq:		%{name}-libs
-Requires:	%{name}-libs = %{version}
+PreReq:		%{name}-libs = %{version}
+PreReq:		rc-scripts >= 0.2.0
+Requires(pre):	fileutils
+Requires(pre):	/usr/bin/getgif
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/userdel
+Requires(postun):	/usr/sbin/groupdel
 Requires:	psmisc >= 20.1
-URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
@@ -340,24 +345,24 @@ rm -rf $RPM_BUILD_ROOT
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warning:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
+	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
 fi
 if [ -n "`getgid named`" ]; then
 	if [ "`getgid named`" != "58" ]; then
-		echo "Warning: group namedhaven't gid=58. Correct this before installing bind" 1>&2
+		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
 		exit 1
 	fi
 else
-	echo "Adding group named GID=58"
+	echo "Adding group named GID=58."
 	/usr/sbin/groupadd -g 58 named
 fi
 if [ -n "`id -u named 2>/dev/null`" ]; then
 	if [ "`id -u named`" != "58" ]; then
-		echo "Warning: user named haven't uid=58. Correct this before installing bind" 1>&2
+		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
 		exit 1
 	fi
 else
-	echo "Adding user named UID=58"
+	echo "Adding user named UID=58."
 	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
 
@@ -366,7 +371,7 @@ fi
 if [ -f /var/lock/subsys/named ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
+	echo "Type \"/etc/rc.d/init.d/named start\" to start named." 1>&2
 fi
 
 %preun
@@ -379,9 +384,9 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	echo "Removing user named UID=58"
+	echo "Removing user named."
 	%{_sbindir}/userdel named
-	echo "Removing group named GID=58"
+	echo "Removing group named."
 	%{_sbindir}/groupdel named
 fi
 
