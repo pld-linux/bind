@@ -4,14 +4,14 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	8.2.2
+Version:	8.2.2_P3
 Release:	1
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
-Source0:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-src.tar.gz
-Source1:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-doc.tar.gz
-Source2:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-contrib.tar.gz
+Source0:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}.src.tar.gz
+Source1:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}.doc.tar.gz
+Source2:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}.contrib.tar.gz
 Source3:	named.init
 Source4:	named.sysconfig
 Source5:	named.logrotate
@@ -145,18 +145,19 @@ Bind documentations
 Dokumentacja programu bind
 
 %prep
-%setup -q -n src -a 1 -a 2
+%setup -q -c -n %{name}-%{version} -a 1 -a 2
 
-%patch1 -p1
-%patch2 -p2
-%patch3 -p1
-%patch5 -p2
-%patch6 -p2
-%patch8 -p1
-%patch9 -p1
+%patch1 -p0
+%patch2 -p1
+%patch3 -p0
+%patch5 -p1
+%patch6 -p1
+%patch8 -p0
+%patch9 -p0
 
 %build
 rm -f compat/include/sys/cdefs.h
+cd src
 make 	clean \
 	depend \
 	all \
@@ -176,6 +177,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir}} \
 	$RPM_BUILD_ROOT/etc/{sysconfig,logrotate.d,rc.d/init.d} \
 	$RPM_BUILD_ROOT%{_mandir}/man{1,3,5,7,8}
 
+cd src
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	DESTINC="%{_includedir}/bind" \
@@ -190,6 +192,7 @@ make install \
 	INSTALL_EXEC=" "
 
 strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
+cd ..
 
 cd doc/man
 make clean
@@ -203,12 +206,12 @@ make install \
 cd ../../
 install -d $RPM_BUILD_ROOT/var/{log,state/named/{M,S}}
 
-install bin/named/test/127.*    $RPM_BUILD_ROOT/var/state/named/M
-install bin/named/test/loca*    $RPM_BUILD_ROOT/var/state/named/M
-install conf/workstation/root.* $RPM_BUILD_ROOT/var/state/named/root.hint
+install src/bin/named/test/127.*    $RPM_BUILD_ROOT/var/state/named/M
+install src/bin/named/test/loca*    $RPM_BUILD_ROOT/var/state/named/M
+install src/conf/workstation/root.* $RPM_BUILD_ROOT/var/state/named/root.hint
 install %{SOURCE6}              $RPM_BUILD_ROOT/etc
 
-cp bin/named/named.conf EXAMPLE-CONFIG
+cp src/bin/named/named.conf EXAMPLE-CONFIG
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
@@ -219,7 +222,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb
 
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
-	README Version CHANGES EXAMPLE-CONFIG 
+	src/README src/Version src/CHANGES EXAMPLE-CONFIG 
 
 %pre
 if [ -f /etc/named.boot ]; then
@@ -256,7 +259,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc {README,Version,CHANGES,EXAMPLE-CONFIG}.gz
+%doc {src/README,src/Version,src/CHANGES,EXAMPLE-CONFIG}.gz
 
 %attr(755,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
