@@ -18,10 +18,8 @@ Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	resolver.5
 Patch0:		%{name}9-makefail.patch
-Patch1:		%{name}9-openssl.patch
 BuildRequires:	sed
 BuildRequires:	flex
-BuildRequires:	openssl-devel
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Obsoletes:	caching-nameserver
@@ -149,7 +147,6 @@ Statyczne biblioteki binda.
 %prep
 %setup -q -a1
 %patch0 -p1
-%patch1 -p1
 
 %build
 autoconf
@@ -164,7 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,logrotate.d,sysconfig}
 install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
-install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S},run,log}
+install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev},run,log}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -177,12 +174,14 @@ install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_sysconfdir}
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named
 install bin/named/*conf.test		EXAMPLE-CONFIG
-touch					$RPM_BUILD_ROOT%{_var}/log/named
 install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
+ln -s %{_var}/lib/named/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+ln -s %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
+touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
 gzip -9nf README doc/misc/*
 
@@ -207,15 +206,14 @@ if [ -f /var/lock/subsys/named ]; then
 else
 	echo "Type \"%{_sysconfdir}/rc.d/init.d/named start\" to start named" 1>&2
 fi
-
-if [ -f %{_sysconfdir}/named.boot.2conf ]; then
-	/usr/sbin/named-bootconf <%{_sysconfdir}/named.boot.2conf >/etc/named.conf
-	rm -f %{_sysconfdir}/named.boot.2conf
-fi
-
 umask 117
-/bin/touch /var/log/named
-chown named.named /var/log/named
+/bin/touch		%{_var}/lib/named/named.log
+chown named.named	%{_var}/lib/named/named.log
+ln -s %{_var}/lib/named/named.log	%{_var}/log/named
+
+umask 022
+/bin/mknod -m u+rw,go+r	%{_var}/lib/named/dev/random c 1 8
+/bin/mknod -m a+rw		%{_var}/lib/named/dev/null c 1 3
 
 %preun
 if [ "$1" = "0" ]; then
@@ -257,10 +255,12 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
+%attr(770,root,named) %dir %{_var}/lib/named/dev
 
 %{_var}/lib/named/M/*
 %{_var}/lib/named/root.*
 
+%ghost %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named
 
 %files utils
