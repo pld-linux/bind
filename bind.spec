@@ -232,6 +232,18 @@ if [ -f /etc/named.boot ]; then
 	mv -f /etc/named.boot /etc/named.rpmsave
 	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
+if ! id -g named; then
+	%{_sbindir}/groupadd -g 58 named
+fi
+if ! id -u named; then
+	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
+fi
+%{_bindir}/update-db
+
+%postun
+%{_sbindir}/groupdel named
+%{_sbindir}/userdel named
+%{_bindir}/update-db
 
 %post
 /sbin/chkconfig --add named

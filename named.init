@@ -34,7 +34,7 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		show Starting named daemon
-		daemon named
+	 	daemon named -u named -g named
 	else
 		echo "Named already is running"
 	fi
