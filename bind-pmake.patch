@@ -1,66 +1,7 @@
---- bind-9.2.1/make/rules.in	Tue Mar 26 00:55:15 2002
-+++ bind-9.2.1.new/make/rules.in	Sat Mar  1 16:59:10 2003
-@@ -47,7 +47,10 @@
- ### Makefile may define:
- ###	TARGETS
- 
--all: subdirs ${TARGETS}
-+all: touchfile ${TARGETS}
-+
-+touchfile: subdirs
-+	touch touchfile
- 
- ###
- ### Subdirectories
---- bind-9.2.1/lib/isc/Makefile.in	Mon Oct 22 23:28:13 2001
-+++ bind-9.2.1.new/lib/isc/Makefile.in	Sat Mar  1 17:07:48 2003
-@@ -88,11 +88,11 @@
- 		-DLIBAGE=${LIBAGE} \
- 		-c ${srcdir}/version.c
- 
--libisc.@SA@: ${OBJS}
-+libisc.@SA@: touchfile ${OBJS}
- 	${AR} ${ARFLAGS} $@ ${OBJS}
- 	${RANLIB} $@
- 
--libisc.la: ${OBJS}
-+libisc.la: touchfile ${OBJS}
- 	${LIBTOOL} --mode=link \
- 		${CC} ${ALL_CFLAGS} -o libisc.la -rpath ${libdir} \
- 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
---- bind-9.2.1/lib/dns/Makefile.in	Sat Mar  1 17:22:26 2003
-+++ bind-9.2.1.new/lib/dns/Makefile.in	Sat Mar  1 18:02:49 2003
-@@ -90,17 +90,17 @@
- 		-DLIBAGE=${LIBAGE} \
- 		-c ${srcdir}/version.c
- 
--libdns.@SA@: ${OBJS}
-+libdns.@SA@: touchfile ${OBJS}
- 	${AR} ${ARFLAGS} $@ ${OBJS}
- 	${RANLIB} $@
- 
--libdns.la: ${OBJS}
-+libdns.la: touchfile ${OBJS}
- 	${LIBTOOL} --mode=link \
- 		${CC} ${ALL_CFLAGS} -o libdns.la -rpath ${libdir} \
- 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
- 		${OBJS} ${LIBS}
- 
--timestamp: libdns.@A@
-+timestamp: include libdns.@A@
- 	touch timestamp
- 
- installdirs:
-@@ -148,3 +148,6 @@
- 	include/dns/rdatastruct.h code.h
- subdirs: include/dns/enumtype.h include/dns/enumclass.h \
- 	include/dns/rdatastruct.h code.h
-+
-+$(OBJS): include/dns/enumtype.h include/dns/enumclass.h \
-+	include/dns/rdatastruct.h code.h
---- bind-9.2.1/lib/bind/make/rules.in	Fri Jun 29 15:25:15 2001
-+++ bind-9.2.1.new/lib/bind/make/rules.in	Sat Mar  1 19:25:24 2003
-@@ -48,8 +48,10 @@
+diff -urN bind-9.2.3.org/lib/bind/make/rules.in bind-9.2.3/lib/bind/make/rules.in
+--- bind-9.2.3.org/lib/bind/make/rules.in	2003-10-24 23:31:33.000000000 +0200
++++ bind-9.2.3/lib/bind/make/rules.in	2003-10-24 23:31:50.000000000 +0200
+@@ -49,8 +49,10 @@
  ### Makefile may define:
  ###	TARGETS
  
@@ -72,8 +13,9 @@
  ###
  ### Subdirectories
  ###
---- bind-9.2.1/lib/bind/Makefile.in	Sat Mar  1 17:22:26 2003
-+++ bind-9.2.1.new/lib/bind/Makefile.in	Sat Mar  1 19:45:21 2003
+diff -urN bind-9.2.3.org/lib/bind/Makefile.in bind-9.2.3/lib/bind/Makefile.in
+--- bind-9.2.3.org/lib/bind/Makefile.in	2003-10-24 23:31:33.000000000 +0200
++++ bind-9.2.3/lib/bind/Makefile.in	2003-10-24 23:31:50.000000000 +0200
 @@ -94,11 +94,11 @@
  
  @BIND9_MAKE_RULES@
@@ -88,3 +30,68 @@
  	${LIBTOOL} --mode=link \
  	${CC} ${ALL_CFLAGS} -o libbind.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+diff -urN bind-9.2.3.org/lib/dns/Makefile.in bind-9.2.3/lib/dns/Makefile.in
+--- bind-9.2.3.org/lib/dns/Makefile.in	2003-10-24 23:31:34.000000000 +0200
++++ bind-9.2.3/lib/dns/Makefile.in	2003-10-24 23:32:39.000000000 +0200
+@@ -94,11 +94,11 @@
+ 		-DLIBAGE=${LIBAGE} \
+ 		-c ${srcdir}/version.c
+ 
+-libdns.@SA@: ${OBJS}
++libdns.@SA@: touchfile ${OBJS}
+ 	${AR} ${ARFLAGS} $@ ${OBJS}
+ 	${RANLIB} $@
+ 
+-libdns.la: ${OBJS}
++libdns.la: touchfile ${OBJS}
+ 	${LIBTOOL} --mode=link \
+ 		${CC} ${ALL_CFLAGS} -o libdns.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+@@ -124,7 +124,7 @@
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		${GSSAPIOBJS} ${LIBS}
+ 
+-timestamp: libdns.@A@
++timestamp: include libdns.@A@
+ 	touch timestamp
+ 
+ installdirs:
+@@ -172,3 +172,6 @@
+ 	include/dns/rdatastruct.h code.h
+ subdirs: include/dns/enumtype.h include/dns/enumclass.h \
+ 	include/dns/rdatastruct.h code.h
++
++$(OBJS): include/dns/enumtype.h include/dns/enumclass.h \
++	include/dns/rdatastruct.h code.h
+diff -urN bind-9.2.3.org/lib/isc/Makefile.in bind-9.2.3/lib/isc/Makefile.in
+--- bind-9.2.3.org/lib/isc/Makefile.in	2003-10-24 23:31:34.000000000 +0200
++++ bind-9.2.3/lib/isc/Makefile.in	2003-10-24 23:31:50.000000000 +0200
+@@ -88,11 +88,11 @@
+ 		-DLIBAGE=${LIBAGE} \
+ 		-c ${srcdir}/version.c
+ 
+-libisc.@SA@: ${OBJS}
++libisc.@SA@: touchfile ${OBJS}
+ 	${AR} ${ARFLAGS} $@ ${OBJS}
+ 	${RANLIB} $@
+ 
+-libisc.la: ${OBJS}
++libisc.la: touchfile ${OBJS}
+ 	${LIBTOOL} --mode=link \
+ 		${CC} ${ALL_CFLAGS} -o libisc.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+diff -urN bind-9.2.3.org/make/rules.in bind-9.2.3/make/rules.in
+--- bind-9.2.3.org/make/rules.in	2003-10-24 23:31:35.000000000 +0200
++++ bind-9.2.3/make/rules.in	2003-10-24 23:31:50.000000000 +0200
+@@ -47,7 +47,10 @@
+ ### Makefile may define:
+ ###	TARGETS
+ 
+-all: subdirs ${TARGETS}
++all: touchfile ${TARGETS}
++
++touchfile: subdirs
++	touch touchfile
+ 
+ ###
+ ### Subdirectories
