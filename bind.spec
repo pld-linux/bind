@@ -9,7 +9,7 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
 Version:	9.2.1
-Release:	1
+Release:	2
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -22,6 +22,7 @@ Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
 Patch2:		%{name}-autoconf.patch
+Patch3:		%{name}-sec-from-833.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -276,6 +277,8 @@ BIND.
 %setup -q -a1
 %patch1 -p1
 %patch2 -p1
+cd lib/bind
+%patch3 -p3
 
 %build
 %{__libtoolize}
