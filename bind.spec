@@ -44,7 +44,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7ca}
+%{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
