@@ -7,7 +7,7 @@ Summary(pt_BR):	BIND - Servidor de nomes DNS
 Summary(ru):	BIND - cервер системы доменных имен (DNS)
 Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
-Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ 
+Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.1
 Release:	12
