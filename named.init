@@ -7,20 +7,17 @@
 # description:	named (BIND) is a Domain Name Server (DNS) \
 #		that is used to resolve host names to IP addresses.
 
-# Source function library.
+# Source function library
 . /etc/rc.d/init.d/functions
 
-# Source networking configuration.
+# Source networking configuration
 . /etc/sysconfig/network
 
 # Try get config..
-if [ -f /etc/sysconfig/named ]; then
-     . /etc/sysconfig/named
-fi     
+[ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
 	
 # Check that networking is up.
 if is_no "${NETWORKING}"; then
-        # nls "ERROR: Networking is down. %s can't be run." <service>
         msg_Network_Down "Named"
 	exit 1
 fi
@@ -43,7 +40,6 @@ case "$1" in
 		msg_Already_Running "Named"
 		exit 1
 	fi
-
         ;;
   stop)
         if [ -f /var/lock/subsys/named ]; then
@@ -54,8 +50,7 @@ case "$1" in
 	        msg_Not_Running "Named"
                 exit 1
         fi
-															
-        ;;
+	;;
   status)
 	/usr/sbin/ndc status
 	exit $?
