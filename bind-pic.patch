@@ -1,6 +1,75 @@
+diff -ur bind-9.3.0rc3.orig/bin/check/Makefile.in bind-9.3.0rc3/bin/check/Makefile.in
+--- bind-9.3.0rc3.orig/bin/check/Makefile.in	2004-07-20 09:01:48.000000000 +0200
++++ bind-9.3.0rc3/bin/check/Makefile.in	2004-09-02 10:03:52.406944560 +0200
+@@ -58,12 +58,12 @@
+ @BIND9_MAKE_RULES@
+ 
+ named-checkconf.@O@: named-checkconf.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-c ${srcdir}/named-checkconf.c
+ 
+ named-checkzone.@O@: named-checkzone.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-c ${srcdir}/named-checkzone.c
+ 
+diff -ur bind-9.3.0rc3.orig/bin/dnssec/Makefile.in bind-9.3.0rc3/bin/dnssec/Makefile.in
+--- bind-9.3.0rc3.orig/bin/dnssec/Makefile.in	2004-07-20 09:01:48.000000000 +0200
++++ bind-9.3.0rc3/bin/dnssec/Makefile.in	2004-09-02 10:03:38.705027568 +0200
+@@ -58,7 +58,7 @@
+ 	dnssec-keygen.@O@ ${OBJS} ${LIBS}
+ 
+ dnssec-signzone.@O@: dnssec-signzone.c
+-	${LIBTOOL_MODE_COMPILE} ${PURIFY} ${CC} ${ALL_CFLAGS} -c $<
++	${LIBTOOL_MODE_COMPILE} ${PURIFY} ${CC} ${ALL_CFLAGS} -fPIC -c $<
+ 
+ dnssec-signzone@EXEEXT@: dnssec-signzone.@O@ ${OBJS} ${DEPLIBS}
+ 	${LIBTOOL_MODE_LINK} ${PURIFY} ${CC} ${CFLAGS} ${LDFLAGS} -o $@ \
+diff -ur bind-9.3.0rc3.orig/bin/named/Makefile.in bind-9.3.0rc3/bin/named/Makefile.in
+--- bind-9.3.0rc3.orig/bin/named/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/bin/named/Makefile.in	2004-09-02 10:03:24.425198432 +0200
+@@ -94,13 +94,13 @@
+ @BIND9_MAKE_RULES@
+ 
+ main.@O@: main.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DNS_LOCALSTATEDIR=\"${localstatedir}\" \
+ 		-DNS_SYSCONFDIR=\"${sysconfdir}\" -c ${srcdir}/main.c
+ 
+ config.@O@: config.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DNS_LOCALSTATEDIR=\"${localstatedir}\" \
+ 		-c ${srcdir}/config.c
+diff -ur bind-9.3.0rc3.orig/bin/rndc/Makefile.in bind-9.3.0rc3/bin/rndc/Makefile.in
+--- bind-9.3.0rc3.orig/bin/rndc/Makefile.in	2004-07-20 09:01:50.000000000 +0200
++++ bind-9.3.0rc3/bin/rndc/Makefile.in	2004-09-02 10:03:10.570304696 +0200
+@@ -62,14 +62,14 @@
+ @BIND9_MAKE_RULES@
+ 
+ rndc.@O@: rndc.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DRNDC_CONFFILE=\"${sysconfdir}/rndc.conf\" \
+ 		-DRNDC_KEYFILE=\"${sysconfdir}/rndc.key\" \
+ 		-c ${srcdir}/rndc.c
+ 
+ rndc-confgen.@O@: rndc-confgen.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DRNDC_KEYFILE=\"${sysconfdir}/rndc.key\" \
+ 		-c ${srcdir}/rndc-confgen.c
+ 
 diff -ur bind-9.3.0rc3.orig/lib/bind/make/rules.in bind-9.3.0rc3/lib/bind/make/rules.in
 --- bind-9.3.0rc3.orig/lib/bind/make/rules.in	2004-09-01 15:44:22.000000000 +0200
-+++ bind-9.3.0rc3/lib/bind/make/rules.in	2004-09-02 08:57:47.239741600 +0200
++++ bind-9.3.0rc3/lib/bind/make/rules.in	2004-09-02 10:00:25.823350040 +0200
 @@ -117,7 +117,7 @@
  	${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS}
  
@@ -10,9 +79,81 @@ diff -ur bind-9.3.0rc3.orig/lib/bind/make/rules.in bind-9.3.0rc3/lib/bind/make/r
  
  SHELL = @SHELL@
  LIBTOOL = @LIBTOOL@
+diff -ur bind-9.3.0rc3.orig/lib/bind9/Makefile.in bind-9.3.0rc3/lib/bind9/Makefile.in
+--- bind-9.3.0rc3.orig/lib/bind9/Makefile.in	2004-07-20 09:01:57.000000000 +0200
++++ bind-9.3.0rc3/lib/bind9/Makefile.in	2004-09-02 10:01:38.906239752 +0200
+@@ -46,7 +46,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
+diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.in
+--- bind-9.3.0rc3.orig/lib/dns/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/dns/Makefile.in	2004-09-02 10:01:33.268096880 +0200
+@@ -94,7 +94,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
+diff -ur bind-9.3.0rc3.orig/lib/isc/Makefile.in bind-9.3.0rc3/lib/isc/Makefile.in
+--- bind-9.3.0rc3.orig/lib/isc/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/isc/Makefile.in	2004-09-02 10:01:26.356147656 +0200
+@@ -81,7 +81,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
+diff -ur bind-9.3.0rc3.orig/lib/isccc/Makefile.in bind-9.3.0rc3/lib/isccc/Makefile.in
+--- bind-9.3.0rc3.orig/lib/isccc/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/isccc/Makefile.in	2004-09-02 10:01:21.128942312 +0200
+@@ -56,7 +56,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
+diff -ur bind-9.3.0rc3.orig/lib/isccfg/Makefile.in bind-9.3.0rc3/lib/isccfg/Makefile.in
+--- bind-9.3.0rc3.orig/lib/isccfg/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/isccfg/Makefile.in	2004-09-02 10:01:15.584785152 +0200
+@@ -53,7 +53,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
+diff -ur bind-9.3.0rc3.orig/lib/lwres/Makefile.in bind-9.3.0rc3/lib/lwres/Makefile.in
+--- bind-9.3.0rc3.orig/lib/lwres/Makefile.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/lwres/Makefile.in	2004-09-02 10:01:09.222752328 +0200
+@@ -53,7 +53,7 @@
+ @BIND9_MAKE_RULES@
+ 
+ version.@O@: version.c
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} \
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC \
+ 		-DVERSION=\"${VERSION}\" \
+ 		-DLIBINTERFACE=${LIBINTERFACE} \
+ 		-DLIBREVISION=${LIBREVISION} \
 diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
 --- bind-9.3.0rc3.orig/make/rules.in	2004-09-01 15:44:22.000000000 +0200
-+++ bind-9.3.0rc3/make/rules.in	2004-09-02 08:57:31.897074040 +0200
++++ bind-9.3.0rc3/make/rules.in	2004-09-02 10:00:25.824349888 +0200
 @@ -120,7 +120,7 @@
  	${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS}
  
