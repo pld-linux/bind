@@ -4,27 +4,28 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	8.2
-Release:	8
+Version:	8.2.1
+Release:	1
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
-Source0:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-src.tar.gz
-Source1:	ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
-Source2:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-contrib.tar.gz
+Source0:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-src.tar.gz
+Source1:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-doc.tar.gz
+Source2:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-contrib.tar.gz
 Source3:	named.init
 Source4:	named.sysconfig
-Prereq:		/sbin/chkconfig
 Patch1:		bind-pselect.patch
 Patch2:		bind-fds.patch
 Patch3:		bind-nonlist.patch
-Patch4:		bind-opt.patch
 Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
-Patch7:		bind-db_glue.patch
 Patch8:		bind-mkdep.patch
+Prereq:		/sbin/chkconfig
 URL:		http://www.isc.org/bind.html
 Buildroot:	/tmp/%{name}-%{version}-root
+
+%define		_datadir	%{_prefix}/share/misc
+%define		_sysconfdir	/etc
 
 %description
 Includes the named name server, which is used to define host name
@@ -108,56 +109,85 @@ pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy oprogramowania
 korzystaj±cego z tych plików nag³ówkowych czy biblioteki powiniene¶
 zainstalowaæ ten pakiet.
 
+%package	doc
+Summary:	Bind documentation
+Summary(pl):	Dokumentacja programu bind
+Group:		Documentation
+Group(pl):	Dokumentacja
+
+%description doc
+Bind documentations
+
+%decscription doc -l pl
+Dokumentacja programu bind
+
 %prep
 %setup -q -n src -a 1 -a 2
 
 %patch1 -p1
 %patch2 -p2
 %patch3 -p1
-%patch4 -p1
 %patch5 -p2
 %patch6 -p2
-%patch7 -p1
 %patch8 -p1
 
 %build
 rm -f compat/include/sys/cdefs.h
-#PATH="$PATH:`pwd`/port/linux/bin"; export PATH
 make \
 	clean \
 	depend \
 	all \
 	DESTDIR="" \
-	OPT_FLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE"
+	CDEBUG="$RPM_OPT_FLAGS" \
+	DESTBIN="%{_bindir}" \
+	DESTSBIN="%{_sbindir}" \
+	DESTMAN="%{_mandir}" \
+	DESTHELP="%{_datadir}" \
+	DESTETC="%{_sysconfdir}" \
+	DESTRUN="/var/run"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir/misc}} \
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir}} \
 	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},%{_mandir}/man{1,3,5,7,8}}
 
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	DESTINC="%{_includedir}/bind" \
 	DESTLIB="%{_libdir}" \
+        DESTBIN="%{_bindir}" \
+        DESTSBIN="%{_sbindir}" \
+        DESTMAN="%{_mandir}" \
+        DESTHELP="%{_datadir}" \
+        DESTETC="%{_sysconfdir}" \
+        DESTRUN="/var/run" \
 	INSTALL_LIB=" " \
-	INSTALL_EXEC="-s"
+	INSTALL_EXEC=" "
 
 
 strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
 
 cd doc/man
-install {dig,host,dnsquery}.1 $RPM_BUILD_ROOT%{_mandir}/man1
-install {gethostbyname,resolver,getnetent}.3 $RPM_BUILD_ROOT%{_mandir}/man3
-install resolver.5 $RPM_BUILD_ROOT%{_mandir}/man5
-install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT%{_mandir}/man8
-install hostname.7 $RPM_BUILD_ROOT%{_mandir}/man7
+make clean
+make install \
+	MANROFF=cat \
+	CATEXT=\$\$N \
+	DESTDIR=$RPM_BUILD_ROOT \
+	DESTMAN=%{_mandir} \
+	MANDIR=man
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
+touch $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	../../{README,Version,CHANGES} 
+
+%pre
+if test ( ! -f /etc/named.conf ) -a ( -f /etc/named.boot ) 
+	cp /etc/named.boot /etc/named.boot.2conf
+fi
 
 %post
 /sbin/chkconfig --add named
@@ -166,6 +196,11 @@ if [ -f /var/run/named.pid ]; then
 	/etc/rc.d/init.d/named restart >&2
 else
 	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" >&2
+fi
+
+if [ -f /etc/named.boot.2conf ]
+	/usr/sbin/named-bootconf </etc/named.boot.2conf >/etc/named.conf
+	rm /etc/named.boot.2conf
 fi
     
 %preun
@@ -182,21 +217,34 @@ rm -rf $RPM_BUILD_ROOT
 %doc {README,Version,CHANGES}.gz
 
 %attr(755,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config %verify(not size mtime md5) /etc/sysconfig/named
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
 
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-xfer
 %attr(755,root,root) %{_sbindir}/ndc
+%attr(755,root,root) %{_sbindir}/irpd
+%attr(755,root,root) %{_sbindir}/dnskeygen
+%attr(755,root,root) %{_sbindir}/named-bootconf
+%attr(755,root,root) %{_bindir}/nsupdate
 
 %{_mandir}/man8/named.8.gz
 %{_mandir}/man8/ndc.8.gz
 %{_mandir}/man8/named-xfer.8.gz
+%{_mandir}/man8/named-bootconf.8.gz
 %{_mandir}/man7/hostname.7.gz
+%{_mandir}/man5/irs.conf.5.gz
+%{_mandir}/man5/named.conf.5.gz
+%{_mandir}/man1/dnskeygen.1.gz
 
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
-%attr(644,root,root) %{_datadir}/misc/nslookup.help
+%attr(755,root,root) %{_bindir}/dig
+%attr(755,root,root) %{_bindir}/host
+%attr(755,root,root) %{_bindir}/dnsquery
+%attr(755,root,root) %{_bindir}/nslookup
+
+%attr(644,root,root) %{_datadir}/nslookup.help
 
 %{_mandir}/man1/dig.1.gz
 %{_mandir}/man1/host.1.gz
@@ -207,9 +255,12 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 
-%{_includedir}/bind/*
+%{_includedir}/bind
 %{_libdir}/*.a
 %{_mandir}/man3/*
+
+%files doc
+%doc doc/html doc/rfc doc/misc doc/notes
 
 %changelog
 * Mon May 31 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
