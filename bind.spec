@@ -15,23 +15,23 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
-Version:	9.2.3
-Release:	9
-Epoch:		5
+Version:	9.2.5
+Release:	2
+Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	94ae7b0f20dc406fdbbf6fac5d57b32f
+# Source0-md5:	35a265fb97a068c066e22306ea32fd1f
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
-Source5:	nslookup.8
-Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
-# Source6-md5:	35b1dfaa12615c9802126ee833e0e7f7
-Source7:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source7-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
+#Source5:	nslookup.8
+Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
+# Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
+Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
+# Source6-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -40,6 +40,7 @@ Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
 Patch6:		%{name}-sdb-ldap.patch
+Patch7:		%{name}-destaddr.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -49,7 +50,7 @@ BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.176
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -314,6 +315,7 @@ BIND.
 %patch4 -p1
 %patch5 -p1
 %{?with_ldap:%patch6 -p1}
+%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -344,8 +346,9 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 
 rm -f doc/rfc/rfc*
 
-install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
-bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+bzip2 -dc %{SOURCE5} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
+%{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
@@ -363,7 +366,7 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 %{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
-%{?with_ldap:install %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
+%{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
@@ -372,27 +375,39 @@ rm -f doc/misc/Makefile*
 rm -rf $RPM_BUILD_ROOT
 
 %pre
+%banner %{name}-prescript << EOF
+EOF
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
+	%banner %{name}-prescript -a -e << EOF
+Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave.
+EOF
 fi
-if [ -n "`getgid named`" ]; then
-	if [ "`getgid named`" != "58" ]; then
-		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
+if [ -n "`/usr/bin/getgid named`" ]; then
+	if [ "`/usr/bin/getgid named`" != "58" ]; then
+		%banner %{name}-prescript -a -e << EOF
+Error: group named doesn't have gid=58. Correct this before installing bind.
+EOF
 		exit 1
 	fi
 else
-	echo "Adding group named GID=58."
+	%banner %{name}-prescript -a << EOF
+Adding group named GID=58.
+EOF
 	/usr/sbin/groupadd -g 58 named || exit 1
 fi
-if [ -n "`id -u named 2>/dev/null`" ]; then
-	if [ "`id -u named`" != "58" ]; then
-		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
+if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
+	if [ "`/bin/id -u named`" != "58" ]; then
+		%banner %{name}-prescript -a -e << EOF
+Error: user named doesn't have uid=58. Correct this before installing bind.
+EOF
 		exit 1
 	fi
 else
-	echo "Adding user named UID=58."
+	%banner %{name}-prescript -a << EOF
+Adding user named UID=58.
+EOF
 	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
 fi
 
@@ -401,7 +416,9 @@ fi
 if [ -f /var/lock/subsys/named ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named." 1>&2
+	%banner %{name} -e << EOF
+Type "/etc/rc.d/init.d/named start" to start named.
+EOF
 fi
 
 %preun
@@ -428,7 +445,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
@@ -442,7 +459,7 @@ fi
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
-%attr(750,root,named) %dir %{_var}/lib/named/M
+%attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
@@ -463,8 +480,8 @@ fi
 %attr(755,root,root) %{_bindir}/nsupdate
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
-%{_mandir}/man8/nslookup.8*
-%{_mandir}/man8/nsupdate*
+%{_mandir}/man1/nslookup.1*
+%{_mandir}/man8/nsupdate.8*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
@@ -474,7 +491,7 @@ fi
 
 %lang(ja) %{_mandir}/ja/man1/dig.1*
 %lang(ja) %{_mandir}/ja/man1/host.1*
-%lang(ja) %{_mandir}/ja/man8/nslookup.8*
+%lang(ja) %{_mandir}/ja/man1/nslookup.1*
 %lang(ja) %{_mandir}/ja/man8/nsupdate.8*
 
 %lang(pl) %{_mandir}/pl/man1/host.1*
