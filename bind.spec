@@ -278,11 +278,11 @@ BIND.
 %patch2 -p1
 
 %build
-libtoolize --copy --force
+%{__libtoolize}
 aclocal
 %{__autoconf}
 cd lib/bind
-libtoolize --copy --force
+%{__libtoolize}
 aclocal
 %{__autoconf}
 cd ../..
