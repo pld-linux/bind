@@ -49,7 +49,7 @@ BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.176
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -373,27 +373,39 @@ rm -f doc/misc/Makefile*
 rm -rf $RPM_BUILD_ROOT
 
 %pre
+%banner %{name}-prescript << EOF
+EOF
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
+	%banner %{name}-prescript -a -e << EOF
+Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave.
+EOF
 fi
 if [ -n "`/usr/bin/getgid named`" ]; then
 	if [ "`/usr/bin/getgid named`" != "58" ]; then
-		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
+		%banner %{name}-prescript -a -e << EOF
+Error: group named doesn't have gid=58. Correct this before installing bind.
+EOF
 		exit 1
 	fi
 else
-	echo "Adding group named GID=58."
+	%banner %{name}-prescript -a << EOF
+Adding group named GID=58.
+EOF
 	/usr/sbin/groupadd -g 58 named || exit 1
 fi
 if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
 	if [ "`/bin/id -u named`" != "58" ]; then
-		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
+		%banner %{name}-prescript -a -e << EOF
+Error: user named doesn't have uid=58. Correct this before installing bind.
+EOF
 		exit 1
 	fi
 else
-	echo "Adding user named UID=58."
+	%banner %{name}-prescript -a << EOF
+Adding user named UID=58.
+EOF
 	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
 fi
 
@@ -402,7 +414,9 @@ fi
 if [ -f /var/lock/subsys/named ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named." 1>&2
+	%banner %{name} -e << EOF
+Type "/etc/rc.d/init.d/named start" to start named.
+EOF
 fi
 
 %preun
