@@ -22,6 +22,7 @@ Patch4:		bind-opt.patch
 Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch7:		bind-db_glue.patch
+Patch8:		bind-mkdep.patch
 URL:		http://www.isc.org/bind.html
 BuildPrereq:	byacc
 Buildroot:	/tmp/%{name}-%{version}-root
@@ -118,10 +119,11 @@ zainstalowaæ ten pakiet.
 %patch5 -p2
 %patch6 -p2
 %patch7 -p1
+%patch8 -p1
 rm -f compat/include/sys/cdefs.h
 
 %build
-PATH="$PATH:./bin"; export PATH
+#PATH="$PATH:`pwd`/port/linux/bin"; export PATH
 make \
 	clean \
 	depend \
@@ -132,13 +134,16 @@ make \
 %install
 rm -rf $RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
+	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},%{_mandir}/man{1,3,5,7,8}}
+
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	DESTINC="%{_includedir}/bind" \
-	DESTLIB="%{_libdir}"
+	DESTLIB="%{_libdir}" \
+	INSTALL_LIB=" " \
+	INSTALL_EXEC="-s"
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
-	$RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_mandir}/man{1,3,5,7,8}}
 
 strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
 
@@ -178,7 +183,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc {README,Version,CHANGES}.gz
 
 %attr(754,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config %veryfi(not size mtime md5) /etc/sysconfig/named
+%attr(640,root,root) %config %verify(not size mtime md5) /etc/sysconfig/named
 
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-xfer
