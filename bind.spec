@@ -20,6 +20,8 @@ Source5:	nslookup.8
 Source6:	resolver.5
 BuildRequires:	sed
 BuildRequires:	flex
+BuildRequires:	openssl-devel
+BuildRequires:	byacc
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
