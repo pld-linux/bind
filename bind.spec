@@ -7,9 +7,10 @@ Summary(pt_BR):	BIND - Servidor de nomes DNS
 Summary(ru):	BIND - cервер системы доменных имен (DNS)
 Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
+Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ 
 Name:		bind
 Version:	9.2.1
-Release:	2
+Release:	6
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -128,6 +129,7 @@ Summary(pt_BR):	UtilitАrios DNS - host, dig, dnsquery e nslookup
 Summary(ru):	Утилиты для посылки запросов к серверам DNS
 Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
 Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
+Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
 Group:		Networking/Utilities
 Requires:	%{name}-libs = %{version}
 
@@ -191,6 +193,7 @@ Summary:	DNS libraries
 Summary(pl):	Biblioteki DNS
 Summary(ru):	Библиотеки, необходимые для bind
 Summary(uk):	Б╕бл╕отеки, необх╕дн╕ для bind
+Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ©╙╥╒©Б
 Group:		Libraries
 
 %description libs
