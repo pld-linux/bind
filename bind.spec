@@ -22,7 +22,7 @@ BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	openssl-devel
 BuildRequires:	byacc
-Requires:	rc-scripts >= 0.2.0
+Prereq:		rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
 Prereq:		/sbin/chkconfig                                                                       
 #Requires(pre,post):	fileutils
