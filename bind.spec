@@ -28,6 +28,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 Prereq:		rc-scripts >= 0.2.0
+Prereq:		/sbin/chkconfig
 Prereq:		%{name}-libs
 Requires:	%{name}-libs = %{version}
 Requires:	psmisc >= 20.1
@@ -273,6 +274,9 @@ touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
 gzip -9nf README EXAMPLE-CONFIG-* doc/misc/*
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
 %pre
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
@@ -311,9 +315,6 @@ fi
 
 %post   libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
