@@ -148,7 +148,7 @@ Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
 Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
 Group:		Networking/Utilities
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{epoch}:%{version}
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
@@ -235,7 +235,7 @@ Summary(pt_BR):	Todos os arquivos de cabeГalho e bibliotecas para desenvolviment
 Summary(ru):	Хедеры и библиотеки разработчика для bind
 Summary(uk):	Хедери та б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{epoch}:%{version}
 
 %description devel
 The bind-devel package contains all the include files and symlinks
@@ -274,7 +274,7 @@ Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
 Summary(ru):	Статические библиотеки разработчика для bind
 Summary(uk):	Статичн╕ б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{epoch}:%{version}
 
 %description static
 Static bind libraries.
