@@ -133,7 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
-	DESTINC="/usr/include/bind" \
+	DESTINC="%{_includedir}/bind" \
 	DESTLIB="%{_libdir}"
 
 install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
@@ -172,9 +172,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config %veryfi(not size mtime md5) /etc/sysconfig/named
 
-%attr(755,root,root) /usr/sbin/named
-%attr(755,root,root) /usr/sbin/named-xfer
-%attr(750,root,root) /usr/sbin/ndc
+%attr(755,root,root) %{_sbindir}/named
+%attr(755,root,root) %{_sbindir}/named-xfer
+%attr(750,root,root) %{_sbindir}/ndc
 
 %{_mandir}/man8/named.8.gz
 %{_mandir}/man8/ndc.8.gz
@@ -195,7 +195,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 
-/usr/include/bind/*
+%{_includedir}/bind/*
 %{_libdir}/*.a
 %{_mandir}/man3/*
 
