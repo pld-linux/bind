@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	18
+Release:	19
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -384,6 +384,7 @@ ln -sf localtime $RPM_BUILD_ROOT%{_chroot}%{_datadir}/zoneinfo/posixtime
 
 touch $RPM_BUILD_ROOT%{_chroot}/etc/{localtime,group}
 touch $RPM_BUILD_ROOT%{_chroot}/dev/{log,null}
+touch $RPM_BUILD_ROOT%{_chroot}/var/log/named
 # ...continue
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
@@ -488,8 +489,8 @@ cd /var/lib/named
 ln -s chroot/var/lib/named/* .
 
 umask 117
-/bin/touch /var/log/named
-chown named.named /var/log/named
+/bin/touch %{_chroot}/var/log/named
+chown named.named %{_chroot}/var/log/named
 
 %preun chroot
 if [ "$1" = "0" ]; then
@@ -575,8 +576,6 @@ fi
 %{_mandir}/man1/dnskeygen.1*
 %{_mandir}/man8/nsupdate.8*
 
-%attr(660,named,named) %ghost /var/log/named
-
 %attr(770,named,named) %dir /var/lib/named
 %attr(770,named,named) %dir %{_chroot}
 %attr(770,named,named) %dir %{_chroot}/etc
@@ -590,8 +589,11 @@ fi
 %attr(770,named,named) %dir %{_chroot}/var/lib/named
 %attr(770,named,named) %dir %{_chroot}/var/lib/named/M
 %attr(770,named,named) %dir %{_chroot}/var/lib/named/S
+%attr(770,named,named) %dir %{_chroot}/var/log
 %attr(770,named,named) %dir %{_chroot}/var/run
 %attr(770,named,named) %dir %{_chroot}/var/tmp
+
+%attr(660,named,named) %ghost %{_chroot}/var/log/named
 
 %attr(660,named,named) %{_chroot}/var/lib/named/M/*
 %attr(660,named,named) %{_chroot}/var/lib/named/root.*
