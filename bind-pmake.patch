@@ -1,7 +1,6 @@
-Only in bind-9.2.4: bind-pmake.patch
-diff -ur bind-9.2.4-orig/lib/bind/make/rules.in bind-9.2.4/lib/bind/make/rules.in
---- bind-9.2.4-orig/lib/bind/make/rules.in	2004-03-15 05:44:47.000000000 +0100
-+++ bind-9.2.4/lib/bind/make/rules.in	2004-09-24 12:14:10.777828088 +0200
+diff -ur bind-9.3.0rc3.orig/lib/bind/make/rules.in bind-9.3.0rc3/lib/bind/make/rules.in
+--- bind-9.3.0rc3.orig/lib/bind/make/rules.in	2004-03-15 02:02:44.000000000 +0100
++++ bind-9.3.0rc3/lib/bind/make/rules.in	2004-09-01 10:51:31.568733488 +0200
 @@ -49,8 +49,10 @@
  ### Makefile may define:
  ###	TARGETS
@@ -14,27 +13,27 @@ diff -ur bind-9.2.4-orig/lib/bind/make/rules.in bind-9.2.4/lib/bind/make/rules.i
  ###
  ### Subdirectories
  ###
-diff -ur bind-9.2.4-orig/lib/bind/Makefile.in bind-9.2.4/lib/bind/Makefile.in
---- bind-9.2.4-orig/lib/bind/Makefile.in	2004-09-24 12:09:25.000000000 +0200
-+++ bind-9.2.4/lib/bind/Makefile.in	2004-09-24 12:17:08.951741536 +0200
-@@ -96,11 +96,11 @@
+diff -ur bind-9.3.0rc3.orig/lib/bind/Makefile.in bind-9.3.0rc3/lib/bind/Makefile.in
+--- bind-9.3.0rc3.orig/lib/bind/Makefile.in	2004-07-20 09:01:56.000000000 +0200
++++ bind-9.3.0rc3/lib/bind/Makefile.in	2004-09-01 10:56:00.622831048 +0200
+@@ -94,11 +94,11 @@
  
  @BIND9_MAKE_RULES@
  
 -libbind.@SA@: ${OBJS}
-+libbind.@SA@: touchfile
++libbind.@SA@: touchfile ${OBJS}
  	${AR} ${ARFLAGS} $@ ${OBJS}
  	${RANLIB} $@
  
 -libbind.la: ${OBJS}
-+libbind.la: touchfile
++libbind.la: touchfile ${OBJS}
  	${LIBTOOL_MODE_LINK} \
  	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libbind.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
-diff -ur bind-9.2.4-orig/lib/dns/Makefile.in bind-9.2.4/lib/dns/Makefile.in
---- bind-9.2.4-orig/lib/dns/Makefile.in	2004-09-24 12:10:43.000000000 +0200
-+++ bind-9.2.4/lib/dns/Makefile.in	2004-09-24 12:16:30.551579248 +0200
-@@ -99,11 +99,11 @@
+diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.in
+--- bind-9.3.0rc3.orig/lib/dns/Makefile.in	2004-07-20 09:01:57.000000000 +0200
++++ bind-9.3.0rc3/lib/dns/Makefile.in	2004-09-01 10:54:21.089962344 +0200
+@@ -101,17 +101,17 @@
  		-DLIBAGE=${LIBAGE} \
  		-c ${srcdir}/version.c
  
@@ -48,27 +47,16 @@ diff -ur bind-9.2.4-orig/lib/dns/Makefile.in bind-9.2.4/lib/dns/Makefile.in
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libdns.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
-@@ -129,7 +129,7 @@
- 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
- 		${GSSAPIOBJS} ${LIBS}
+ 		${OBJS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ ${LIBS}
  
 -timestamp: libdns.@A@
 +timestamp: include libdns.@A@
  	touch timestamp
  
  installdirs:
-@@ -177,5 +177,8 @@
- 	include/dns/rdatastruct.h code.h
- subdirs: include/dns/enumtype.h include/dns/enumclass.h \
- 	include/dns/rdatastruct.h code.h
-+$(OBJS): include/dns/enumtype.h include/dns/enumclass.h \
-+	include/dns/rdatastruct.h code.h
- ${DNSOBJS}: include/dns/enumtype.h include/dns/enumclass.h \
-         include/dns/rdatastruct.h
-+
-diff -ur bind-9.2.4-orig/lib/isc/Makefile.in bind-9.2.4/lib/isc/Makefile.in
---- bind-9.2.4-orig/lib/isc/Makefile.in	2004-07-20 09:00:19.000000000 +0200
-+++ bind-9.2.4/lib/isc/Makefile.in	2004-09-24 12:15:16.713804296 +0200
+diff -ur bind-9.3.0rc3.orig/lib/isc/Makefile.in bind-9.3.0rc3/lib/isc/Makefile.in
+--- bind-9.3.0rc3.orig/lib/isc/Makefile.in	2004-07-20 09:01:58.000000000 +0200
++++ bind-9.3.0rc3/lib/isc/Makefile.in	2004-09-01 10:52:47.772148808 +0200
 @@ -88,11 +88,11 @@
  		-DLIBAGE=${LIBAGE} \
  		-c ${srcdir}/version.c
@@ -83,9 +71,9 @@ diff -ur bind-9.2.4-orig/lib/isc/Makefile.in bind-9.2.4/lib/isc/Makefile.in
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
-diff -ur bind-9.2.4-orig/make/rules.in bind-9.2.4/make/rules.in
---- bind-9.2.4-orig/make/rules.in	2004-07-20 09:00:21.000000000 +0200
-+++ bind-9.2.4/make/rules.in	2004-09-24 12:14:10.788826416 +0200
+diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
+--- bind-9.3.0rc3.orig/make/rules.in	2004-07-20 09:02:00.000000000 +0200
++++ bind-9.3.0rc3/make/rules.in	2004-09-01 10:51:31.574732576 +0200
 @@ -47,7 +47,10 @@
  ### Makefile may define:
  ###	TARGETS
