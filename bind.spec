@@ -134,7 +134,7 @@ rm -rf $RPM_BUILD_ROOT
 make install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	DESTINC="/usr/include/bind" \
-	DESTLIB="/usr/lib"
+	DESTLIB="%{_libdir}"
 
 install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
@@ -184,7 +184,7 @@ rm -rf $RPM_BUILD_ROOT
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) /usr/bin/*
-%attr(644,root,root) /usr/lib/nslookup.help
+%attr(644,root,root) %{_libdir}/nslookup.help
 
 %{_mandir}/man1/dig.1.gz
 %{_mandir}/man1/host.1.gz
@@ -196,7 +196,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 
 /usr/include/bind/*
-/usr/lib/*.a
+%{_libdir}/*.a
 %{_mandir}/man3/*
 
 %changelog
