@@ -1,0 +1,24 @@
+diff -ur bind-9.3.0rc3.orig/lib/bind/make/rules.in bind-9.3.0rc3/lib/bind/make/rules.in
+--- bind-9.3.0rc3.orig/lib/bind/make/rules.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/lib/bind/make/rules.in	2004-09-02 08:57:47.239741600 +0200
+@@ -117,7 +117,7 @@
+ 	${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS}
+ 
+ .c.@O@:
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -c $<
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC -c $<
+ 
+ SHELL = @SHELL@
+ LIBTOOL = @LIBTOOL@
+diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
+--- bind-9.3.0rc3.orig/make/rules.in	2004-09-01 15:44:22.000000000 +0200
++++ bind-9.3.0rc3/make/rules.in	2004-09-02 08:57:31.897074040 +0200
+@@ -120,7 +120,7 @@
+ 	${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS}
+ 
+ .c.@O@:
+-	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -c $<
++	${LIBTOOL_MODE_COMPILE} ${CC} ${ALL_CFLAGS} -fPIC -c $<
+ 
+ SHELL = @SHELL@
+ LIBTOOL = @LIBTOOL@
