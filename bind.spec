@@ -259,8 +259,8 @@ applications. If you install bind-devel, you'll also need to install
 bind-libs.
 
 %description devel -l es
-Todos los archivos de inclusión y bibliotecas necesarios al desarrollo
-DNS para el bind.
+Los archivos de inclusión y bibliotecas necesarios al desarrollo DNS
+para el bind.
 
 %description devel -l pl
 Pakiet zawiera pliki nag³ówkowe. Je¿eli bêdziesz pisa³ programy pod
