@@ -34,7 +34,8 @@ case "$1" in
 		msg_starting "Named"
 		touch /var/lib/named/named.log && \
 			chown named.named /var/lib/named/named.log
-	 	daemon named -u named -t /var/lib/named -c /etc/named.conf </dev/null
+	 	daemon named -u named -t /var/lib/named \
+			-c /etc/named.conf -n ${NUM_CPUS:-1} </dev/null
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
 	else
