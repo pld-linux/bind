@@ -1,0 +1,15 @@
+diff -ruN src.orig/bin/host/host.c src/bin/host/host.c
+--- src.orig/bin/host/host.c	Thu Nov 11 20:39:10 1999
++++ src/bin/host/host.c	Mon Nov 15 17:29:03 1999
+@@ -270,11 +270,6 @@
+ 			/*NOTREACHED*/
+ 		}
+ 	}
+-	if (gettype == 0) {
+-		if (verbose)
+-			printf ("Forcing `-t a' for signature trace.\n");
+-		gettype = ns_t_a;
+-	}
+ 	argc -= optind;
+ 	argv += optind;
+ 	if (argc < 1)
