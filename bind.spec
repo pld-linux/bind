@@ -6,8 +6,8 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Summary(pt_BR):	BIND - Servidor de nomes DNS
 Name:		bind
-Version:	9.1.3
-Release:	7
+Version:	9.2.0
+Release:	1
 Epoch:		5
 License:	distributable
 Group:		Networking/Daemons
@@ -21,6 +21,7 @@ Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
+Patch2:		%{name}-autoconf.patch
 BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	bison
@@ -233,11 +234,17 @@ Bibliotecas estáticas para desenvolvimento DNS.
 %prep
 %setup -q -a1
 %patch1 -p1
+%patch2 -p1
 
 %build
 libtoolize --copy --force
 aclocal
 autoconf
+cd lib/bind
+libtoolize --copy --force
+aclocal
+autoconf
+cd ../..
 %configure \
 	--with-openssl=%{_prefix} \
 	--with-libtool \
@@ -255,10 +262,6 @@ install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install doc/man/bin/*.1			$RPM_BUILD_ROOT%{_mandir}/man1
-install doc/man/lwres/*.3		$RPM_BUILD_ROOT%{_mandir}/man3
-install doc/man/bin/*.5			$RPM_BUILD_ROOT%{_mandir}/man5
-install doc/man/{bin/*.8,dnssec/*.8}	$RPM_BUILD_ROOT%{_mandir}/man8
 install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
@@ -274,7 +277,7 @@ ln -sf %{_var}/lib/named/etc/named.conf $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
-gzip -9nf README EXAMPLE-CONFIG-* doc/misc/*
+gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -319,7 +322,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz doc/misc/*.gz doc/arm/*
+%doc *.gz doc/misc/*.gz doc/arm/*.html
 
 %attr(754,root,root)  /etc/rc.d/init.d/named
 %attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
