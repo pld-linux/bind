@@ -33,6 +33,7 @@ Patch11:	ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/host_991529+.diff
 Patch12:	%{name}-res_randomid.patch
 Patch20:	utils-holelogd-linux.patch
 Patch21:	%{name}-chroot-ndc.patch
+Patch22:	%{name}-gnuext.patch
 BuildRequires:	flex
 BuildRequires:	glibc-static
 Prereq:		/sbin/chkconfig
@@ -236,6 +237,7 @@ Dokumentacja programu bind
 %patch10 -p1
 %patch12 -p1
 %patch20 -p1
+%patch22 -p0
 cd contrib/host
 %patch11 -p1
 
