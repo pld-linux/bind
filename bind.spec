@@ -115,7 +115,7 @@ sur les noms de domaine dИclarИs et les adresses rИseau.
 
 %description -l pl utils
 Pakiet ten zawiera zbiСr aplikacji umo©liwiaj╠cych odpytywanie
-serwerСw nazw z innych domen w celu uzyskania informacji o komupterach
+serwerСw nazw z innych domen w celu uzyskania informacji o komputerach
 i ich adresach IP.
 
 %description -l tr utils
@@ -130,10 +130,13 @@ Group(de):	Libraries
 Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
+Group(pt_BR):	Bibliotecas
+Group(ru):	Библиотеки
+Group(uk):	Б╕бл╕отеки
 
 %description libs
-The bind-libs package contains all libraries required for
-running BIND and bind utils.
+The bind-libs package contains all libraries required for running BIND
+and bind utils.
 
 %description -l pl libs
 Pakiet zawiera wszystkie biblioteki potrzebne do uruchomienia binda
@@ -144,8 +147,12 @@ Summary:	DNS development includes
 Summary(pl):	Pliki nagЁСwkowe bibliotek DNS
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Разработка/Библиотеки
+Group(uk):	Розробка/Б╕бл╕отеки
 Requires:	%{name}-libs = %{version}
 
 %description devel
@@ -164,11 +171,15 @@ pakiet.
 
 %package static
 Summary:	DNS static libs
-Summary(pl):	Biblioteki statyczne
+Summary(pl):	Biblioteki statyczne DNS
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Разработка/Библиотеки
+Group(uk):	Розробка/Б╕бл╕отеки
 
 %description static
 Static bind libraries.
