@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	6
+Release:	10
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -19,12 +19,13 @@ Source6:	named.conf
 Patch1:		bind-pselect.patch
 Patch2:		bind-fds.patch
 Patch3:		bind-nonlist.patch
-Patch5:		bind-host.patch
-Patch6:		bind-glibc21.patch
-Patch8:		bind-mkdep.patch
-Patch9:		bind-probe_ipv6.patch
-Patch10:	bind-host-forcetype.patch
-Patch11:	bind-pidfile.patch
+Patch4:		bind-host.patch
+Patch5:		bind-glibc21.patch
+Patch6:		bind-mkdep.patch
+Patch7:		bind-probe_ipv6.patch
+Patch8:		bind-host-forcetype.patch
+Patch9:		bind-pidfile.patch
+Patch10:	bind-ttl.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts
@@ -152,12 +153,13 @@ Dokumentacja programu bind
 %patch1 -p0
 %patch2 -p1
 %patch3 -p0
+%patch4 -p1
 %patch5 -p1
-%patch6 -p1
+%patch6 -p0
+%patch7 -p0
 %patch8 -p0
-%patch9 -p0
-%patch10 -p0
-%patch11 -p1
+%patch9 -p1
+%patch10 -p1
 
 %build
 rm -f compat/include/sys/cdefs.h
@@ -319,7 +321,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/dnsquery.1*
 %{_mandir}/man8/nslookup.8*
-%{_mandir}/man5/resolver.5*
 
 %files devel
 %defattr(644,root,root,755)
