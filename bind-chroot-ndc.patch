@@ -1,6 +1,6 @@
---- bind-chroot-8.2.2_P5/src/bin/ndc/pathnames.h.orig	Mon Aug 14 05:05:16 2000
-+++ bind-chroot-8.2.2_P5/src/bin/ndc/pathnames.h	Mon Aug 14 05:30:49 2000
-@@ -21,54 +21,58 @@
+--- bind-8.2.3/src/bin/ndc/pathnames.h	Mon Jan 29 19:39:52 2001
++++ bind-8.2.3-p/src/bin/ndc/pathnames.h	Mon Jan 29 19:36:34 2001
+@@ -21,58 +21,62 @@
  
  #include <paths.h>
  
@@ -9,7 +9,8 @@
 +#endif
 +
  #ifndef _PATH_CONF
- #define _PATH_CONF	"/etc/named.conf"
+-#define _PATH_CONF	"/named.conf"
++#define _PATH_CONF	"/etc/named.conf"
  #endif
  
  #ifndef _PATH_DEBUG
@@ -23,18 +24,23 @@
  #endif
  
  #ifndef _PATH_NAMED
--#define _PATH_NAMED	"/usr/sbin/named"
+-#define _PATH_NAMED	"/usr/local/sbin/named"
 +#define _PATH_NAMED	_CHROOTDIR "/usr/sbin/named"
  #endif
  
  #ifndef _PATH_PIDFILE
--#define _PATH_PIDFILE	"/var/run/named.pid"
+-#define _PATH_PIDFILE	"/named.pid"
 +#define _PATH_PIDFILE	_CHROOTDIR "/var/run/named.pid"
  #endif
  
  #ifndef _PATH_NDCSOCK
--#define _PATH_NDCSOCK	"/var/run/ndc"
+ #ifdef NEED_SECURE_DIRECTORY
+-#define _PATH_NDCSOCK	"/ndc.d/ndc"
++#define _PATH_NDCSOCK	_CHROOTDIR "/var/run/ndc.d/ndc"
+ #else
+-#define _PATH_NDCSOCK	"/ndc"
 +#define _PATH_NDCSOCK	_CHROOTDIR "/var/run/ndc"
+ #endif
  #endif
  
  #ifndef _PATH_STATS
@@ -53,7 +59,7 @@
  #endif
  
  #ifndef _PATH_XFER
--#define _PATH_XFER	"/usr/sbin/named-xfer"
+-#define _PATH_XFER	"/usr/local/libexec/named-xfer"
 +#define _PATH_XFER	_CHROOTDIR "/usr/sbin/named-xfer"
  #endif
  
