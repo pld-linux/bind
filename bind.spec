@@ -50,7 +50,9 @@ Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires:	psmisc >= 20.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Provides:	nameserver
 Obsoletes:	caching-nameserver
+Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
 
