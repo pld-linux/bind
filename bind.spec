@@ -10,7 +10,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷ 
 Name:		bind
 Version:	9.2.1
-Release:	8
+Release:	9
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -34,7 +34,7 @@ BuildRequires:	openssl-devel
 PreReq:		%{name}-libs = %{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
-Requires(pre):	/usr/bin/getgif
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
@@ -354,7 +354,7 @@ if [ -n "`getgid named`" ]; then
 	fi
 else
 	echo "Adding group named GID=58."
-	/usr/sbin/groupadd -g 58 named
+	/usr/sbin/groupadd -g 58 named || exit 1
 fi
 if [ -n "`id -u named 2>/dev/null`" ]; then
 	if [ "`id -u named`" != "58" ]; then
@@ -363,7 +363,7 @@ if [ -n "`id -u named 2>/dev/null`" ]; then
 	fi
 else
 	echo "Adding user named UID=58."
-	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
+	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
 fi
 
 %post
