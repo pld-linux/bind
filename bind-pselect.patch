@@ -1,0 +1,34 @@
+--- src/lib/isc/eventlib.c	Sat Mar 21 00:26:24 1998
++++ src.orig/lib/isc/eventlib.c	Sat Dec  5 17:43:14 1998
+@@ -42,7 +42,11 @@
+ #include "port_after.h"
+ 
+ /* Forward. */
+-
++#if ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 1))
++#include <sys/select.h> /* Another piece of shit from glibc guys ...;(( */
++#undef NEED_PSELECT 
++#endif /* glibc-2.1 */
++ 
+ #ifdef NEED_PSELECT
+ static int		pselect(int, void *, void *, void *, struct timespec*);
+ #endif
+@@ -297,11 +301,17 @@
+ 				 tp ? tp->tv_nsec : -1);
+ 
+ 			/* XXX should predict system's earliness and adjust. */
++#if ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 1))
++			x = pselect(ctx->fdMax+1,
++				    &ctx->rdLast, &ctx->wrLast, &ctx->exLast,
++				    tp, NULL);
++			pselect_errno = errno;
++#else
+ 			x = pselect(ctx->fdMax+1,
+ 				    &ctx->rdLast, &ctx->wrLast, &ctx->exLast,
+ 				    tp);
+ 			pselect_errno = errno;
+-
++#endif /* glibc-2.1 */
+ 			evPrintf(ctx, 4, "select() returns %d (err: %s)\n",
+ 				 x, (x == -1) ? strerror(errno) : "none");
+ 
