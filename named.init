@@ -18,9 +18,13 @@
 [ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
 	
 # Check that networking is up.
-if is_no "${NETWORKING}"; then
-        msg_network_down "Named"
-	exit 1
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down "Named"
+		exit 1
+	fi
+else
+	exit 0
 fi
 			
 # Sanity check
@@ -42,16 +46,16 @@ case "$1" in
 		msg_already_running "Named"
 		exit 1
 	fi
-        ;;
+	;;
   stop)
-        if [ -f /var/lock/subsys/named ]; then
-        	msg_stopping "Named"
-        	killproc named
-        	rm -f /var/lock/subsys/named >/dev/null 2>&1
-        else
-	        msg_not_running "Named"
-                exit 1
-        fi
+	if [ -f /var/lock/subsys/named ]; then
+		msg_stopping "Named"
+		killproc named
+		rm -f /var/lock/subsys/named >/dev/null 2>&1
+	else
+		msg_not_running "Named"
+		exit 1
+	fi
 	;;
   status)
 	status named
@@ -61,16 +65,19 @@ case "$1" in
 	fi
 	;;
   reload)
-        if [ -f /var/lock/subsys/named ]; then
+	if [ -f /var/lock/subsys/named ]; then
 		if [ -f /etc/rndc.conf ] ; then
-			run_cmd "Reloading named" /usr/sbin/rndc reload
+			run_cmd "$(nls 'Reloading %s service" 'Named')" /usr/sbin/rndc reload
 		else
 			msg_reloading "Named"
+			busy
 			killproc named -HUP
+			RETVAL=$?
+			[ $RETVAL -eq 0 ] && ok || died
 		fi
 	else
-	        msg_not_running "Named"
-	        exit 1
+		msg_not_running "Named"
+		exit 1
 	fi
 																							
 	;;
@@ -79,8 +86,8 @@ case "$1" in
 	$0 start
 	;;
   *)
-        msg_usage "$0 {start|stop|status|reload|restart}"
-        exit 1
+	msg_usage "$0 {start|stop|restart|reload|status}"
+	exit 1
 esac
 
 exit $RETVAL
