@@ -18,6 +18,7 @@ Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	resolver.5
 Patch0:		%{name}9-makefail.patch
+Patch1:		%{name}9-openssl.patch
 BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	openssl-devel
@@ -148,8 +149,10 @@ Statyczne biblioteki binda.
 %prep
 %setup -q -a1
 %patch0 -p1
+%patch1 -p1
 
 %build
+autoconf
 %configure \
 	--with-libtool \
 	--enable-ipv6
@@ -235,6 +238,7 @@ fi
 %defattr(644,root,root,755)
 %doc *.gz doc/misc/*.gz doc/arm/*
 
+%attr(755,root,root)  %{_libdir}/*.so.*.*
 %attr(754,root,root)  %{_sysconfdir}/rc.d/init.d/named
 %attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
@@ -272,6 +276,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*.sh
 %{_includedir}/*
+%{_libdir}/*.so
 
 %files static
 %defattr(644,root,root,755)
