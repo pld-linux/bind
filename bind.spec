@@ -316,8 +316,7 @@ BIND.
 #require update!
 #%patch5 -p0
 %{?with_ldap:%patch6 -p1}
-#update!
-#%patch7 -p1
+%patch7 -p1
 
 %build
 %{__libtoolize}
