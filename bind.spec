@@ -386,8 +386,8 @@ else
 	echo "Adding group named GID=58."
 	/usr/sbin/groupadd -g 58 named || exit 1
 fi
-if [ -n "`id -u named 2>/dev/null`" ]; then
-	if [ "`id -u named`" != "58" ]; then
+if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
+	if [ "`/bin/id -u named`" != "58" ]; then
 		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
 		exit 1
 	fi
