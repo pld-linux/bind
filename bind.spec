@@ -15,13 +15,13 @@ Summary(tr):	DNS alan ad˝ sunucusu
 Summary(uk):	BIND - c≈“◊≈“ ”…”‘≈Õ… ƒœÕ≈ŒŒ…» ¶Õ≈Œ (DNS)
 Summary(zh_CN):	Internet ”Ú√˚∑˛ŒÒ∆˜
 Name:		bind
-Version:	9.2.4
-Release:	1
+Version:	9.3.0
+Release:	0.3
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	2ccbddbab59aedd6b8711b628b5472bd
+# Source0-md5:	fdb42fff7e345372ac52a4493b77b694
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
@@ -40,6 +40,7 @@ Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
 Patch6:		%{name}-sdb-ldap.patch
+Patch7:		%{name}-noinet6.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -306,14 +307,15 @@ Bibliotecas est·ticas para desenvolvimento DNS.
 BIND.
 
 %prep
-%setup -q -a1
+%setup -q -a1 -n %{name}-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
+%patch5 -p0
 %{?with_ldap:%patch6 -p1}
+%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -325,12 +327,14 @@ cd lib/bind
 %{__autoconf}
 cd ../..
 %configure \
-	%{?with_ssl:--with-openssl=%{_prefix}} \
+	--with-idn \
 	--with-libtool \
-	--enable-threads \
+	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
-	--with-idn
+	--enable-threads \
+	--disable-getifaddrs
+
 %{__make}
 
 %install
