@@ -31,8 +31,13 @@ fi
 # See how we were called.
 case "$1" in
   start)
-        show Starting named
-        daemon named
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/named ]; then
+		show Starting named daemon
+		daemon named
+	else
+		echo "Named already is running"
+	fi
         touch /var/lock/subsys/named
         ;;
   stop)
@@ -41,14 +46,18 @@ case "$1" in
         rm -f /var/lock/subsys/named
         ;;
   status)
-	status named
+	/usr/sbin/ndc status
+	;;
+  reload)
+	echo -n "Reload named daemon"                                                                       
+        killproc named -HUP
 	;;
   restart)
 	$0 stop
 	$0 start
 	;;
   *)
-        echo "Usage: $0 {start|stop|status|restart}"
+        echo "Usage: $0 {start|stop|status|reload|restart}"
         exit 1
 esac
 
