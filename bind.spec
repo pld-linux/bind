@@ -1,7 +1,7 @@
 #
 # Conditional build:
-# _without_ssl	- don't build with OpenSSL support
-# _without_ipv6	- don't build IPv6 support
+%bcond_without	ssl	# build without OpenSSL support
+%bcond_without	ipv6	# build without IPv6 support
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -14,13 +14,13 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
-Version:	9.2.2
-Release:	4
+Version:	9.2.4
+Release:	1.1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	6ea7d64a0856893ab3eb541ab7bbc725
+# Source0-md5:	2ccbddbab59aedd6b8711b628b5472bd
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
@@ -36,7 +36,6 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
-Patch6:		%{name}-delegation-only.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -44,7 +43,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.6m}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.6m}
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -304,8 +303,7 @@ BIND.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p0
-%patch6 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}
@@ -317,10 +315,10 @@ cd lib/bind
 %{__autoconf}
 cd ../..
 %configure \
-	%{!?_without_ssl:--with-openssl=%{_prefix}} \
+	%{?with_ssl:--with-openssl=%{_prefix}} \
 	--with-libtool \
 	--enable-threads \
-	%{!?_without_ipv6:--enable-ipv6} \
+	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
 	--with-idn
 %{__make}
