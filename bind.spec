@@ -210,7 +210,7 @@ fi
 /sbin/chkconfig --add named
 
 if [ -f /var/run/named.pid ]; then
-	/etc/rc.d/init.d/named restart >&2
+	/etc/rc.d/init.d/named restart 1>&2
 else
 	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" 1>&2
 fi
@@ -225,7 +225,7 @@ umask 137
 
 %preun
 if [ "$1" = "0" ]; then
-	/etc/rc.d/init.d/named stop >&2
+	/etc/rc.d/init.d/named stop 1>&2
 	/sbin/chkconfig --del named
 fi    
 
