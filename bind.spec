@@ -275,7 +275,8 @@ install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
 ln -sf %{_var}/lib/named/etc/named.conf $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
-touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
+ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
+touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/*
 
@@ -350,7 +351,7 @@ fi
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/etc/*
 
 %ghost %{_var}/lib/named/dev/*
-%attr(660,named,named) %ghost %{_var}/log/named
+%attr(660,named,named) %ghost %{_var}/log/named*
 
 %files utils
 %defattr(644,root,root,755)
