@@ -178,7 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,logrotate.d,sysconfig}
 install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
-install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev},run,log}
+install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -191,7 +191,7 @@ install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/etc
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
@@ -279,7 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_var}/lib/named/M/*
 %{_var}/lib/named/root.*
-%{_var}/lib/named/*.conf
+%{_var}/lib/named/etc/*
 
 %ghost %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named
