@@ -8,6 +8,7 @@ Version:	8.2.2_P5
 Release:	20
 Copyright:	distributable
 Group:		Networking/Daemons
+Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
 Source0:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}.src.tar.gz
 Source1:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}.doc.tar.gz
@@ -91,6 +92,7 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Group:		Networking/Daemons
+Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
@@ -149,6 +151,7 @@ Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
 Summary(pl):	Narzêdzia DNS - host, dig, dnsquery, nslookup
 Summary(tr):	DNS araçlarý - host, dig, dnsquery, nslookup
 Group:		Networking/Utilities
+Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
 
 %description utils
@@ -185,6 +188,7 @@ için kullanýlan araçlar bulunmaktadýr.
 Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
 Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
 
@@ -207,6 +211,7 @@ biblioteki powiniene¶ zainstalowaæ ten pakiet.
 Summary:	Bind documentation
 Summary(pl):	Dokumentacja programu bind
 Group:		Documentation
+Group(de):	Dokumentation
 Group(pl):	Dokumentacja
 
 %description doc
@@ -429,7 +434,7 @@ fi
 
 if [ -f /etc/named.boot.2conf ]; then
 	/usr/sbin/named-bootconf </etc/named.boot.2conf >/etc/named.conf
-	rm /etc/named.boot.2conf
+	rm -f /etc/named.boot.2conf
 fi
 
 umask 117
@@ -455,7 +460,7 @@ fi
 if [ -f /etc/named.boot ]; then
 	cp /etc/named.boot /etc/named.boot.2conf
 	mv -f /etc/named.boot /etc/named.rpmsave
-	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
+	echo "Warrnig:/etc/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
 if ! id -g named > /dev/null 2>&1 ; then
 	%{_sbindir}/groupadd -g 58 named
@@ -477,7 +482,7 @@ fi
 
 if [ -f /etc/named.boot.2conf ]; then
 	/usr/sbin/named-bootconf </etc/named.boot.2conf >%{_chroot}/etc/named.conf
-	rm /etc/named.boot.2conf
+	rm -f /etc/named.boot.2conf
 fi
 
 mknod -m a+rw %{_chroot}/dev/null c 1 3
