@@ -1,0 +1,39 @@
+--- bind-chroot-8.2.2_P5/utils-1.0/holelogd.c.orig	Sun Sep 15 22:39:42 1996
++++ bind-chroot-8.2.2_P5/utils-1.0/holelogd.c	Sun Jan  9 18:26:33 2000
+@@ -64,10 +64,10 @@
+   (void)unlink(holename);   
+   unxls.sun_family = AF_UNIX;
+   (void) strncpy(unxls.sun_path, holename, sizeof unxls.sun_path);
+-  listenfd = socket(AF_UNIX, SOCK_STREAM, 0);
++  listenfd = socket(AF_UNIX, SOCK_DGRAM, 0);
+   if (listenfd < 0 || bind(listenfd, (struct sockaddr *) &unxls,
+ 			sizeof(unxls.sun_family)+strlen(unxls.sun_path)) < 0 ||
+-      chmod(holename, 0666) < 0 || listen(listenfd, 5) < 0) {
++      chmod(holename, 0666) < 0) {
+     syslog(LOG_ERR, "Can't create AF_UNIX listen socket %s (%m) - exiting",
+ 	   holename);  
+     exit(1);
+@@ -77,7 +77,7 @@
+ 
+   logaddr.sa_family = AF_UNIX;
+   (void) strncpy(logaddr.sa_data, logname, sizeof(logaddr.sa_data));
+-  logfd = socket(AF_UNIX, SOCK_STREAM, 0);
++  logfd = socket(AF_UNIX, SOCK_DGRAM, 0);
+   if (logfd < 0) {
+     syslog(LOG_ERR, "Can't create AF_UNIX socket (%m) - exiting");
+     exit(1);
+@@ -118,14 +118,6 @@
+ 	for (fd = 0; fd < FD_SETSIZE; fd++) {
+ 	  if (FD_ISSET(fd, &readfds)) {
+ 	    if (fd == listenfd) {
+-	      int len;
+-	      len = sizeof(unxs);
+-	      fd = accept(listenfd, (struct sockaddr *)&unxs, &len);
+-	      if (fd >= 0) {
+-		FD_SET(fd, &cfds);
+-	      }
+-	    }
+-	    else {
+ 	      int i;
+ 	      char  buf[1024];
+ 	      i = read(fd, buf, 1024);
