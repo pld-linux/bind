@@ -412,9 +412,9 @@ fi
 %postun
 if [ "$1" = "0" ]; then
 	echo "Removing user named."
-	%{_sbindir}/userdel named
+	/usr/sbin/userdel named
 	echo "Removing group named."
-	%{_sbindir}/groupdel named
+	/usr/sbin/groupdel named
 fi
 
 %post   libs -p /sbin/ldconfig
