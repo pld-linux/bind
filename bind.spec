@@ -17,7 +17,7 @@ Summary(zh_CN):	Internet ÓòÃû·şÎñÆ÷
 Name:		bind
 Version:	9.3.0
 Release:	2
-Epoch:		5
+Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
