@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.0
-Release:	4
+Release:	5
 Epoch:		3
 License:	Distributable
 Group:		Networking/Daemons
@@ -277,7 +277,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_var}/lib/named/M/*
 %{_var}/lib/named/root.*
-%{_var}/lib/named/etc/*
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/etc/*
 
 %ghost %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named
