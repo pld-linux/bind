@@ -16,7 +16,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.3
-Release:	5
+Release:	6
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -157,6 +157,7 @@ Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
 Group:		Networking/Utilities
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	iconv
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
