@@ -1,4 +1,5 @@
 /var/log/named {
+    create 640 named.named
     postrotate
             /usr/bin/killall -HUP named
     endscript
