@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P3
-Release:	1
+Release:	2
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -23,6 +23,7 @@ Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
 Patch9:		bind-probe_ipv6.patch
+Patch10:	bind-xfer-patch4.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts
@@ -154,6 +155,7 @@ Dokumentacja programu bind
 %patch6 -p1
 %patch8 -p0
 %patch9 -p0
+%patch10 -p0
 
 %build
 rm -f compat/include/sys/cdefs.h
