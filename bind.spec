@@ -16,7 +16,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
 Version:	9.2.3
-Release:	8
+Release:	9
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -64,11 +64,11 @@ Requires:	psmisc >= 20.1
 Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
