@@ -27,11 +27,11 @@ Source1:	%{name}-conf.tar.gz
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
-Source5:	nslookup.8
-Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
-# Source6-md5:	35b1dfaa12615c9802126ee833e0e7f7
-Source7:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source7-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
+#Source5:	nslookup.8
+Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
+# Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
+Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
+# Source6-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -344,8 +344,9 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 
 rm -f doc/rfc/rfc*
 
-install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
-bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+bzip2 -dc %{SOURCE5} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
+%{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
@@ -363,7 +364,7 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 %{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
-%{?with_ldap:install %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
+%{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
@@ -463,8 +464,8 @@ fi
 %attr(755,root,root) %{_bindir}/nsupdate
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
-%{_mandir}/man8/nslookup.8*
-%{_mandir}/man8/nsupdate*
+%{_mandir}/man1/nslookup.1*
+%{_mandir}/man8/nsupdate.8*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
@@ -474,7 +475,7 @@ fi
 
 %lang(ja) %{_mandir}/ja/man1/dig.1*
 %lang(ja) %{_mandir}/ja/man1/host.1*
-%lang(ja) %{_mandir}/ja/man8/nslookup.8*
+%lang(ja) %{_mandir}/ja/man1/nslookup.1*
 %lang(ja) %{_mandir}/ja/man8/nsupdate.8*
 
 %lang(pl) %{_mandir}/pl/man1/host.1*
