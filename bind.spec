@@ -49,6 +49,7 @@ BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
+BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -60,7 +61,9 @@ Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	psmisc >= 20.1
+Provides:	group(named)
 Provides:	nameserver
+Provides:	user(named)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Obsoletes:	nameserver
@@ -411,10 +414,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	echo "Removing user named."
-	/usr/sbin/userdel named
-	echo "Removing group named."
-	/usr/sbin/groupdel named
+	%userremove named
+	%groupremove named
 fi
 
 %post   libs -p /sbin/ldconfig
