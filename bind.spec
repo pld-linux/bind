@@ -1,3 +1,7 @@
+
+# _without_ssl	- don't build with OpenSSl support
+# _without_ipv6	- don't build IPv6 support
+
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
 Summary(es):	BIND - Servidor de nombres DNS
@@ -34,7 +38,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
-BuildRequires:	openssl-devel >= 0.9.7
+%{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7}
 PreReq:		%{name}-libs = %{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -306,10 +310,10 @@ cd lib/bind
 %{__autoconf}
 cd ../..
 %configure \
-	--with-openssl=%{_prefix} \
+	%{!?_without_ssl:--with-openssl=%{_prefix}} \
 	--with-libtool \
 	--enable-threads \
-	--enable-ipv6 \
+	%{!?_without_ipv6:--enable-ipv6} \
 	--enable-libbind
 %{__make}
 
