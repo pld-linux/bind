@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	26
+Release:	27
 License:	Distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
@@ -417,7 +417,6 @@ fi
 if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
-[ -x %{_bindir}/update-db ] && %{_bindir}/update-db
 
 %post
 /sbin/chkconfig --add named
@@ -449,7 +448,6 @@ fi
 if [ "$1" = "0" ]; then
 	%{_sbindir}/userdel named
 	%{_sbindir}/groupdel named
-	%{_bindir}/update-db
 fi
 
 %pre chroot
@@ -464,7 +462,6 @@ fi
 if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
-[ -x %{_bindir}/update-db ] && %{_bindir}/update-db
 
 %post chroot
 ln -sf named-chroot /etc/rc.d/init.d/named
@@ -508,7 +505,6 @@ fi
 if [ "$1" = "0" ]; then
 	%{_sbindir}/userdel named
 	%{_sbindir}/groupdel named
-	%{_bindir}/update-db
 fi
 
 %clean
