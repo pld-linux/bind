@@ -1,7 +1,0 @@
-/var/lib/named/named.log {
-    create 640 named named
-    postrotate
-            /bin/killall -HUP named
-    endscript
-}
-		
