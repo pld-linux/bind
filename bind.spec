@@ -22,6 +22,7 @@ Patch3:		bind-nonlist.patch
 Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
+BuildPreReq:	flex
 Prereq:		/sbin/chkconfig
 Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
@@ -100,7 +101,6 @@ Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
 Group:		Development/Libraries
 Group(pl):	Programowanie/Biblioteki
-Requires:	%{name} = %{version}
 
 %description devel
 All the include files and the library required for DNS development for
@@ -196,6 +196,9 @@ install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/named
 touch $RPM_BUILD_ROOT/var/log/named
 
+mv $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
+rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb
+
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	README Version CHANGES EXAMPLE-CONFIG 
 
@@ -241,13 +244,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
-%attr(755,root,root) %{_sbindir}/named
-%attr(755,root,root) %{_sbindir}/named-xfer
-%attr(755,root,root) %{_sbindir}/ndc
-%attr(755,root,root) %{_sbindir}/irpd
-%attr(755,root,root) %{_sbindir}/dnskeygen
-%attr(755,root,root) %{_sbindir}/named-bootconf
-%attr(755,root,root) %{_bindir}/nsupdate
+%attr(755,root,root) %{_sbindir}/*
 
 %{_mandir}/man8/named.8*
 %{_mandir}/man8/ndc.8*
@@ -257,6 +254,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/irs.conf.5*
 %{_mandir}/man5/named.conf.5*
 %{_mandir}/man1/dnskeygen.1*
+%{_mandir}/man8/nsupdate.8*
 
 %attr(750,root,root) %dir /var/state/named
 %attr(750,root,root) %dir /var/state/named/M
@@ -269,10 +267,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/dig
-%attr(755,root,root) %{_bindir}/host
-%attr(755,root,root) %{_bindir}/dnsquery
-%attr(755,root,root) %{_bindir}/nslookup
+%attr(755,root,root) %{_bindir}/*
 
 %attr(644,root,root) %{_datadir}/nslookup.help
 
