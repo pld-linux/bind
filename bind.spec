@@ -228,18 +228,35 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
 	echo "Warning:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
-GROUP=named; GID=58; %groupadd
-USER=named; UID=58; HOMEDIR=/dev/null; COMMENT="BIND user"; %useradd
+if ! id -g named > /dev/null 2>&1 ; then
+	%{_sbindir}/groupadd -g 58 named
+fi
+if ! id -u named > /dev/null 2>&1 ; then
+	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
+fi
 
 %post
-NAME=named; %chkconfig_add
+/sbin/chkconfig --add named
+
+if [ -f /var/lock/subsys/named ]; then
+	%{_sysconfdir}/rc.d/init.d/named restart 1>&2
+else
+	echo "Type \"%{_sysconfdir}/rc.d/init.d/named start\" to start named" 1>&2
+fi
 
 %preun
-NAME=named; %chkconfig_del
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/named ]; then
+		%{_sysconfdir}/rc.d/init.d/named stop 1>&2
+	fi
+	/sbin/chkconfig --del named
+fi    
 
 %postun
-USER=named; %userdel
-GROUP=named; %groupdel
+if [ "$1" = "0" ]; then
+	%{_sbindir}/userdel named
+	%{_sbindir}/groupdel named
+fi
 
 %post   libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
