@@ -428,7 +428,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
