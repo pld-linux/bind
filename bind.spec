@@ -5,15 +5,17 @@ Summary(pl): BIND - serwer nazw DNS
 Summary(tr): DNS alan adý sunucusu
 Name:        bind
 Version:     8.1.2
-Release:     3
+Release:     6
 Copyright:   distributable
 Group:       Networking/Daemons
 Source0:     ftp://ftp.isc.org/isc/bind/cur/%{name}-src.tar.gz
 Source1:     ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
-Source2:     named.init
+Source2:     ftp://ftp.isc.org/isc/bind/src/%{version}/bind-%{version}-contrib.tar.gz
+Source3:     named.init
 Patch0:      bind-makefile.patch
 Patch1:      bind-libelf.patch
 URL:         http://www.isc.org/bind.html
+Prereq:      /sbin/chkconfig
 Buildroot:   /tmp/%{name}-%{version}-root
 
 %description
@@ -90,9 +92,9 @@ Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek için
 kullanýlan araçlar bulunmaktadýr.
 
 %package devel
-Summary: DNS development includes and libs
+Summary:     DNS development includes and libs
 Summary(pl): pliki nag³ówkowe i biblioteka statyczna
-Group: Networking/Development
+Group:       Networking/Development
 
 %description devel
 All the include files and the library required for DNS development for
@@ -107,29 +109,27 @@ zainstalowaæ ten pakiet.
 %prep
 %setup -q -n src
 %setup -q -n src -T -D -a 1
+%setup -q -n src -T -D -a 2
 
 %patch0 -p1
 %patch1 -p1
 
+rm -f compat/include/sys/cdefs.h
+
 %build
 RPM_PREFIX="" make
-
+make SUBDIRS=doc/man clean all
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install RPM_PREFIX=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
 install -d $RPM_BUILD_ROOT/etc/rc.d/{init,rc{0,1,2,3,4,5,6}}.d
 
-strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
+make DESTDIR=$RPM_BUILD_ROOT install
+make SUBDIRS=doc/man DESTDIR=$RPM_BUILD_ROOT INSTALL=install install
 
-cd doc/man
-install {dig,host,dnsquery}.1 $RPM_BUILD_ROOT/usr/man/man1
-install {gethostbyname,resolver,getnetent}.3 $RPM_BUILD_ROOT/usr/man/man3
-install resolver.5 $RPM_BUILD_ROOT/usr/man/man5
-install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT/usr/man/man8
-install hostname.7 $RPM_BUILD_ROOT/usr/man/man7
+strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
 
 install $RPM_SOURCE_DIR/named.init $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc0.d/K10named
@@ -140,19 +140,36 @@ ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc4.d/S55named
 ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc5.d/S55named
 ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc6.d/K10named
 
+install bin/named/named-bootconf.pl $RPM_BUILD_ROOT/usr/bin
+
+%post
+/sbin/chkconfig --add named
+if [ -f /etc/named.boot -a ! -f /etc/named.conf ]; then
+  if [ -x /usr/bin/named-bootconf.pl ]; then
+    cat /etc/named.boot | /usr/bin/named-bootconf.pl > /etc/nmed/named.conf
+    chmod 644 /etc/named.conf
+  fi
+fi
+
+%postun
+if [ $1 = 0 ]; then
+   /sbin/chkconfig --del named
+fi
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, 755)
-%doc README Version CHANGES TODO bin/named/named-bootconf.pl
+%doc README Version CHANGES TODO
 
 %attr(700, root, root) /etc/rc.d/init.d/named
 /etc/rc.d/rc*.d/*named
 
-%attr(711, root, root) /usr/sbin/named
+%attr(755, root, root) /usr/sbin/named
 %attr(755, root, root) /usr/sbin/named-xfer
 %attr(755, root, root) /usr/sbin/ndc
+%attr(755, root, root) /usr/bin/named-bootconf.pl
 
 %attr(644, root,  man) /usr/man/man8/named.8
 %attr(644, root,  man) /usr/man/man8/ndc.8
@@ -160,13 +177,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644, root,  man) /usr/man/man7/hostname.7
 
 %files utils
-%attr(711, root, root) /usr/bin/nslookup
+%attr(755, root, root) /usr/bin/nslookup
 %attr(644, root, root) /usr/lib/nslookup.help
-%attr(711, root, root) /usr/bin/host
-%attr(711, root, root) /usr/bin/dig
-%attr(711, root, root) /usr/bin/dnsquery
-%attr(711, root, root) /usr/bin/addr
-%attr(711, root, root) /usr/bin/nsupdate
+%attr(755, root, root) /usr/bin/host
+%attr(755, root, root) /usr/bin/dig
+%attr(755, root, root) /usr/bin/dnsquery
+%attr(755, root, root) /usr/bin/addr
+%attr(755, root, root) /usr/bin/nsupdate
 %attr(644, root,  man) /usr/man/man1/dig.1
 %attr(644, root,  man) /usr/man/man1/host.1
 %attr(644, root,  man) /usr/man/man1/dnsquery.1
@@ -180,6 +197,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644, root, man) /usr/man/man3/*
 
 %changelog
+* Sat Oct 17 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [8.1.2-6]
+- named-bootconf.pl script moved from %doc to /usr/bin.
+
+* Wed Sep 23 1998 Jeff Johnson <jbj@redhat.com>
+- change named.restart to /usr/sbin/ndc restart
+
+* Sat Sep 19 1998 Jeff Johnson <jbj@redhat.com>
+- install man pages correctly.
+- change K10named to K45named.
+
 * Tue Sep  1 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [8.1.2-3]
 - changed Buildroot to /tmp/%%{name}-%%{version}-root,
@@ -191,8 +219,14 @@ rm -rf $RPM_BUILD_ROOT
 
 * Wed Aug 26 1998 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
   [8.1.2-2]
-- added pl translation,
-- changed permissions of all binaries to 711,
+- added pl translation.
+
+* Wed Aug 12 1998 Jeff Johnson <jbj@redhat.com>
+- don't start if /etc/named.conf doesn't exist.
+
+* Sat Aug  8 1998 Jeff Johnson <jbj@redhat.com>
+- autmagically create /etc/named.conf from /etc/named.boot in %post
+- remove echo in %post
 
 * Wed Jun 10 1998 Manuel J. Galan <manolow@step.es>
 - Builds on RedHat 5.1 -Manhattan-
