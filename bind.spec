@@ -4,7 +4,7 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	9.1.1rc6
+Version:	9.1.1rc7
 Release:	1
 Epoch:		3
 License:	Distributable
