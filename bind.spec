@@ -8,7 +8,7 @@ Version:	8.1.2
 Release:	4d
 Copyright:	distributable
 Group:		Daemons
-Group(pl):	Serwery
+Group(pl):	Demony
 Source0:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-src.tar.gz
 Source1:	ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
 Source2:	named.init
@@ -37,14 +37,9 @@ les stations de travail comme serveur de nom en cache mais n'est souvent
 nécessaire que sur une machine pour un réseau entier.
 
 %description -l pl
-Includes the named name server, which is used to define host name
-to IP address translations (and vice versa).  It can be used on
-workstations as a caching name server, but is generally only needed
-on one machine for an entire network.
-
 Pakiet ten zawiera demona named, który s³u¿y do zmieniania nazw
-komuterów na numery IP i odwrotnie. Mo¿e byæ on u¿ywany na na stacjach
-roboczych jako bufor odwo³añ do serwisu naz (caching name server) ale
+komputerów na numery IP i odwrotnie. Mo¿e byæ on u¿ywany na stacjach
+roboczych jako bufor odwo³añ do serwisu nazw (caching name server), ale
 generalnie wystarczy tylko jedna jednostka wyposa¿ona w ten program na
 fragment sieci.
 
@@ -80,8 +75,8 @@ des noms d'hôtes donnés, et trouver des informations sur les noms de
 domaine déclarés et les adresses réseau.
 
 %description -l pl utils
-Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie swerwerów
-nazw z innych domen w celu uzyskania ifnormacji o komupterach i ich
+Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie serwerów
+nazw z innych domen w celu uzyskania informacji o komupterach i ich
 adresach IP.
 
 %description -l tr utils
@@ -101,7 +96,7 @@ bind 8.x.x
 
 %description -l pl devel
 Pakiet zawiera pliki nag³ówkowe i bibliotekê statyczn±. Je¿eli bêdziesz
-pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy opragramowania
+pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy oprogramowania
 korzystaj±cego z tych plików nag³ówkowych czy biblioteki powiniene¶
 zainstalowaæ ten pakiet.
 
@@ -135,8 +130,8 @@ install hostname.7 $RPM_BUILD_ROOT/usr/man/man7
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 
-gzip -9fn $RPM_BUILD_ROOT/usr/man/man[13578]/*
-bzip2 -9 ../../{README,Version,CHANGES} 
+gzip -9fn $RPM_BUILD_ROOT/usr/man/man[13578]/* \
+	../../{README,Version,CHANGES} 
 
 %post
 /sbin/chkconfig --add named
@@ -151,7 +146,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc {README,Version,CHANGES}.bz2 
+%doc {README,Version,CHANGES}.gz
 
 %attr(700,root,root) %config /etc/rc.d/init.d/named
 
@@ -159,12 +154,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/sbin/named-xfer
 %attr(750,root,root) /usr/sbin/ndc
 
-%attr(644,root, man) /usr/man/man8/named.8.gz
-%attr(644,root, man) /usr/man/man8/ndc.8.gz
-%attr(644,root, man) /usr/man/man8/named-xfer.8.gz
-%attr(644,root, man) /usr/man/man7/hostname.7.gz
+/usr/man/man8/named.8.gz
+/usr/man/man8/ndc.8.gz
+/usr/man/man8/named-xfer.8.gz
+/usr/man/man7/hostname.7.gz
 
 %files utils
+%defattr(644,root,root,755)
 %attr(755,root,root) /usr/bin/nslookup
 %attr(644,root,root) /usr/lib/nslookup.help
 %attr(755,root,root) /usr/bin/host
@@ -174,19 +170,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/bin/named-bootconf.pl
 %attr(755,root,root) /usr/bin/nsupdate
 
-%attr(644,root, man) /usr/man/man1/dig.1.gz
-%attr(644,root, man) /usr/man/man1/host.1.gz
-%attr(644,root, man) /usr/man/man1/dnsquery.1.gz
-%attr(644,root, man) /usr/man/man8/nslookup.8.gz
-%attr(644,root, man) /usr/man/man5/resolver.5.gz
+/usr/man/man1/dig.1.gz
+/usr/man/man1/host.1.gz
+/usr/man/man1/dnsquery.1.gz
+/usr/man/man8/nslookup.8.gz
+/usr/man/man5/resolver.5.gz
 
 %files devel
 %defattr(644,root,root,755)
 
 /usr/include/bind/*
 /usr/lib/*.a
-
-%attr(644,root, man) /usr/man/man3/*
+/usr/man/man3/*
 
 %changelog
 * Wed Jan 13 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
