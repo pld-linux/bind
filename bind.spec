@@ -5,7 +5,7 @@ Summary(pl): BIND - serwer nazw DNS
 Summary(tr): DNS alan adý sunucusu
 Name:        bind
 Version:     8.1.2
-Release:     6
+Release:     7
 Copyright:   distributable
 Group:       Networking/Daemons
 Source0:     ftp://ftp.isc.org/isc/bind/cur/%{name}-src.tar.gz
@@ -122,23 +122,14 @@ make SUBDIRS=doc/man clean all
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
-install -d $RPM_BUILD_ROOT/etc/rc.d/{init,rc{0,1,2,3,4,5,6}}.d
+install -d $RPM_BUILD_ROOT/{etc/{named,rc.d/init.d},usr/{bin,sbin,lib,man/man{1,3,5,7,8}}}
 
 make DESTDIR=$RPM_BUILD_ROOT install
 make SUBDIRS=doc/man DESTDIR=$RPM_BUILD_ROOT INSTALL=install install
 
 strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
 
-install $RPM_SOURCE_DIR/named.init $RPM_BUILD_ROOT/etc/rc.d/init.d/named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc0.d/K10named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc1.d/K10named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc2.d/K10named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc3.d/S55named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc4.d/S55named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc5.d/S55named
-ln -sf ../init.d/named $RPM_BUILD_ROOT/etc/rc.d/rc6.d/K10named
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 
 install bin/named/named-bootconf.pl $RPM_BUILD_ROOT/usr/bin
 
@@ -146,7 +137,7 @@ install bin/named/named-bootconf.pl $RPM_BUILD_ROOT/usr/bin
 /sbin/chkconfig --add named
 if [ -f /etc/named.boot -a ! -f /etc/named.conf ]; then
   if [ -x /usr/bin/named-bootconf.pl ]; then
-    cat /etc/named.boot | /usr/bin/named-bootconf.pl > /etc/nmed/named.conf
+    cat /etc/named.boot | /usr/bin/named-bootconf.pl > /etc/named/named.conf
     chmod 644 /etc/named.conf
   fi
 fi
@@ -164,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README Version CHANGES TODO
 
 %attr(700, root, root) /etc/rc.d/init.d/named
-/etc/rc.d/rc*.d/*named
+%attr(700, root, root) %dir /etc/named
 
 %attr(755, root, root) /usr/sbin/named
 %attr(755, root, root) /usr/sbin/named-xfer
@@ -197,6 +188,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644, root, man) /usr/man/man3/*
 
 %changelog
+* Mon Nov  2 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [8.1.2-7]
+- removed making /etc/rc.d/rc?.d/ symlinks (/etc/rc.d/init.d/named have 
+  suport for chkconfig),
+- fixed typo in %post,
+- added /etc/named to package.
+
 * Sat Oct 17 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [8.1.2-6]
 - named-bootconf.pl script moved from %doc to /usr/bin.
