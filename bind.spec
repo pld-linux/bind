@@ -458,7 +458,7 @@ fi
 
 #%ghost %{_var}/lib/named/dev/*
 %attr(770,root,named) %{_var}/lib/named/dev/*
-%attr(660,named,named) %{_var}/log/named*
+%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
 
 %files utils
 %defattr(644,root,root,755)
