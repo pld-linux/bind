@@ -4,8 +4,8 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	9.1.0b1
-Release:	2
+Version:	9.1.0b2
+Release:	1
 Epoch:		1
 License:	Distributable
 Group:		Networking/Daemons
@@ -165,6 +165,7 @@ Statyczne biblioteki binda.
 %build
 autoconf
 %configure \
+	--with-openssl=%{_prefix} \
 	--with-libtool \
 	--enable-ipv6
 %{__make}
@@ -189,7 +190,8 @@ install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
 install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named
-install bin/named/*conf.test		EXAMPLE-CONFIG
+install bin/tests/named.conf		EXAMPLE-CONFIG-named
+install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
@@ -197,7 +199,7 @@ ln -s %{_var}/lib/named/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -s %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
-gzip -9nf README doc/misc/*
+gzip -9nf README EXAMPLE-CONFIG-* doc/misc/*
 
 %pre
 if [ -f %{_sysconfdir}/named.boot ]; then
@@ -223,7 +225,7 @@ fi
 umask 117
 /bin/touch		%{_var}/lib/named/named.log
 chown named.named	%{_var}/lib/named/named.log
-ln -s %{_var}/lib/named/named.log	%{_var}/log/named
+ln -sf %{_var}/lib/named/named.log	%{_var}/log/named
 
 umask 022
 /bin/mknod -m u+rw,go+r		%{_var}/lib/named/dev/random c 1 8 > /dev/null 2>&1
