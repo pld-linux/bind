@@ -1,0 +1,22 @@
+diff -urN bind-9.0.1rc2.org/configure.in bind-9.0.1rc2/configure.in
+--- bind-9.0.1rc2.org/configure.in	Tue Nov  7 11:04:02 2000
++++ bind-9.0.1rc2/configure.in	Tue Nov  7 23:30:47 2000
+@@ -184,12 +184,12 @@
+ #
+ AC_MSG_CHECKING(for compatible OpenSSL library)
+ 
+-DST_PRIVATEOPENSSL='-DDST_USE_PRIVATE_OPENSSL'
+-dst_privateopenssl='openssl'
+-DST_OPENSSL_INC='-I${srcdir}/../openssl/include'
+-DST_OPENSSL_LIB=''
+-DST_OPENSSL_OBJS='${OPENSSLOBJS}'
+-AC_MSG_RESULT(using private library)
++#DST_PRIVATEOPENSSL='-DDST_USE_PRIVATE_OPENSSL'
++#dst_privateopenssl='openssl'
++DST_OPENSSL_INC='-I/usr/include/openssl'
++DST_OPENSSL_LIB='-lcrypto -lssl'
++#DST_OPENSSL_OBJS='${OPENSSLOBJS}'
++AC_MSG_RESULT(using shared library)
+ 
+ AC_SUBST(DST_PRIVATEOPENSSL)
+ AC_SUBST(dst_privateopenssl)
