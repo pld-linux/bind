@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	20
+Release:	21
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
@@ -581,30 +581,30 @@ fi
 %{_mandir}/man1/dnskeygen.1*
 %{_mandir}/man8/nsupdate.8*
 
-%attr(770,named,named) %dir /var/lib/named
-%attr(770,named,named) %dir %{_chroot}
-%attr(770,named,named) %dir %{_chroot}%{_sysconfdir}
-%attr(770,named,named) %dir %{_chroot}/dev
-%attr(770,named,named) %dir %{_chroot}%{_prefix}
-%attr(770,named,named) %dir %{_chroot}%{_sbindir}
-%attr(770,named,named) %dir %{_chroot}%{_datadir}
-%attr(770,named,named) %dir %{_chroot}%{_datadir}/zoneinfo
-%attr(770,named,named) %dir %{_chroot}/var
-%attr(770,named,named) %dir %{_chroot}/var/lib
-%attr(770,named,named) %dir %{_chroot}/var/lib/named
-%attr(770,named,named) %dir %{_chroot}/var/lib/named/M
-%attr(770,named,named) %dir %{_chroot}/var/lib/named/S
-%attr(770,named,named) %dir %{_chroot}/var/log
-%attr(770,named,named) %dir %{_chroot}/var/run
-%attr(770,named,named) %dir %{_chroot}/var/tmp
+%attr(750,root,named) %dir /var/lib/named
+%attr(750,root,named) %dir %{_chroot}
+%attr(750,root,named) %dir %{_chroot}%{_sysconfdir}
+%attr(750,root,named) %dir %{_chroot}/dev
+%attr(750,root,named) %dir %{_chroot}%{_prefix}
+%attr(750,root,named) %dir %{_chroot}%{_sbindir}
+%attr(750,root,named) %dir %{_chroot}%{_datadir}
+%attr(750,root,named) %dir %{_chroot}%{_datadir}/zoneinfo
+%attr(750,root,named) %dir %{_chroot}/var
+%attr(750,root,named) %dir %{_chroot}/var/lib
+%attr(750,root,named) %dir %{_chroot}/var/lib/named
+%attr(750,root,named) %dir %{_chroot}/var/lib/named/M
+%attr(770,root,named) %dir %{_chroot}/var/lib/named/S
+%attr(750,root,named) %dir %{_chroot}/var/log
+%attr(770,root,named) %dir %{_chroot}/var/run
+%attr(770,root,named) %dir %{_chroot}/var/tmp
 
 %attr(660,named,named) %ghost %{_chroot}/var/log/named
 
-%attr(660,named,named) %{_chroot}/var/lib/named/M/*
-%attr(660,named,named) %{_chroot}/var/lib/named/root.*
+%{_chroot}/var/lib/named/M/*
+%{_chroot}/var/lib/named/root.*
 
-%attr(775,named,named) %dir %{_chroot}%{_sbindir}/*
-%attr(644,named,named) %dir %{_chroot}%{_datadir}/zoneinfo/*
+%attr(755,root,root) %{_chroot}%{_sbindir}/*
+%{_chroot}%{_datadir}/zoneinfo/*
 
 %ghost %verify(not md5 size mtime) %{_chroot}%{_sysconfdir}/group
 %ghost %verify(not md5 size mtime) %{_chroot}%{_sysconfdir}/localtime
