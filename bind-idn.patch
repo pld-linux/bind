@@ -156,7 +156,7 @@ diff -urN bind-9.2.3.org/bin/dig/dighost.c bind-9.2.3/bin/dig/dighost.c
 +				     sizeof(utf8_textname));
 +		idn_check_result(mr, "append origin to textname");
 +	}
-+	mr = idn_encodename(IDN_LOCALMAP | IDN_NAMEPREP | IDN_ASCCHECK |
++	mr = idn_encodename(IDN_LOCALMAP | IDN_NAMEPREP |
 +			    IDN_IDNCONV | IDN_LENCHECK, utf8_textname,
 +			    idn_textname, sizeof(idn_textname));
 +	idn_check_result(mr, "convert UTF-8 textname to IDN encoding");
