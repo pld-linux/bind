@@ -4,28 +4,29 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	9.0.0
+Version:	9.0.1rc2
 Release:	1
-Copyright:	distributable
+License:	Distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}-conf.tar.gz
-Source2:	ftp://ftp.nikhef.nl/pub/network/host_991529.tar.Z
-Source3:	named.init
-Source4:	named.sysconfig
-Source5:	named.logrotate
-Patch0:		ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/host_991529+.diff
+Source2:	named.init
+Source3:	named.sysconfig
+Source4:	named.logrotate
+Source5:	nslookup.8
+Source6:	resolver.5
+Patch0:		%{name}9-makefail.patch
+BuildRequires:	sed
 BuildRequires:	flex
+BuildRequires:	openssl-devel
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Obsoletes:	caching-nameserver
-URL:		http://www.isc.org/bind.html
+Conflicts:	%{name}-chroot
+URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_sysconfdir	/etc
-%define		_chroot		/var/lib/named/chroot
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
@@ -118,8 +119,7 @@ Group(pl):	Programowanie/Biblioteki
 
 %description devel
 The bind-devel package contains all the include files and the library
-required for DNS (Domain Name Service) development for BIND versions
-8.x.x.
+required for DNS (Domain Name Service) development for BIND.
 
 You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
@@ -131,87 +131,63 @@ bêdziesz pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy
 oprogramowania korzystaj±cego z tych plików nag³ówkowych czy
 biblioteki powiniene¶ zainstalowaæ ten pakiet.
 
-%package doc
-Summary:	Bind documentation
-Summary(pl):	Dokumentacja programu bind
-Group:		Documentation
-Group(de):	Dokumentation
-Group(pl):	Dokumentacja
+%package static
+Summary:	DNS static libs
+Summary(pl):	Biblioteka statyczna
+Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
 
-%description doc
-Bind documentations
+%description static
+Static bind libraries.
 
-%decscription doc -l pl
-Dokumentacja programu bind
+%description -l pl static
+Statyczne biblioteki binda.
 
 %prep
 %setup -q -a1
-mkdir host && cd host && %{__gzip} -dc %{SOURCE2} | tar -xf -
 %patch0 -p1
 
 %build
 %configure \
+	--with-libtool \
 	--enable-ipv6
-
 %{__make}
-%{__make} -C host COPTS="$RPM_OPT_FLAGS -DIPV6"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
-	$RPM_BUILD_ROOT%{_sysconfdir}/{sysconfig,logrotate.d,rc.d/init.d} \
-	$RPM_BUILD_ROOT%{_mandir}/man{1,5,8}
+install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,logrotate.d,sysconfig}
+install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
+install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S},run,log}
 
 %{__make} install \
-	DESTDIR="$RPM_BUILD_ROOT"
+	DESTDIR=$RPM_BUILD_ROOT
 
-install host/host $RPM_BUILD_ROOT%{_bindir}/host6
-install contrib/named-bootconf/named-bootconf.sh $RPM_BUILD_ROOT%{_sbindir}/named-bootconf
-mv -f $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
+install doc/man/bin/*.1			$RPM_BUILD_ROOT%{_mandir}/man1
+install doc/man/bin/*.5			$RPM_BUILD_ROOT%{_mandir}/man5
+install %{SOURCE6}			$RPM_BUILD_ROOT%{_mandir}/man5
+install doc/man/{bin/*.8,dnssec/*.8}	$RPM_BUILD_ROOT%{_mandir}/man8
+install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
 
-install doc/man/bin/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
-install doc/man/bin/*.5 $RPM_BUILD_ROOT%{_mandir}/man5
-install doc/man/bin/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
-install doc/man/dnssec/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
+install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_sysconfdir}
+install bin/named/*conf.test		EXAMPLE-CONFIG
+touch					$RPM_BUILD_ROOT%{_var}/log/named
+install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
+install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
+install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
 
-install -d $RPM_BUILD_ROOT/var/{log,lib/named/{M,S,dev}}
-
-install conf-pld/127.* $RPM_BUILD_ROOT/var/lib/named/M
-install conf-pld/loca* $RPM_BUILD_ROOT/var/lib/named/M
-install conf-pld/root.* $RPM_BUILD_ROOT/var/lib/named/root.hint
-install conf-pld/named.conf $RPM_BUILD_ROOT/var/lib/named
-
-ln -s /var/lib/named/named.conf $RPM_BUILD_ROOT/etc/named.conf
-
-cp bin/tests/named.conf EXAMPLE-CONFIG
-
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/named
-
-touch $RPM_BUILD_ROOT/var/lib/named/{named.log,dev/{random,null}}
-ln -s /var/lib/named/named.log $RPM_BUILD_ROOT/var/log/named
-
-gzip -9nf README CHANGES EXAMPLE-CONFIG \
-	doc/rfc/* doc/misc/* doc/draft/*
+gzip -9nf README doc/misc/*
 
 %pre
-if [ -f /etc/named.conf ]; then
-	if [ ! -e /var/lib/named/named.conf ]; then
-		mv -f /etc/named.conf /var/lib/named/named.conf
-		ln -sf  /var/lib/named/named.conf /etc/named.conf
-	else
-		mv -f /var/lib/named/named.conf /var/lib/named/named.conf.rpmsave
-		mv -f /etc/named.conf /var/lib/named/named.conf
-		ln -sf /var/lib/named/named.conf /etc/named.conf
-	fi
-fi
-
-if [ -f /etc/named.boot ]; then
-	cp /etc/named.boot /etc/named.boot.2conf
-	mv -f /etc/named.boot /etc/named.rpmsave
-	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
+if [ -f %{_sysconfdir}/named.boot ]; then
+	cp %{_sysconfdir}/named.boot /etc/named.boot.2conf
+	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
+	echo "Warrnig:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
 if ! id -g named > /dev/null 2>&1 ; then
 	%{_sbindir}/groupadd -g 58 named
@@ -219,36 +195,29 @@ fi
 if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
-%{_bindir}/update-db
 
 %post
 /sbin/chkconfig --add named
 
 if [ -f /var/lock/subsys/named ]; then
-	/etc/rc.d/init.d/named restart 1>&2
+	%{_sysconfdir}/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
+	echo "Type \"%{_sysconfdir}/rc.d/init.d/named start\" to start named" 1>&2
 fi
 
-if [ -f /etc/named.boot.2conf ]; then
-	mv -f /var/lib/named/named.conf /var/lib/named/named.conf.rpmsave
-	/usr/sbin/named-bootconf </etc/named.boot.2conf >/var/lib/named/named.conf
-	rm -f /etc/named.boot.2conf
+if [ -f %{_sysconfdir}/named.boot.2conf ]; then
+	/usr/sbin/named-bootconf <%{_sysconfdir}/named.boot.2conf >/etc/named.conf
+	rm -f %{_sysconfdir}/named.boot.2conf
 fi
 
 umask 117
-/bin/touch /var/lib/named/named.log
-chown named.named /var/lib/named/named.log
-ln -s /var/lib/named/named.log /var/log/named
-
-umask 022
-mknod -m u+rw,go+r /var/lib/named/dev/random c 1 8
-mknod -m a+rw /var/lib/named/dev/null c 1 3
+/bin/touch /var/log/named
+chown named.named /var/log/named
 
 %preun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/named ]; then
-		/etc/rc.d/init.d/named stop 1>&2
+		%{_sysconfdir}/rc.d/init.d/named stop 1>&2
 	fi
 	/sbin/chkconfig --del named
 fi    
@@ -257,55 +226,53 @@ fi
 if [ "$1" = "0" ]; then
 	%{_sbindir}/userdel named
 	%{_sbindir}/groupdel named
-	%{_bindir}/update-db
 fi
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc {README,CHANGES,EXAMPLE-CONFIG}.gz
+%doc *.gz doc/misc/*.gz doc/arm/*
 
-%attr(754,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(754,root,root)  %{_sysconfdir}/rc.d/init.d/named
+%attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) /var/lib/named/named.conf
+%attr(640,root,root)  %config %verify(not size mtime md5) %{_sysconfdir}/logrotate.d/named
 
-%attr(755,root,root) %{_sbindir}/dnssec*
-%attr(755,root,root) %{_sbindir}/lwresd
-%attr(755,root,root) %{_sbindir}/named*
-%attr(755,root,root) %{_sbindir}/nsupdate
-%attr(755,root,root) %{_sbindir}/rndc
+%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_bindir}/nsupdate
 
-%{_mandir}/man8/*
-%{_mandir}/man5/*
+%{_mandir}/man8/dns*
+%{_mandir}/man8/lwres*
+%{_mandir}/man8/named*
+%{_mandir}/man8/rndc*
+%{_mandir}/man5/rndc*
+%{_mandir}/man8/nsupdate*
 
-%attr(770,root,named) %dir /var/lib/named
-%attr(750,root,named) %dir /var/lib/named/M
-%attr(770,root,named) %dir /var/lib/named/S
-%attr(770,root,named) %dir /var/lib/named/dev
+%attr(770,root,named) %dir %{_var}/lib/named
+%attr(750,root,named) %dir %{_var}/lib/named/M
+%attr(770,root,named) %dir %{_var}/lib/named/S
 
-/var/lib/named/M/*
-/var/lib/named/root.*
+%{_var}/lib/named/M/*
+%{_var}/lib/named/root.*
 
-%attr(660,named,named) %ghost /var/log/named
-%ghost /var/lib/named/dev/*
+%attr(660,named,named) %ghost %{_var}/log/named
 
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/dig
-%attr(755,root,root) %{_bindir}/host*
+%attr(755,root,root) %{_bindir}/host
 %attr(755,root,root) %{_bindir}/nslookup
+%{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
+%{_mandir}/man8/nslookup.8*
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/isc-config.sh
+%attr(755,root,root) %{_bindir}/*.sh
 %{_includedir}/*
-%{_libdir}/*.a
 
-%files doc
+%files static
 %defattr(644,root,root,755)
-%doc doc/arm doc/rfc doc/misc doc/draft
+%{_libdir}/*.a
