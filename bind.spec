@@ -402,6 +402,8 @@ mv -f $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb \
 	$RPM_BUILD_ROOT%{_mandir}/man5/resolver.5
 
+rm -f $RPM_BUILD_ROOT%{_mandir}/man3/{gethostbyname,getipnodebyname,getaddrinfo}.3
+
 gzip -9nf src/README src/Version src/CHANGES EXAMPLE-CONFIG \
 	*.holelogd
 
