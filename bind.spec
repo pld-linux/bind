@@ -61,7 +61,7 @@ alan adý sunucusunu içerir. Ýþ istasyonlarýnda bir önbellek isim sunucusu
 olarak da kullanýlabilir ama genellikle bütün bir að için sadece bir makina
 üzerinde kurulur.
 
-%package	utils
+%package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
 Summary(de):	DNS-Utils - Host, Dig, Dnsquery, Nslookup 
 Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
@@ -95,7 +95,7 @@ adresach IP.
 Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek için
 kullanýlan araçlar bulunmaktadýr.
 
-%package	devel
+%package devel
 Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
 Group:		Development/Libraries
@@ -112,7 +112,7 @@ pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy oprogramowania
 korzystaj±cego z tych plików nag³ówkowych czy biblioteki powiniene¶
 zainstalowaæ ten pakiet.
 
-%package	doc
+%package doc
 Summary:	Bind documentation
 Summary(pl):	Dokumentacja programu bind
 Group:		Documentation
@@ -215,7 +215,7 @@ else
 	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" 1>&2
 fi
 
-if [ -f /etc/named.boot.2conf ]
+if [ -f /etc/named.boot.2conf ]; then
 	/usr/sbin/named-bootconf </etc/named.boot.2conf >/etc/named.conf
 	rm /etc/named.boot.2conf
 fi
@@ -224,7 +224,7 @@ umask 137
 /bin/touch /var/log/named
 
 %preun
-if [ $1 = 0 ]; then
+if [ "$1" = "0" ]; then
 	/etc/rc.d/init.d/named stop >&2
 	/sbin/chkconfig --del named
 fi    
