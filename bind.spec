@@ -26,7 +26,7 @@ Patch2:		%{name}-autoconf.patch
 Patch3:		%{name}-sec-from-833.patch
 Patch4:		%{name}-includedir-libbind.patch
 Patch5:		%{name}-divert_fix.patch
-Patch6:		%{name}-libbind_libs.patch
+Patch6:		%{name}-link.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
