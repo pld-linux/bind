@@ -22,7 +22,7 @@ Patch3:		bind-nonlist.patch
 Patch5:		bind-host.patch
 Patch6:		bind-glibc21.patch
 Patch8:		bind-mkdep.patch
-BuildPreReq:	flex
+BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
