@@ -6,7 +6,7 @@ Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.1
 Release:	1
-Epoch:		4
+Epoch:		5
 License:	Distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
