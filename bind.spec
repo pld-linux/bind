@@ -30,7 +30,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.6i
 PreReq:		%{name}-libs = %{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -41,6 +41,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
+Requires:	openssl >= 0.9.6i
 Requires:	psmisc >= 20.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
