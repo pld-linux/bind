@@ -19,7 +19,7 @@ Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
-Source6:	%{name}-non-english-man-pages.tar.bz2
+Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
 Patch2:		%{name}-autoconf.patch
 BuildRequires:	autoconf
