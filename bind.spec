@@ -7,7 +7,7 @@ Summary(pt_BR):	BIND - Servidor de nomes DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.2.0
-Release:	1
+Release:	2
 Epoch:		5
 License:	BSD Like
 Group:		Networking/Daemons
