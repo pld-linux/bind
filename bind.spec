@@ -9,8 +9,8 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷ 
 Name:		bind
-Version:	9.2.1
-Release:	11
+Version:	9.2.2
+Release:	1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -23,7 +23,6 @@ Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
 Patch2:		%{name}-autoconf.patch
-Patch3:		%{name}-sec-from-833.patch
 Patch4:		%{name}-includedir-libbind.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
@@ -31,7 +30,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.6i
 PreReq:		%{name}-libs = %{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -42,6 +41,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
+Requires:	openssl >= 0.9.6i
 Requires:	psmisc >= 20.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
@@ -287,8 +287,6 @@ BIND.
 %patch1 -p1
 %patch2 -p1
 %patch4 -p1
-cd lib/bind
-%patch3 -p3
 
 %build
 %{__libtoolize}
