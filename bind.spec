@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.1
-Release:	2
+Release:	3
 Epoch:		5
 License:	Distributable
 Group:		Networking/Daemons
@@ -21,13 +21,14 @@ Source6:	resolver.5
 Patch1:		%{name}-time.patch
 BuildRequires:	sed
 BuildRequires:	flex
-BuildRequires:	openssl-devel
 BuildRequires:	bison
+BuildRequires:	openssl-devel
 BuildRequires:	autoconf
 Prereq:		rc-scripts >= 0.2.0
-Requires:	%{name}-libs = %{version}
 Prereq:		/sbin/chkconfig
 Prereq:		%{name}-libs
+Requires:	%{name}-libs = %{version}
+Requires:	psmisc >= 20.1
 #Requires(pre,post):	fileutils
 #Requires(pre,postun):	shadow
 #Requires(post,preun):	chkconfig
