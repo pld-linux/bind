@@ -1,5 +1,5 @@
 Summary:	BIND - DNS name server
-Summary(de):	BIND - DNS-Namenserver  
+Summary(de):	BIND - DNS-Namenserver
 Summary(es):	BIND - Servidor de nombres DNS
 Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
@@ -25,7 +25,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
-BuildRequires:	openssl-devel 
+BuildRequires:	openssl-devel
 BuildRequires:	sed
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
@@ -93,7 +93,7 @@ için sadece bir makina üzerinde kurulur.
 
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
-Summary(de):	DNS-Utils - Host, Dig, Dnsquery, Nslookup 
+Summary(de):	DNS-Utils - Host, Dig, Dnsquery, Nslookup
 Summary(es):	Utilitarios DNS - host, dig, dnsquery y nslookup
 Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
 Summary(pl):	Narzêdzia DNS - host, dig, dnsquery, nslookup
@@ -112,36 +112,36 @@ network addresses.
 You should install bind-utils if you need to get information from DNS
 name servers.
 
-%description -l de utils
+%description utils -l de
 Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts. Diese
 Tools bestimmen die IP-Adresse eines angegebenen Host-Namen und finden
 Informationen über registrierte Domains und Netzwerk-Adressen.
 
-%description -l es utils
+%description utils -l es
 Conjunto de utilitarios para consulta a servidores de nombres. Estas
 herramientas permiten la determinación de direcciones IP para nombres
 de máquinas informados y busca información sobre dominios registrados
 y direcciones de red.
 
-%description -l fr utils
+%description utils -l fr
 Ensemble d'utilitaires pour interroger les serveurs de noms et
 rechercher des hôtes. Ces outils vous permettent de déterminer les
 adresses IP pour des noms d'hôtes donnés, et trouver des informations
 sur les noms de domaine déclarés et les adresses réseau.
 
-%description -l pl utils
+%description utils -l pl
 Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie
 serwerów nazw z innych domen w celu uzyskania informacji o komputerach
 i ich adresach IP.
 
-%description -l pt_BR utils
+%description utils -l pt_BR
 Conjunto de utilitários para consulta a servidores DNS. Estas
 ferramentas permitem a determinação de endereços IP para nomes de
 máquinas informados e busca informações sobre domínios registrados e
 endereços de rede. Você deveria instalar este pacote se necessitar
 obter informações de servidores DNS.
 
-%description -l tr utils
+%description utils -l tr
 Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek
 için kullanýlan araçlar bulunmaktadýr.
 
@@ -154,7 +154,7 @@ Group:		Libraries
 The bind-libs package contains all libraries required for running BIND
 and bind utils.
 
-%description -l pl libs
+%description libs -l pl
 Pakiet zawiera wszystkie biblioteki potrzebne do uruchomienia binda
 lub programów z pakietu bind-utils.
 
@@ -174,17 +174,17 @@ You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
 bind-libs.
 
-%description -l es devel
+%description devel -l es
 Todos los archivos de inclusión y bibliotecas necesarios al desarrollo
 DNS para el bind.
 
-%description -l pl devel
+%description devel -l pl
 Pakiet zawiera pliki nag³ówkowe. Je¿eli bêdziesz pisa³ programy pod
 binda, lub kompilowa³ kod ¼ród³owy oprogramowania korzystaj±cego z
 tych plików nag³ówkowych czy biblioteki powiniene¶ zainstalowaæ ten
 pakiet.
 
-%description -l pt_BR devel
+%description devel -l pt_BR
 Todos os arquivos de cabeçalho e bibliotecas necessários para o
 desenvolvimento com o bind.
 
@@ -198,10 +198,10 @@ Requires:	%{name}-devel = %{version}
 %description static
 Static bind libraries.
 
-%description -l pl static
+%description static -l pl
 Statyczne biblioteki binda.
 
-%description -l pt_BR static
+%description static -l pt_BR
 Bibliotecas estáticas para desenvolvimento DNS.
 
 %prep
@@ -246,7 +246,7 @@ install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
-ln -sf %{_var}/lib/named/etc/named.conf $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+ln -sf %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
@@ -283,7 +283,7 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/named stop 1>&2
 	fi
 	/sbin/chkconfig --del named
-fi    
+fi
 
 %postun
 if [ "$1" = "0" ]; then
