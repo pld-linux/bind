@@ -20,15 +20,15 @@ Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5: 6ea7d64a0856893ab3eb541ab7bbc725
+# Source0-md5:	6ea7d64a0856893ab3eb541ab7bbc725
 Source1:	%{name}-conf.tar.gz
-# Source1-md5: 3cab3fc9ba530d1067c48a7102b08735
+# Source1-md5:	3cab3fc9ba530d1067c48a7102b08735
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
-# Source6-md5: 35b1dfaa12615c9802126ee833e0e7f7
+# Source6-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -44,10 +44,10 @@ BuildRequires:	libtool
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
-Requires(pre): /usr/bin/getgid
-Requires(pre): /bin/id
-Requires(pre): /usr/sbin/groupadd
-Requires(pre): /usr/sbin/useradd
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
