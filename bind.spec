@@ -442,7 +442,7 @@ fi
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
-%attr(750,root,named) %dir %{_var}/lib/named/M
+%attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
