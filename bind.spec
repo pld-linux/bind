@@ -4,7 +4,9 @@ Summary(es):	BIND - Servidor de nombres DNS
 Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(pt_BR):	BIND - Servidor de nomes DNS
+Summary(ru):	BIND - cервер системы доменных имен (DNS)
 Summary(tr):	DNS alan adЩ sunucusu
+Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
 Version:	9.2.0
 Release:	5
@@ -85,11 +87,35 @@ IP (e vice-versa). Pode ser usado em estaГУes de trabalho como um
 servidor de nomes cache, mas geralmente sС И necessАrio em uma mАquina
 para toda a rede.
 
+%description -l ru
+BIND (Berkeley Internet Name Domain) является реализацией протоколов
+DNS (Domain Name System). BIND включает DNS сервер (named) и
+библиотеку "резолвера" (подпрограммы для приложений, через которые
+происходят обращения к DNS). DNS сервер named может быть использован
+на рабочих станциях как кеширующий сервер, но обычно запускается на
+одной машине в локальной сети и используется остальными машинами (этим
+достигается намного более эффективное кеширование).
+
+Конфигурационные файлы, настраивающие BIND на работу в режиме простого
+кеширующего сервера, включены в пакет caching-nameserver.
+
 %description -l tr
 Bu paket, makina adЩnЩ IP numarasЩna (ya da tersi) Гevirmek iГin
 kullanЩlan alan adЩ sunucusunu iГerir. щЧ istasyonlarЩnda bir Жnbellek
 isim sunucusu olarak da kullanЩlabilir ama genellikle bЭtЭn bir aП
 iГin sadece bir makina Эzerinde kurulur.
+
+%description -l uk
+BIND (Berkeley Internet Name Domain) ╓ реал╕зац╕╓ю протокол╕в DNS
+(Domain Name System). BIND включа╓ DNS сервер (named) та б╕бл╕отеку
+"резолвера" (п╕дпрограми, що забезпечують ╕нтерфейс до DNS). DNS
+сервер named може бути використаний на робочих станц╕ях як кешируючий
+сервер, але звичайно запуска╓ться на одн╕й машин╕ в локальн╕й мереж╕ ╕
+використову╓ться ╕ншими (цим досяга╓ться б╕льша ефективн╕сть
+використання кешу).
+
+Конф╕гурац╕йн╕ файли, ща настроюють BIND на роботу в режим╕ простого
+кешируючого серверу, включен╕ в пакет caching-nameserver.
 
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
@@ -98,7 +124,9 @@ Summary(es):	Utilitarios DNS - host, dig, dnsquery y nslookup
 Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
 Summary(pl):	NarzЙdzia DNS - host, dig, dnsquery, nslookup
 Summary(pt_BR):	UtilitАrios DNS - host, dig, dnsquery e nslookup
+Summary(ru):	Утилиты для посылки запросов к серверам DNS
 Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
+Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
 Group:		Networking/Utilities
 Requires:	%{name}-libs = %{version}
 
@@ -141,13 +169,27 @@ mАquinas informados e busca informaГУes sobre domМnios registrados e
 endereГos de rede. VocЙ deveria instalar este pacote se necessitar
 obter informaГУes de servidores DNS.
 
+%description utils -l ru
+Набор утилит для генерации запросов к серверам имен (DNS) и поиска
+адресов машин. Эти утилиты позволяют определить IP-адрес по известному
+доменному имени (и наоборот) и другую информацию о зарегистрированных
+доменах и сетевых адресах.
+
 %description utils -l tr
 Bu pakette isim sunucularЩnЩ sorgulamak ve makina adreslerini ГЖzmek
 iГin kullanЩlan araГlar bulunmaktadЩr.
 
+%description utils -l uk
+Наб╕р утил╕т для генерац╕╖ запит╕в до сервер╕в ╕мен (DNS) та пошуку
+адрес машин. Ц╕ утил╕ти дозволяють отримати IP-адресу за в╕домим
+доменним ╕менем та навпаки, а також ╕ншу ╕нформац╕ю про заре╓строван╕
+домени та адреси.
+
 %package libs
 Summary:	DNS libraries
 Summary(pl):	Biblioteki DNS
+Summary(ru):	Библиотеки, необходимые для bind
+Summary(uk):	Б╕бл╕отеки, необх╕дн╕ для bind
 Group:		Libraries
 
 %description libs
@@ -158,11 +200,19 @@ and bind utils.
 Pakiet zawiera wszystkie biblioteki potrzebne do uruchomienia binda
 lub programСw z pakietu bind-utils.
 
+%description libs -l ru
+Библиотеки, необходимые для работы bind.
+
+%description libs -l uk
+Б╕бл╕отеки, необх╕дн╕ для роботи bind.
+
 %package devel
 Summary:	DNS development includes
 Summary(es):	Archivos de inclusiСn y bibliotecas para desarrollo DNS
 Summary(pl):	Pliki nagЁСwkowe bibliotek DNS
 Summary(pt_BR):	Todos os arquivos de cabeГalho e bibliotecas para desenvolvimento DNS
+Summary(ru):	Хедеры и библиотеки разработчика для bind
+Summary(uk):	Хедери та б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}
 
@@ -188,10 +238,20 @@ pakiet.
 Todos os arquivos de cabeГalho e bibliotecas necessАrios para o
 desenvolvimento com o bind.
 
+%description devel -l ru
+Все хедеры и библиотеки, необходимые для написания программ с
+использованием BIND 9.x.x.
+
+%description devel -l uk
+Вс╕ хедери та б╕бл╕отеки, необх╕дн╕ для розробки програм з
+використанням BIND 9.x.x.
+
 %package static
 Summary:	DNS static libs
 Summary(pl):	Biblioteki statyczne DNS
 Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
+Summary(ru):	Статические библиотеки разработчика для bind
+Summary(uk):	Статичн╕ б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}
 
@@ -203,6 +263,14 @@ Statyczne biblioteki binda.
 
 %description static -l pt_BR
 Bibliotecas estАticas para desenvolvimento DNS.
+
+%description static -l ru
+Статические библиотеки, необходимые для написания программ с
+использованием BIND.
+
+%description static -l uk
+Статичн╕ б╕бл╕отеки, необх╕дн╕ для розробки програм з використанням
+BIND.
 
 %prep
 %setup -q -a1
@@ -242,16 +310,18 @@ bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/etc
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/%{_sysconfdir}
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
-ln -sf %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+
+ln -sf %{_var}/lib/named/%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
-touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
+
+touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/rfc/index
 
@@ -323,7 +393,7 @@ fi
 
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/etc/*
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/%{_sysconfdir}/*
 
 %ghost %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named*
