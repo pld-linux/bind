@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	10
+Release:	11
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -304,7 +304,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(770,root,named) %dir /var/state/named
 %attr(750,root,root) %dir /var/state/named/M
-%attr(750,root,root) %dir /var/state/named/S
+%attr(750,root,named) %dir /var/state/named/S
 
 /var/state/named/M/*
 /var/state/named/root.*
