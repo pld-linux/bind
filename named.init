@@ -39,9 +39,8 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
-		modprobe -s capability > /dev/null 2>&1
 		touch /var/lib/named/named.log && \
-			chown named:named /var/lib/named/named.log
+			chown named.named /var/lib/named/named.log
 	 	daemon named -u named -t /var/lib/named \
 			-c /etc/named.conf -n ${NUM_CPUS:-1} </dev/null
 		RETVAL=$?

@@ -2,7 +2,6 @@
 # Conditional build:
 %bcond_without	ssl	# build without OpenSSL support
 %bcond_without	ipv6	# build without IPv6 support
-%bcond_without	ldap	# build without LDAP support
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -15,13 +14,13 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
-Version:	9.2.3
-Release:	9
+Version:	9.2.4
+Release:	1.2
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	94ae7b0f20dc406fdbbf6fac5d57b32f
+# Source0-md5:	2ccbddbab59aedd6b8711b628b5472bd
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
@@ -30,16 +29,14 @@ Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source6-md5:	35b1dfaa12615c9802126ee833e0e7f7
-Source7:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source7-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
 Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
+Patch5:		%{name}-destaddr.patch
 # from idnkit
-Patch5:		%{name}-idn.patch
-Patch6:		%{name}-sdb-ldap.patch
+Patch6:		%{name}-idn.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -47,10 +44,8 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.159
-PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.6m}
+PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
 Requires(pre):	/bin/id
@@ -61,14 +56,12 @@ Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	psmisc >= 20.1
-Provides:	group(named)
 Provides:	nameserver
-Provides:	user(named)
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
@@ -159,8 +152,7 @@ Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
 Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
 Group:		Networking/Utilities
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-Requires:	iconv
+Requires:	%{name}-libs = %{epoch}:%{version}
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
@@ -247,7 +239,7 @@ Summary(pt_BR):	Todos os arquivos de cabeГalho e bibliotecas para desenvolviment
 Summary(ru):	Хедеры и библиотеки разработчика для bind
 Summary(uk):	Хедери та б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs = %{epoch}:%{version}
 
 %description devel
 The bind-devel package contains all the include files and symlinks
@@ -286,7 +278,7 @@ Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
 Summary(ru):	Статические библиотеки разработчика для bind
 Summary(uk):	Статичн╕ б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}
 
 %description static
 Static bind libraries.
@@ -313,7 +305,7 @@ BIND.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%{?with_ldap:%patch6 -p1}
+%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -349,7 +341,7 @@ bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/%{_sysconfdir}
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
@@ -361,9 +353,6 @@ ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
-
-%{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
-%{?with_ldap:install %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
@@ -393,7 +382,7 @@ if [ -n "`id -u named 2>/dev/null`" ]; then
 	fi
 else
 	echo "Adding user named UID=58."
-	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
+	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
 fi
 
 %post
@@ -414,8 +403,10 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	%userremove named
-	%groupremove named
+	echo "Removing user named."
+	%{_sbindir}/userdel named
+	echo "Removing group named."
+	%{_sbindir}/groupdel named
 fi
 
 %post   libs -p /sbin/ldconfig
@@ -423,7 +414,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap}
+%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
@@ -431,8 +422,6 @@ fi
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
-
-%{?with_ldap:%{_datadir}/openldap/schema/*.schema}
 
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
@@ -444,12 +433,11 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
-%attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
 
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/%{_sysconfdir}/*
 
 #%ghost %{_var}/lib/named/dev/*
 %attr(770,root,named) %{_var}/lib/named/dev/*
