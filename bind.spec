@@ -277,7 +277,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
@@ -292,7 +292,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/dnskeygen.1*
 %{_mandir}/man8/nsupdate.8*
 
-%attr(750,root,root) %dir /var/state/named
+%attr(770,root,named) %dir /var/state/named
 %attr(750,root,root) %dir /var/state/named/M
 %attr(750,root,root) %dir /var/state/named/S
 
