@@ -22,14 +22,17 @@ BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	openssl-devel
 BuildRequires:	byacc
-Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
+Requires(pre,post):	fileutils
+Requires(pre,postun):	shadow
+Requires(post,preun):	chkconfig
+Requires(post,preun):	rc-scripts
+URL:		http://www.isc.org/products/BIND/bind9.html
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
-URL:		http://www.isc.org/products/BIND/bind9.html
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
@@ -225,14 +228,6 @@ if [ -f /var/lock/subsys/named ]; then
 else
 	echo "Type \"%{_sysconfdir}/rc.d/init.d/named start\" to start named" 1>&2
 fi
-umask 117
-/bin/touch		%{_var}/lib/named/named.log
-chown named.named	%{_var}/lib/named/named.log
-ln -sf %{_var}/lib/named/named.log	%{_var}/log/named
-
-umask 022
-/bin/mknod -m u+rw,go+r		%{_var}/lib/named/dev/random c 1 8 > /dev/null 2>&1
-/bin/mknod -m a+rw		%{_var}/lib/named/dev/null c 1 3 > /dev/null 2>&1
 
 %preun
 if [ "$1" = "0" ]; then
@@ -248,7 +243,7 @@ if [ "$1" = "0" ]; then
 	%{_sbindir}/groupdel named
 fi
 
-%post libs -p /sbin/ldconfig
+%post   libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 
 %clean
