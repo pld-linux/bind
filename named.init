@@ -67,7 +67,7 @@ case "$1" in
   reload)
 	if [ -f /var/lock/subsys/named ]; then
 		if [ -f /etc/rndc.conf ] ; then
-			run_cmd "$(nls 'Reloading %s service" 'Named')" /usr/sbin/rndc reload
+			run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
 		else
 			msg_reloading "Named"
 			busy
