@@ -25,6 +25,7 @@ Patch8:		bind-mkdep.patch
 Patch9:		bind-probe_ipv6.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
+Requires:	rc-scripts
 Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
 Buildroot:	/tmp/%{name}-%{version}-root
