@@ -1,0 +1,6 @@
+/var/log/named {
+    postrotate
+            /usr/bin/killall -HUP named
+    endscript
+}
+		
