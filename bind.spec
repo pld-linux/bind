@@ -539,7 +539,7 @@ fi
 %{_mandir}/man8/nsupdate.8*
 
 %attr(770,root,named) %dir /var/lib/named
-%attr(750,root,root) %dir /var/lib/named/M
+%attr(750,root,named) %dir /var/lib/named/M
 %attr(770,root,named) %dir /var/lib/named/S
 
 /var/lib/named/M/*
