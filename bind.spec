@@ -16,7 +16,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.3
-Release:	3
+Release:	4
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -49,7 +49,7 @@ BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
-PreReq:		%{name}-libs = %{epoch}:%{version}
+PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
 Requires(pre):	/bin/id
@@ -156,7 +156,7 @@ Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
 Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
 Group:		Networking/Utilities
-Requires:	%{name}-libs = %{epoch}:%{version}
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
@@ -243,7 +243,7 @@ Summary(pt_BR):	Todos os arquivos de cabeГalho e bibliotecas para desenvolviment
 Summary(ru):	Хедеры и библиотеки разработчика для bind
 Summary(uk):	Хедери та б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
 %description devel
 The bind-devel package contains all the include files and symlinks
@@ -282,7 +282,7 @@ Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
 Summary(ru):	Статические библиотеки разработчика для bind
 Summary(uk):	Статичн╕ б╕бл╕отеки програм╕ста для bind
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static bind libraries.
