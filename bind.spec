@@ -280,11 +280,11 @@ BIND.
 %build
 libtoolize --copy --force
 aclocal
-autoconf
+%{__autoconf}
 cd lib/bind
 libtoolize --copy --force
 aclocal
-autoconf
+%{__autoconf}
 cd ../..
 %configure \
 	--with-openssl=%{_prefix} \
