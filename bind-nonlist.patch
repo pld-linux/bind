@@ -1,0 +1,15 @@
+--- src/bin/named/ns_udp.c.nonlist	Wed Jun 10 03:54:37 1998
++++ src/bin/named/ns_udp.c	Wed Jun 10 03:57:14 1998
+@@ -34,7 +34,11 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <netdb.h>
+-#include <nlist.h>
++
++#if defined(CHECK_UDP_SUM) || defined(FIX_UDP_SUM)
++#include <libelf/nlist.h>
++#endif
++
+ #include <resolv.h>
+ #include <stdio.h>
+ #include <syslog.h>

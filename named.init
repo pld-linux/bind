@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# named           This shell script takes care of starting and stopping
+#                 named (BIND DNS server).
+#
+# chkconfig: 345 55 45
+# description: named (BIND) is a Domain Name Server (DNS) \
+# that is used to resolve host names to IP addresses.
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+
+[ -f /usr/sbin/named ] || exit 0
+
+[ -f /etc/named.conf ] || exit 0
+
+[ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
+	
+# See how we were called.
+case "$1" in
+  start)
+        show Starting named
+        daemon $NICELEVEL named
+        touch /var/lock/subsys/named
+        ;;
+  stop)
+        show Stopping named
+        killproc named
+        rm -f /var/lock/subsys/named
+        ;;
+  status)
+	status named
+	;;
+  restart)
+	$0 stop
+	$0 start
+	;;
+  *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 1
+esac
+
+exit 0
