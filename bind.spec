@@ -10,7 +10,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ 
 Name:		bind
 Version:	9.2.1
-Release:	9
+Release:	10
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -301,7 +301,8 @@ cd ../..
 	--with-openssl=%{_prefix} \
 	--with-libtool \
 	--enable-threads \
-	--enable-ipv6
+	--enable-ipv6 \
+	--enable-libbind
 %{__make}
 
 %install
