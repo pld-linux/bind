@@ -7,7 +7,7 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(pt_BR):	BIND - Servidor de nomes DNS
 Name:		bind
 Version:	9.1.3
-Release:	6
+Release:	7
 Epoch:		5
 License:	distributable
 Group:		Networking/Daemons
@@ -19,7 +19,7 @@ Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
-Source6:	resolver.5
+Source6:	%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
 BuildRequires:	sed
 BuildRequires:	flex
@@ -258,9 +258,9 @@ install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
 install doc/man/bin/*.1			$RPM_BUILD_ROOT%{_mandir}/man1
 install doc/man/lwres/*.3		$RPM_BUILD_ROOT%{_mandir}/man3
 install doc/man/bin/*.5			$RPM_BUILD_ROOT%{_mandir}/man5
-install %{SOURCE6}			$RPM_BUILD_ROOT%{_mandir}/man5
 install doc/man/{bin/*.8,dnssec/*.8}	$RPM_BUILD_ROOT%{_mandir}/man8
 install %{SOURCE5}			$RPM_BUILD_ROOT%{_mandir}/man8
+bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
@@ -335,6 +335,7 @@ fi
 %{_mandir}/man8/rndc*
 %{_mandir}/man5/rndc*
 %{_mandir}/man8/nsupdate*
+%lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(750,root,named) %dir %{_var}/lib/named/M
@@ -356,6 +357,18 @@ fi
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man8/nslookup.8*
+
+%lang(fi) %{_mandir}/fi/man1/host.1*
+
+%lang(fr) %{_mandir}/fr/man1/host.1*
+
+%lang(hu) %{_mandir}/hu/man1/host.1*
+
+%lang(ja) %{_mandir}/ja/man1/dig.1*
+%lang(ja) %{_mandir}/ja/man1/host.1*
+%lang(ja) %{_mandir}/ja/man8/nslookup.8*
+
+%lang(pl) %{_mandir}/pl/man1/host.1*
 
 %files libs
 %defattr(644,root,root,755)
