@@ -207,7 +207,6 @@ desenvolvimento com o bind.
 
 %package static
 Summary:	DNS static libs
-Summary(es):	Static libraris for development with bind
 Summary(pl):	Biblioteki statyczne DNS
 Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
 Group:		Development/Libraries
@@ -221,9 +220,6 @@ Group(uk):	Розробка/Б╕бл╕отеки
 
 %description static
 Static bind libraries.
-
-%description -l es static
-Static libraris for development with bind.
 
 %description -l pl static
 Statyczne biblioteki binda.
