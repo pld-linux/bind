@@ -1,53 +1,6 @@
-diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
---- bind-9.3.0rc3.orig/configure.in	2004-07-23 06:40:00.000000000 +0200
-+++ bind-9.3.0rc3/configure.in	2004-09-02 21:50:22.318104392 +0200
-@@ -1111,45 +1111,6 @@
- 	 found_ipv6=no])
- 
- #
--# See whether IPv6 support is provided via a Kame add-on.
--# This is done before other IPv6 linking tests to LIBS is properly set.
--#
--AC_MSG_CHECKING(for Kame IPv6 support)
--AC_ARG_WITH(kame,
--	[  --with-kame[=PATH]	use Kame IPv6 [default path /usr/local/v6]],
--	use_kame="$withval", use_kame="no")
--
--case "$use_kame" in
--	no)
--		;;
--	yes)
--		kame_path=/usr/local/v6
--		;;
--	*)
--		kame_path="$use_kame"
--		;;
--esac
--
--case "$use_kame" in
--	no)
--		AC_MSG_RESULT(no)
--		;;
--	*)
--		if test -f $kame_path/lib/libinet6.a; then
--			AC_MSG_RESULT($kame_path/lib/libinet6.a)
--			LIBS="-L$kame_path/lib -linet6 $LIBS"
--		else
--			AC_MSG_ERROR([$kame_path/lib/libinet6.a not found.
--
--Please choose the proper path with the following command:
--
--    configure --with-kame=PATH
--])
--		fi
--		;;
--esac
--
--#
- # Whether netinet6/in6.h is needed has to be defined in isc/platform.h.
- # Including it on Kame-using platforms is very bad, though, because
- # Kame uses #error against direct inclusion.   So include it on only
-@@ -1577,32 +1538,7 @@
+--- bind-9.3.1/configure.in~	2005-03-15 08:50:04.942697232 +0100
++++ bind-9.3.1/configure.in	2005-03-15 08:55:33.325775416 +0100
+@@ -1630,32 +1630,8 @@
  
  case $want_getifaddrs in
  yes|glibc)
@@ -61,7 +14,7 @@ diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
 -	# project handles the AF_INET6 case correctly.  We need to avoid
 -	# using the former but prefer the latter unless overridden by
 -	# --enable-getifaddrs=glibc.
--	if test $use_getifaddrs = glibc
+-	if test $want_getifaddrs = glibc
 -	then
 -		AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS))
 -	else
@@ -77,56 +30,8 @@ diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
 -	AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS))
 -	;;
 -esac
++
 +AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS))
  ;;
  no)
  ;;
-diff -ur bind-9.3.0rc3.orig/lib/bind/configure.in bind-9.3.0rc3/lib/bind/configure.in
---- bind-9.3.0rc3.orig/lib/bind/configure.in	2004-08-10 04:19:54.000000000 +0200
-+++ bind-9.3.0rc3/lib/bind/configure.in	2004-09-02 21:48:06.216794936 +0200
-@@ -790,45 +790,6 @@
- 	 found_ipv6=no])
- 
- #
--# See whether IPv6 support is provided via a Kame add-on.
--# This is done before other IPv6 linking tests to LIBS is properly set.
--#
--AC_MSG_CHECKING(for Kame IPv6 support)
--AC_ARG_WITH(kame,
--	[  --with-kame[=PATH]	use Kame IPv6 [default path /usr/local/v6]],
--	use_kame="$withval", use_kame="no")
--
--case "$use_kame" in
--	no)
--		;;
--	yes)
--		kame_path=/usr/local/v6
--		;;
--	*)
--		kame_path="$use_kame"
--		;;
--esac
--
--case "$use_kame" in
--	no)
--		AC_MSG_RESULT(no)
--		;;
--	*)
--		if test -f $kame_path/lib/libinet6.a; then
--			AC_MSG_RESULT($kame_path/lib/libinet6.a)
--			LIBS="-L$kame_path/lib -linet6 $LIBS"
--		else
--			AC_MSG_ERROR([$kame_path/lib/libinet6.a not found.
--
--Please choose the proper path with the following command:
--
--    configure --with-kame=PATH
--])
--		fi
--		;;
--esac
--
--#
- # Whether netinet6/in6.h is needed has to be defined in isc/platform.h.
- # Including it on Kame-using platforms is very bad, though, because
- # Kame uses #error against direct inclusion.   So include it on only
