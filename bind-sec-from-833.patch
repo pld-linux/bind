@@ -1,0 +1,512 @@
+Index: bind8/src/lib/irs/dns_ho.c
+diff -c bind8/src/lib/irs/dns_ho.c:1.36 bind8/src/lib/irs/dns_ho.c:1.39
+*** bind8/src/lib/irs/dns_ho.c:1.36	Thu May 30 23:05:30 2002
+--- bind8/src/lib/irs/dns_ho.c	Wed Jun 26 20:56:32 2002
+***************
+*** 74,79 ****
+--- 74,80 ----
+  #include <resolv.h>
+  #include <stdio.h>
+  #include <string.h>
++ #include <syslog.h>
+  
+  #include <isc/memcluster.h>
+  #include <irs.h>
+***************
+*** 161,167 ****
+  				     const struct addrinfo *pai);
+  
+  static void		map_v4v6_hostent(struct hostent *hp, char **bp,
+! 					 int *len);
+  static void		addrsort(res_state, char **, int);
+  static struct hostent *	gethostans(struct irs_ho *this,
+  				   const u_char *ansbuf, int anslen,
+--- 162,168 ----
+  				     const struct addrinfo *pai);
+  
+  static void		map_v4v6_hostent(struct hostent *hp, char **bp,
+! 					 char *ep);
+  static void		addrsort(res_state, char **, int);
+  static struct hostent *	gethostans(struct irs_ho *this,
+  				   const u_char *ansbuf, int anslen,
+***************
+*** 1079,1085 ****
+  	   struct addrinfo **ret_aip, const struct addrinfo *pai)
+  {
+  	struct pvt *pvt = (struct pvt *)this->private;
+! 	int type, class, buflen, ancount, qdcount, n, haveanswer, had_error;
+  	int error = NETDB_SUCCESS, arcount;
+  	int (*name_ok)(const char *);
+  	const HEADER *hp;
+--- 1080,1086 ----
+  	   struct addrinfo **ret_aip, const struct addrinfo *pai)
+  {
+  	struct pvt *pvt = (struct pvt *)this->private;
+! 	int type, class, ancount, qdcount, n, haveanswer, had_error;
+  	int error = NETDB_SUCCESS, arcount;
+  	int (*name_ok)(const char *);
+  	const HEADER *hp;
+***************
+*** 1088,1094 ****
+  	const u_char *cp;
+  	const char *tname;
+  	const char *hname;
+! 	char *bp, **ap, **hap;
+  	char tbuf[MAXDNAME+1];
+  	struct addrinfo sentinel, *cur, ai;
+  	const u_char *arp = NULL;
+--- 1089,1095 ----
+  	const u_char *cp;
+  	const char *tname;
+  	const char *hname;
+! 	char *bp, *ep, **ap, **hap;
+  	char tbuf[MAXDNAME+1];
+  	struct addrinfo sentinel, *cur, ai;
+  	const u_char *arp = NULL;
+***************
+*** 1131,1143 ****
+  	qdcount = ntohs(hp->qdcount);
+  	arcount = ntohs(hp->arcount);
+  	bp = pvt->hostbuf;
+! 	buflen = sizeof pvt->hostbuf;
+  	cp = ansbuf + HFIXEDSZ;
+  	if (qdcount != 1) {
+  		RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  		return (NULL);
+  	}
+! 	n = dn_expand(ansbuf, eom, cp, bp, buflen);
+  	if (n < 0 || !maybe_ok(pvt->res, bp, name_ok)) {
+  		RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  		return (NULL);
+--- 1132,1144 ----
+  	qdcount = ntohs(hp->qdcount);
+  	arcount = ntohs(hp->arcount);
+  	bp = pvt->hostbuf;
+! 	ep = pvt->hostbuf + sizeof(pvt->hostbuf);
+  	cp = ansbuf + HFIXEDSZ;
+  	if (qdcount != 1) {
+  		RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  		return (NULL);
+  	}
+! 	n = dn_expand(ansbuf, eom, cp, bp, ep - bp);
+  	if (n < 0 || !maybe_ok(pvt->res, bp, name_ok)) {
+  		RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  		return (NULL);
+***************
+*** 1161,1167 ****
+  		pvt->host.h_name = bp;
+  		hname = bp;
+  		bp += n;
+- 		buflen -= n;
+  		/* The qname can be abbreviated, but hname is now absolute. */
+  		qname = pvt->host.h_name;
+  	}
+--- 1162,1167 ----
+***************
+*** 1174,1180 ****
+  	haveanswer = 0;
+  	had_error = 0;
+  	while (ancount-- > 0 && cp < eom && !had_error) {
+! 		n = dn_expand(ansbuf, eom, cp, bp, buflen);
+  		if (n < 0 || !maybe_ok(pvt->res, bp, name_ok)) {
+  			had_error++;
+  			continue;
+--- 1174,1180 ----
+  	haveanswer = 0;
+  	had_error = 0;
+  	while (ancount-- > 0 && cp < eom && !had_error) {
+! 		n = dn_expand(ansbuf, eom, cp, bp, ep - bp);
+  		if (n < 0 || !maybe_ok(pvt->res, bp, name_ok)) {
+  			had_error++;
+  			continue;
+***************
+*** 1195,1200 ****
+--- 1195,1209 ----
+  		eor = cp + n;
+  		if ((qtype == T_A || qtype == T_AAAA || qtype == ns_t_a6 ||
+  		     qtype == T_ANY) && type == T_CNAME) {
++ 			if (haveanswer) {
++ 				int level = LOG_CRIT;
++ #ifdef LOG_SECURITY
++ 				level |= LOG_SECURITY;
++ #endif
++ 				syslog(level,
++  "gethostans: possible attempt to exploit buffer overflow while looking up %s",
++ 					*qname ? qname : ".");
++ 			}
+  			if (ap >= &pvt->host_aliases[MAXALIASES-1])
+  				continue;
+  			n = dn_expand(ansbuf, eor, cp, tbuf, sizeof tbuf);
+***************
+*** 1207,1216 ****
+  			*ap++ = bp;
+  			n = strlen(bp) + 1;	/* for the \0 */
+  			bp += n;
+- 			buflen -= n;
+  			/* Get canonical name. */
+  			n = strlen(tbuf) + 1;	/* for the \0 */
+! 			if (n > buflen || n > MAXHOSTNAMELEN) {
+  				had_error++;
+  				continue;
+  			}
+--- 1216,1224 ----
+  			*ap++ = bp;
+  			n = strlen(bp) + 1;	/* for the \0 */
+  			bp += n;
+  			/* Get canonical name. */
+  			n = strlen(tbuf) + 1;	/* for the \0 */
+! 			if (n > (ep - bp) || n > MAXHOSTNAMELEN) {
+  				had_error++;
+  				continue;
+  			}
+***************
+*** 1218,1224 ****
+  			pvt->host.h_name = bp;
+  			hname = bp;
+  			bp += n;
+- 			buflen -= n;
+  			continue;
+  		}
+  		if (type == ns_t_dname) {
+--- 1226,1231 ----
+***************
+*** 1254,1260 ****
+  			cp += n;
+  
+  			n = strlen(t) + 1; /* for the \0 */
+! 			if (n > buflen) {
+  				had_error++;
+  				continue;
+  			}
+--- 1261,1267 ----
+  			cp += n;
+  
+  			n = strlen(t) + 1; /* for the \0 */
+! 			if (n > (ep - bp)) {
+  				had_error++;
+  				continue;
+  			}
+***************
+*** 1264,1270 ****
+  			else
+  				hname = bp;
+  			bp += n;
+- 			buflen -= n;
+  
+  			continue;
+  		}
+--- 1271,1276 ----
+***************
+*** 1290,1303 ****
+  			}
+  			/* Get canonical name. */
+  			n = strlen(tbuf) + 1;	/* for the \0 */
+! 			if (n > buflen) {
+  				had_error++;
+  				continue;
+  			}
+  			strcpy(bp, tbuf);
+  			tname = bp;
+  			bp += n;
+- 			buflen -= n;
+  			continue;
+  		}
+  		if (qtype == T_ANY) {
+--- 1296,1308 ----
+  			}
+  			/* Get canonical name. */
+  			n = strlen(tbuf) + 1;	/* for the \0 */
+! 			if (n > (ep - bp)) {
+  				had_error++;
+  				continue;
+  			}
+  			strcpy(bp, tbuf);
+  			tname = bp;
+  			bp += n;
+  			continue;
+  		}
+  		if (qtype == T_ANY) {
+***************
+*** 1321,1327 ****
+  				cp += n;
+  				continue;
+  			}
+! 			n = dn_expand(ansbuf, eor, cp, bp, buflen);
+  			if (n < 0 || !maybe_hnok(pvt->res, bp) ||
+  			    n >= MAXHOSTNAMELEN) {
+  				had_error++;
+--- 1326,1332 ----
+  				cp += n;
+  				continue;
+  			}
+! 			n = dn_expand(ansbuf, eor, cp, bp, ep - bp);
+  			if (n < 0 || !maybe_hnok(pvt->res, bp) ||
+  			    n >= MAXHOSTNAMELEN) {
+  				had_error++;
+***************
+*** 1339,1345 ****
+  			if (n != -1) {
+  				n = strlen(bp) + 1;	/* for the \0 */
+  				bp += n;
+- 				buflen -= n;
+  			}
+  			break;
+  		case ns_t_a6: {
+--- 1344,1349 ----
+***************
+*** 1439,1445 ****
+  				pvt->host.h_name = bp;
+  				hname = bp;
+  				bp += nn;
+- 				buflen -= nn;
+  			}
+  			/* Ensure alignment. */
+  			bp = (char *)(((u_long)bp + (sizeof(align) - 1)) &
+--- 1443,1448 ----
+***************
+*** 1493,1507 ****
+  					 haveanswer);
+  			if (pvt->host.h_name == NULL) {
+  				n = strlen(qname) + 1;	/* for the \0 */
+! 				if (n > buflen || n >= MAXHOSTNAMELEN)
+  					goto no_recovery;
+  				strcpy(bp, qname);
+  				pvt->host.h_name = bp;
+  				bp += n;
+- 				buflen -= n;
+  			}
+  			if (pvt->res->options & RES_USE_INET6)
+! 				map_v4v6_hostent(&pvt->host, &bp, &buflen);
+  			RES_SET_H_ERRNO(pvt->res, NETDB_SUCCESS);
+  			return (&pvt->host);
+  		} else {
+--- 1496,1509 ----
+  					 haveanswer);
+  			if (pvt->host.h_name == NULL) {
+  				n = strlen(qname) + 1;	/* for the \0 */
+! 				if (n > (ep - bp) || n >= MAXHOSTNAMELEN)
+  					goto no_recovery;
+  				strcpy(bp, qname);
+  				pvt->host.h_name = bp;
+  				bp += n;
+  			}
+  			if (pvt->res->options & RES_USE_INET6)
+! 				map_v4v6_hostent(&pvt->host, &bp, ep);
+  			RES_SET_H_ERRNO(pvt->res, NETDB_SUCCESS);
+  			return (&pvt->host);
+  		} else {
+***************
+*** 1575,1581 ****
+  }
+  
+  static void
+! map_v4v6_hostent(struct hostent *hp, char **bpp, int *lenp) {
+  	char **ap;
+  
+  	if (hp->h_addrtype != AF_INET || hp->h_length != INADDRSZ)
+--- 1577,1583 ----
+  }
+  
+  static void
+! map_v4v6_hostent(struct hostent *hp, char **bpp, char *ep) {
+  	char **ap;
+  
+  	if (hp->h_addrtype != AF_INET || hp->h_length != INADDRSZ)
+***************
+*** 1588,1604 ****
+  		if (i != 0)
+  			i = sizeof(align) - i;
+  
+! 		if (*lenp < (i + IN6ADDRSZ)) {
+  			/* Out of memory.  Truncate address list here. */
+  			*ap = NULL;
+  			return;
+  		}
+  		*bpp += i;
+- 		*lenp -= i;
+  		map_v4v6_address(*ap, *bpp);
+  		*ap = *bpp;
+  		*bpp += IN6ADDRSZ;
+- 		*lenp -= IN6ADDRSZ;
+  	}
+  }
+  
+--- 1590,1604 ----
+  		if (i != 0)
+  			i = sizeof(align) - i;
+  
+! 		if ((ep - *bpp) < (i + IN6ADDRSZ)) {
+  			/* Out of memory.  Truncate address list here. */
+  			*ap = NULL;
+  			return;
+  		}
+  		*bpp += i;
+  		map_v4v6_address(*ap, *bpp);
+  		*ap = *bpp;
+  		*bpp += IN6ADDRSZ;
+  	}
+  }
+  
+Index: bind8/src/lib/irs/dns_nw.c
+diff -c bind8/src/lib/irs/dns_nw.c:1.22 bind8/src/lib/irs/dns_nw.c:1.23
+*** bind8/src/lib/irs/dns_nw.c:1.22	Tue Feb 26 19:50:10 2002
+--- bind8/src/lib/irs/dns_nw.c	Wed Jun 26 00:42:06 2002
+***************
+*** 299,306 ****
+  	      int af, const char *name, const u_char *addr, int addrlen)
+  {
+  	struct pvt *pvt = (struct pvt *)this->private;
+! 	int type, class, buflen, ancount, qdcount, haveanswer;
+! 	char *bp, **ap;
+  	u_char *cp, *eom;
+  	HEADER *hp;
+  
+--- 299,306 ----
+  	      int af, const char *name, const u_char *addr, int addrlen)
+  {
+  	struct pvt *pvt = (struct pvt *)this->private;
+! 	int type, class, ancount, qdcount, haveanswer;
+! 	char *bp, *ep, **ap;
+  	u_char *cp, *eom;
+  	HEADER *hp;
+  
+***************
+*** 332,338 ****
+  
+  	/* Prepare a return structure. */
+  	bp = pvt->buf;
+! 	buflen = sizeof pvt->buf;
+  	pvt->net.n_name = NULL;
+  	pvt->net.n_aliases = pvt->ali;
+  	pvt->net.n_addrtype = af;
+--- 332,338 ----
+  
+  	/* Prepare a return structure. */
+  	bp = pvt->buf;
+! 	ep = pvt->buf + sizeof(pvt->buf);
+  	pvt->net.n_name = NULL;
+  	pvt->net.n_aliases = pvt->ali;
+  	pvt->net.n_addrtype = af;
+***************
+*** 345,364 ****
+  		if (name != NULL) {
+  			int n = strlen(name) + 1;
+  
+! 			if (n > buflen) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+  			}
+  			pvt->net.n_name = strcpy(bp, name);
+  			bp += n;
+- 			buflen -= n;
+  		}
+  		break;
+  	case by_addr:
+  		if (addr != NULL && addrlen != 0) {
+  			int n = addrlen / 8 + ((addrlen % 8) != 0);
+  
+! 			if (INADDRSZ > buflen) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+  			}
+--- 345,363 ----
+  		if (name != NULL) {
+  			int n = strlen(name) + 1;
+  
+! 			if (n > (ep - bp)) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+  			}
+  			pvt->net.n_name = strcpy(bp, name);
+  			bp += n;
+  		}
+  		break;
+  	case by_addr:
+  		if (addr != NULL && addrlen != 0) {
+  			int n = addrlen / 8 + ((addrlen % 8) != 0);
+  
+! 			if (INADDRSZ > (ep - bp)) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+  			}
+***************
+*** 366,372 ****
+  			memcpy(bp, addr, n);
+  			pvt->net.n_addr = bp;
+  			bp += INADDRSZ;
+- 			buflen -= INADDRSZ;
+  		}
+  		break;
+  	default:
+--- 365,370 ----
+***************
+*** 377,383 ****
+  	ap = pvt->ali;
+  	haveanswer = 0;
+  	while (--ancount >= 0 && cp < eom) {
+! 		int n = dn_expand(ansbuf, eom, cp, bp, buflen);
+  
+  		cp += n;		/* Owner */
+  		if (n < 0 || !maybe_dnok(pvt->res, bp) ||
+--- 375,381 ----
+  	ap = pvt->ali;
+  	haveanswer = 0;
+  	while (--ancount >= 0 && cp < eom) {
+! 		int n = dn_expand(ansbuf, eom, cp, bp, ep - bp);
+  
+  		cp += n;		/* Owner */
+  		if (n < 0 || !maybe_dnok(pvt->res, bp) ||
+***************
+*** 392,398 ****
+  		if (class == C_IN && type == T_PTR) {
+  			int nn;
+  
+! 			nn = dn_expand(ansbuf, eom, cp, bp, buflen);
+  			if (nn < 0 || !maybe_hnok(pvt->res, bp) || nn != n) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+--- 390,396 ----
+  		if (class == C_IN && type == T_PTR) {
+  			int nn;
+  
+! 			nn = dn_expand(ansbuf, eom, cp, bp, ep - bp);
+  			if (nn < 0 || !maybe_hnok(pvt->res, bp) || nn != n) {
+  				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  				return (NULL);
+***************
+*** 408,414 ****
+  					*ap++ = bp;
+  				nn = strlen(bp) + 1;
+  				bp += nn;
+- 				buflen -= nn;
+  				haveanswer++;
+  				break;
+  			    }
+--- 406,411 ----
+***************
+*** 419,425 ****
+  				    sscanf(bp, "%u.%u.%u.%u.in-addr.arpa",
+  					   &b1, &b2, &b3, &b4) != 4)
+  					break;
+! 				if (buflen < INADDRSZ) {
+  					RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  					return (NULL);
+  				}
+--- 416,422 ----
+  				    sscanf(bp, "%u.%u.%u.%u.in-addr.arpa",
+  					   &b1, &b2, &b3, &b4) != 4)
+  					break;
+! 				if ((ep - bp) < INADDRSZ) {
+  					RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+  					return (NULL);
+  				}
+***************
+*** 428,434 ****
+  				*bp++ = b3;
+  				*bp++ = b2;
+  				*bp++ = b1;
+- 				buflen -= INADDRSZ;
+  				pvt->net.n_length = INADDRSZ * 8;
+  				haveanswer++;
+  			    }
+--- 425,430 ----
