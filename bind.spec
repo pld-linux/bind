@@ -8,7 +8,7 @@ Version:	8.1.2
 Release:	4d
 Copyright:	distributable
 Group:		Daemons
-Group(pl):	Demony
+Group(pl):	Serwery
 Source0:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-src.tar.gz
 Source1:	ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
 Source2:	named.init
