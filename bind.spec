@@ -2,6 +2,7 @@
 # Conditional build:
 # _without_ssl	- don't build with OpenSSL support
 # _without_ipv6	- don't build IPv6 support
+# _without_ldap	- don't build with LDAP support
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -29,6 +30,8 @@ Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source6-md5:	35b1dfaa12615c9802126ee833e0e7f7
+Source7:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
+# Source7-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -36,6 +39,7 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
+Patch6:		%{name}-sdb-ldap.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -43,6 +47,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
+%{!?_without_ldap:BuildRequires:	openldap-devel}
 %{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
@@ -304,6 +309,7 @@ BIND.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%{!?_without_ldap:%patch6 -p1}
 
 %build
 %{__libtoolize}
@@ -351,6 +357,9 @@ ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
+
+%{!?_without_ldap:mkdir -p $RPM_BUILD_ROOT/%{_datadir}/openldap/schema/}
+%{!?_without_ldap:install %{SOURCE7} $RPM_BUILD_ROOT/%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
@@ -412,7 +421,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index
+%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index doc/*.sdb-ldap
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
@@ -420,6 +429,8 @@ fi
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
+
+%{?!_without_ldap:%{_datadir}/openldap/schema/*.schema}
 
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
