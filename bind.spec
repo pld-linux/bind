@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	5
+Release:	6
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -223,7 +223,8 @@ install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/named
 touch $RPM_BUILD_ROOT/var/log/named
 
 mv $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
-rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb
+rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb \
+	$RPM_BUILD_ROOT%{_mandir}/man5/resolver.5
 
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	src/README src/Version src/CHANGES EXAMPLE-CONFIG 
