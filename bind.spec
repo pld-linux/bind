@@ -166,7 +166,7 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 if [ -f /var/run/named.pid ]; then
 	/etc/rc.d/init.d/named restart >&2
 else
-	echo 'Type \'/etc/rc.d/init.d/named  start\` to start named' >&2
+	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" >&2
 fi
     
 %preun
