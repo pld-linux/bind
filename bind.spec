@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	15
+Release:	16
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
