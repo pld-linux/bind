@@ -24,10 +24,11 @@ BuildRequires:	openssl-devel
 BuildRequires:	byacc
 Requires:	rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
-Requires(pre,post):	fileutils
-Requires(pre,postun):	shadow
-Requires(post,preun):	chkconfig
-Requires(post,preun):	rc-scripts
+Prereq:		/sbin/chkconfig                                                                       
+#Requires(pre,post):	fileutils
+#Requires(pre,postun):	shadow
+#Requires(post,preun):	chkconfig
+#Requires(post,preun):	rc-scripts
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
