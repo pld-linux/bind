@@ -13,8 +13,8 @@ Source0:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-src.tar.gz
 Source1:	ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
 Source2:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-contrib.tar.gz
 Source3:	named.init
+Source4:	named.sysconfig
 Prereq:		/sbin/chkconfig
-Patch0:		bind.patch
 Patch1:		bind-pselect.patch
 Patch2:		bind-fds.patch
 Patch3:		bind-nonlist.patch
@@ -111,7 +111,6 @@ zainstalowaæ ten pakiet.
 %prep
 %setup -q -n src -a 1 -a 2
 
-#patch0 -p1
 %patch1 -p1
 %patch2 -p2
 %patch3 -p1
@@ -150,6 +149,7 @@ install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT/usr/man/man8
 install hostname.7 $RPM_BUILD_ROOT/usr/man/man7
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
 
 gzip -9fn $RPM_BUILD_ROOT/usr/man/man[13578]/* \
 	../../{README,Version,CHANGES} 
@@ -169,7 +169,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc {README,Version,CHANGES}.gz
 
-%attr(700,root,root) %config /etc/rc.d/init.d/named
+%attr(754,root,root) /etc/rc.d/init.d/named
+%attr(640,root,root) %config %veryfi(not size mtime md5) /etc/sysconfig/named
 
 %attr(755,root,root) /usr/sbin/named
 %attr(755,root,root) /usr/sbin/named-xfer
@@ -199,6 +200,15 @@ rm -rf $RPM_BUILD_ROOT
 /usr/man/man3/*
 
 %changelog
+* Fri Apr 30 1999 Artur Frysiak <wiget@pld.org.pl>
+  [8.2-7]
+- upgrade to 8.2
+- added paches from RH 6.0
+- added BuildPrereq: byacc
+- fixed group for devel subpackage
+- removed named-bootconf.pl (non exist)
+- symplifikation in %files
+
 * Wed Jan 13 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
   [8.1.2-3d]
 - removed Requires: %{name} = %{version} from utils sub-package,
