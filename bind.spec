@@ -1,7 +1,8 @@
-
-# _without_ssl	- don't build with OpenSSl support
+#
+# Conditional build:
+# _without_ssl	- don't build with OpenSSL support
 # _without_ipv6	- don't build IPv6 support
-
+#
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
 Summary(es):	BIND - Servidor de nombres DNS
@@ -25,13 +26,11 @@ Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
-Patch1:		%{name}-time.patch
-Patch2:		%{name}-autoconf.patch
-Patch3:		%{name}-sec-from-833.patch
-Patch4:		%{name}-includedir-libbind.patch
-Patch5:		%{name}-divert_fix.patch
-Patch6:		%{name}-link.patch
-Patch7:		%{name}-pmake.patch
+Patch0:		%{name}-time.patch
+Patch1:		%{name}-autoconf.patch
+Patch2:		%{name}-includedir-libbind.patch
+Patch3:		%{name}-link.patch
+Patch4:		%{name}-pmake.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -291,14 +290,11 @@ BIND.
 
 %prep
 %setup -q -a1
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch4 -p1
-#%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-cd lib/bind
-#%patch3 -p3
 
 %build
 %{__libtoolize}
