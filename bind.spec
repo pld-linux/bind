@@ -417,7 +417,7 @@ fi
 if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
-%{_bindir}/update-db
+[ -x %{_bindir}/update-db ] && %{_bindir}/update-db
 
 %post
 /sbin/chkconfig --add named
@@ -464,7 +464,7 @@ fi
 if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
-%{_bindir}/update-db
+[ -x %{_bindir}/update-db ] && %{_bindir}/update-db
 
 %post chroot
 ln -sf named-chroot /etc/rc.d/init.d/named
