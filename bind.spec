@@ -121,6 +121,7 @@ zainstalowaæ ten pakiet.
 rm -f compat/include/sys/cdefs.h
 
 %build
+PATH="$PATH:./bin"; export PATH
 make \
 	clean \
 	depend \
@@ -136,10 +137,10 @@ make install \
 	DESTINC="%{_includedir}/bind" \
 	DESTLIB="%{_libdir}"
 
-install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
-install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
+	$RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_mandir}/man{1,3,5,7,8}}
 
-strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
+strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
 
 cd doc/man
 install {dig,host,dnsquery}.1 $RPM_BUILD_ROOT%{_mandir}/man1
@@ -157,9 +158,16 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 %post
 /sbin/chkconfig --add named
 
+if [ -f /var/run/named.pid ]; then
+	/etc/rc.d/init.d/named restart >&2
+else
+	echo 'Type \'/etc/rc.d/init.d/named  start\` to start named' >&2
+fi
+    
 %preun
 if [ $1 = 0 ]; then
-    /sbin/chkconfig --del named
+	/etc/rc.d/init.d/named stop >&2
+	/sbin/chkconfig --del named
 fi    
 
 %clean
