@@ -41,7 +41,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 %{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7a}
-PreReq:		%{name}-libs = %{version}
+PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
 Requires(pre): /usr/bin/getgid
