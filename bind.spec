@@ -8,8 +8,8 @@ Summary(ru):	BIND - cервер системы доменных имен (DNS)
 Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
-Version:	9.2.0
-Release:	8
+Version:	9.2.1
+Release:	1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
