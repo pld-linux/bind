@@ -48,7 +48,7 @@ BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
