@@ -8,6 +8,8 @@
 # description:	named (BIND) is a Domain Name Server (DNS) \
 #		that is used to resolve host names to IP addresses.
 
+CHROOT_TO_DIR="/var/lib/named"
+
 # Source function library
 . /etc/rc.d/init.d/functions
 
