@@ -26,6 +26,7 @@ Patch7:		bind-probe_ipv6.patch
 Patch8:		bind-host-forcetype.patch
 Patch9:		bind-pidfile.patch
 Patch10:	bind-ttl.patch
+Patch11:	ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/host_991529+.diff
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
@@ -163,6 +164,8 @@ Dokumentacja programu bind
 %patch8 -p0
 %patch9 -p1
 %patch10 -p1
+cd contrib/host
+%patch11 -p1
 
 %build
 rm -f compat/include/sys/cdefs.h
@@ -178,6 +181,9 @@ cd src
 	DESTHELP="%{_datadir}" \
 	DESTETC="%{_sysconfdir}" \
 	DESTRUN="/var/run"
+cd ..
+cd contrib/host
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -219,6 +225,8 @@ install src/bin/named/test/127.* $RPM_BUILD_ROOT/var/lib/named/M
 install src/bin/named/test/loca* $RPM_BUILD_ROOT/var/lib/named/M
 install src/conf/workstation/root.* $RPM_BUILD_ROOT/var/lib/named/root.hint
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
+
+install contrib/host/host $RPM_BUILD_ROOT%{_bindir}/host6
 
 cp src/bin/named/named.conf EXAMPLE-CONFIG
 
