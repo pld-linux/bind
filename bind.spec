@@ -41,7 +41,12 @@ BuildRequires:	libtool
 PreReq:		%{name}-libs = %{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
-Requires(pre):	user-named
+Requires(pre): /usr/bin/getgid
+Requires(pre): /bin/id
+Requires(pre): /usr/sbin/groupadd
+Requires(pre): /usr/sbin/useradd
+Requires(postun):      /usr/sbin/userdel
+Requires(postun):      /usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	psmisc >= 20.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -353,6 +358,24 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
 	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
 fi
+if [ -n "`getgid named`" ]; then
+       if [ "`getgid named`" != "58" ]; then
+               echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
+               exit 1
+       fi
+else
+       echo "Adding group named GID=58."
+       /usr/sbin/groupadd -g 58 named || exit 1
+fi
+if [ -n "`id -u named 2>/dev/null`" ]; then
+       if [ "`id -u named`" != "58" ]; then
+               echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
+               exit 1
+       fi
+else
+       echo "Adding user named UID=58."
+       /usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
+fi
 
 %post
 /sbin/chkconfig --add named
@@ -368,6 +391,14 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/named stop 1>&2
 	fi
 	/sbin/chkconfig --del named
+fi
+
+%postun
+if [ "$1" = "0" ]; then
+       echo "Removing user named."
+       %{_sbindir}/userdel named
+       echo "Removing group named."
+       %{_sbindir}/groupdel named
 fi
 
 %post   libs -p /sbin/ldconfig
