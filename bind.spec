@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.0
-Release:	1
+Release:	2
 Epoch:		3
 License:	Distributable
 Group:		Networking/Daemons
@@ -27,6 +27,7 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
+Conflicts:	kernel < 2.2.18
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -197,7 +198,7 @@ install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
-ln -s %{_var}/lib/named/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+ln -s %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -s %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
