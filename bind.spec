@@ -14,13 +14,13 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
-Version:	9.2.2
-Release:	3
+Version:	9.2.3
+Release:	1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	6ea7d64a0856893ab3eb541ab7bbc725
+# Source0-md5:	94ae7b0f20dc406fdbbf6fac5d57b32f
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	3cab3fc9ba530d1067c48a7102b08735
 Source2:	named.init
@@ -36,7 +36,6 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
-Patch6:		%{name}-delegation-only.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -304,8 +303,7 @@ BIND.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p0
-%patch6 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}
