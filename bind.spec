@@ -240,11 +240,6 @@ if ! id -u named; then
 fi
 %{_bindir}/update-db
 
-%postun
-%{_sbindir}/groupdel named
-%{_sbindir}/userdel named
-%{_bindir}/update-db
-
 %post
 /sbin/chkconfig --add named
 
@@ -267,6 +262,13 @@ if [ "$1" = "0" ]; then
 	/etc/rc.d/init.d/named stop 1>&2
 	/sbin/chkconfig --del named
 fi    
+
+%postun
+if [ "$1" = "0" ]; then
+	%{_sbindir}/groupdel named
+	%{_sbindir}/userdel named
+	%{_bindir}/update-db
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
