@@ -212,7 +212,7 @@ fi
 if [ -f /var/run/named.pid ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \'/etc/rc.d/init.d/named  start\' to start named" 1>&2
+	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
 fi
 
 if [ -f /etc/named.boot.2conf ]; then
