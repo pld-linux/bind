@@ -9,7 +9,7 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
 Version:	9.2.0
-Release:	7
+Release:	8
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -289,6 +289,7 @@ cd ../..
 %configure \
 	--with-openssl=%{_prefix} \
 	--with-libtool \
+	--enable-threads \
 	--enable-ipv6
 %{__make}
 
@@ -323,6 +324,8 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
+# we don't want Makefiles in documentation...
+rm -f doc/misc/Makefile*
 gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/rfc/index
 
 %clean
@@ -334,11 +337,23 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
 	echo "Warning:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
-if ! id -g named > /dev/null 2>&1 ; then
-	%{_sbindir}/groupadd -g 58 named
+if [ -n "`getgid named`" ]; then
+	if [ "`getgid named`" != "58" ]; then
+		echo "Warning: group namedhaven't gid=58. Correct this before installing bind" 1>&2
+		exit 1
+	fi
+else
+	echo "Adding group named GID=58"
+	/usr/sbin/groupadd -g 58 named
 fi
-if ! id -u named > /dev/null 2>&1 ; then
-	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
+if [ -n "`id -u named 2>/dev/null`" ]; then
+	if [ "`id -u named`" != "58" ]; then
+		echo "Warning: user named haven't uid=58. Correct this before installing bind" 1>&2
+		exit 1
+	fi
+else
+	echo "Adding user named UID=58"
+	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
 
 %post
@@ -359,7 +374,9 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
+	echo "Removing user named UID=58"
 	%{_sbindir}/userdel named
+	echo "Removing group named GID=58"
 	%{_sbindir}/groupdel named
 fi
 
@@ -393,7 +410,8 @@ fi
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/%{_sysconfdir}/*
 
-%ghost %{_var}/lib/named/dev/*
+#%ghost %{_var}/lib/named/dev/*
+%attr(770,root,named) %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named*
 
 %files utils
