@@ -16,7 +16,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.3
-Release:	2
+Release:	3
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
