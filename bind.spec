@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2
-Release:	7
+Release:	8
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -24,7 +24,6 @@ Patch6:		bind-glibc21.patch
 Patch7:		bind-db_glue.patch
 Patch8:		bind-mkdep.patch
 URL:		http://www.isc.org/bind.html
-BuildPrereq:	byacc
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -120,9 +119,9 @@ zainstalowaæ ten pakiet.
 %patch6 -p2
 %patch7 -p1
 %patch8 -p1
-rm -f compat/include/sys/cdefs.h
 
 %build
+rm -f compat/include/sys/cdefs.h
 #PATH="$PATH:`pwd`/port/linux/bin"; export PATH
 make \
 	clean \
@@ -134,7 +133,7 @@ make \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir/misc}} \
 	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},%{_mandir}/man{1,3,5,7,8}}
 
 make install \
@@ -182,12 +181,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc {README,Version,CHANGES}.gz
 
-%attr(754,root,root) /etc/rc.d/init.d/named
+%attr(755,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/sysconfig/named
 
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-xfer
-%attr(750,root,root) %{_sbindir}/ndc
+%attr(755,root,root) %{_sbindir}/ndc
 
 %{_mandir}/man8/named.8.gz
 %{_mandir}/man8/ndc.8.gz
@@ -197,7 +196,7 @@ rm -rf $RPM_BUILD_ROOT
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
-%attr(644,root,root) %{_libdir}/nslookup.help
+%attr(644,root,root) %{_datadir}/misc/nslookup.help
 
 %{_mandir}/man1/dig.1.gz
 %{_mandir}/man1/host.1.gz
@@ -213,11 +212,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon May 31 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
+- FHS 2.0 -- build prepare for Ra 
+
 * Fri Apr 30 1999 Artur Frysiak <wiget@pld.org.pl>
   [8.2-7]
 - upgrade to 8.2
-- added paches from RH 6.0
-- added BuildPrereq: byacc
 - fixed group for devel subpackage
 - removed named-bootconf.pl (non exist)
 - symplifikation in %files
@@ -237,18 +237,5 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Aug 26 1998 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
   [8.1.2-1d]
 - translation modified for pl,
-- changed permissions of all binaries to 711,
-- major changes -- needed for Linux PLD.
-
-* Wed Jun 10 1998 Manuel J. Galan <manolow@step.es>
-- Builds on RedHat 5.1 -Manhattan-
-- Some more modifications to install correctly (includes).
-
-* Sun Apr 12 1998 Manuel J. Galan <manolow@step.es>
-- Several essential modifications to build and install correctly.
-- Modified 'ndc' to avoid deprecated use of '-'
-
-* Mon Dec 22 1997 Scott Lampert <fortunato@heavymetal.org>
-- Used buildroot
-- patched bin/named/ns_udp.c to use <libelf/nlist.h> for include
-  on Redhat 5.0 instead of <nlist.h>
+- major changes -- needed for Linux PLD,
+- start at RH spec file.
