@@ -15,7 +15,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
 Version:	9.2.2
-Release:	1.3
+Release:	2
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -34,12 +34,15 @@ Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
 Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
+# from idnkit
+Patch5:		%{name}-idn.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
+BuildRequires:	idnkit-devel
 %{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7a}
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
@@ -300,6 +303,7 @@ BIND.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p0
 
 %build
 %{__libtoolize}
@@ -315,7 +319,8 @@ cd ../..
 	--with-libtool \
 	--enable-threads \
 	%{!?_without_ipv6:--enable-ipv6} \
-	--enable-libbind
+	--enable-libbind \
+	--with-idn
 %{__make}
 
 %install
