@@ -1,0 +1,29 @@
+- added using CVS keywords in %changelog (for automating them).
+
+* Mon May 31 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
+- FHS 2.0 -- build prepare for Ra 
+
+* Fri Apr 30 1999 Artur Frysiak <wiget@pld.org.pl>
+  [8.2-7]
+- upgrade to 8.2
+- fixed group for devel subpackage
+- removed named-bootconf.pl (non exist)
+- symplifikation in %files
+
+* Wed Jan 13 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
+  [8.1.2-3d]
+- removed Requires: %{name} = %{version} from utils sub-package,
+- compressed man pages,
+- added Group(pl),
+- minor changes.
+
+* Tue Sep  1 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [8.1.2-2d]
+- changed Buildroot to /tmp/%%{name}-%%{version}-root,
+- added using $RPM_OPT_FLAGS during compile (modified bind-makefile.patch),
+
+* Wed Aug 26 1998 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
+  [8.1.2-1d]
+- translation modified for pl,
+- major changes -- needed for Linux PLD,
+- start at RH spec file.
