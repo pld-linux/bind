@@ -26,7 +26,7 @@
 case "$1" in
   start)
         show Starting named
-        daemon $NICELEVEL named
+        daemon named
         touch /var/lock/subsys/named
         ;;
   stop)
