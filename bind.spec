@@ -4,7 +4,7 @@
 %bcond_without	ipv6	# build without IPv6 support
 %bcond_without	ldap	# build without LDAP support
 #
-%define		_rc	rc3
+%define		_rc	rc4
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
 Summary(es):	BIND - Servidor de nombres DNS
@@ -17,12 +17,12 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.3.0
-Release:	0.%{_rc}.3
+Release:	0.%{_rc}.1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}%{_rc}/%{name}-%{version}%{_rc}.tar.gz
-# Source0-md5:	1d3e822bf4c6e692ee2ef99af3b212f5
+# Source0-md5:	36fe3c5cef47867ecc1dc0055e4e6681
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
