@@ -279,6 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_var}/lib/named/M/*
 %{_var}/lib/named/root.*
+%{_var}/lib/named/*.conf
 
 %ghost %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named
