@@ -1,8 +1,8 @@
 #
 # Conditional build:
-# _without_ssl	- don't build with OpenSSL support
-# _without_ipv6	- don't build IPv6 support
-# _without_ldap	- don't build with LDAP support
+%bcond_without	ssl	# build without OpenSSL support
+%bcond_without	ipv6	# build without IPv6 support
+%bcond_without	ldap	# build without LDAP support
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -47,8 +47,8 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{!?_without_ldap:BuildRequires:	openldap-devel}
-%{!?_without_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
+%{?with_ldap:BuildRequires:	openldap-devel}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
 PreReq:		%{name}-libs = %{epoch}:%{version}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -309,7 +309,7 @@ BIND.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%{!?_without_ldap:%patch6 -p1}
+%{?with_ldap:%patch6 -p1}
 
 %build
 %{__libtoolize}
@@ -321,10 +321,10 @@ cd lib/bind
 %{__autoconf}
 cd ../..
 %configure \
-	%{!?_without_ssl:--with-openssl=%{_prefix}} \
+	%{?with_ssl:--with-openssl=%{_prefix}} \
 	--with-libtool \
 	--enable-threads \
-	%{!?_without_ipv6:--enable-ipv6} \
+	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
 	--with-idn
 %{__make}
@@ -345,7 +345,7 @@ bzip2 -dc %{SOURCE6} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
 install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/%{_sysconfdir}
+install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
@@ -358,8 +358,8 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
-%{!?_without_ldap:mkdir -p $RPM_BUILD_ROOT/%{_datadir}/openldap/schema/}
-%{!?_without_ldap:install %{SOURCE7} $RPM_BUILD_ROOT/%{_datadir}/openldap/schema/dnszone.schema}
+%{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
+%{?with_ldap:install %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
@@ -430,7 +430,7 @@ fi
 
 %attr(755,root,root) %{_sbindir}/*
 
-%{?!_without_ldap:%{_datadir}/openldap/schema/*.schema}
+%{?with_ldap:%{_datadir}/openldap/schema/*.schema}
 
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
@@ -442,12 +442,12 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
-%attr(770,root,named) %dir %{_var}/lib/named/%{_sysconfdir}
+%attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
 
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/%{_sysconfdir}/*
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
 
 #%ghost %{_var}/lib/named/dev/*
 %attr(770,root,named) %{_var}/lib/named/dev/*
