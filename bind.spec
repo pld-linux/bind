@@ -10,7 +10,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ 
 Name:		bind
 Version:	9.2.1
-Release:	6
+Release:	7
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -332,7 +332,6 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 # we don't want Makefiles in documentation...
 rm -f doc/misc/Makefile*
-gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/rfc/index
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -391,7 +390,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz doc/misc/*.gz doc/arm/*.html doc/rfc
+%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index
 
 %attr(754,root,root)  /etc/rc.d/init.d/named
 %attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
@@ -440,6 +439,7 @@ fi
 %lang(ja) %{_mandir}/ja/man1/dig.1*
 %lang(ja) %{_mandir}/ja/man1/host.1*
 %lang(ja) %{_mandir}/ja/man8/nslookup.8*
+%lang(ja) %{_mandir}/ja/man8/nsupdate.8*
 
 %lang(pl) %{_mandir}/pl/man1/host.1*
 
@@ -450,8 +450,9 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*.sh
+%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_libdir}/*.la
 %{_includedir}/*
-%{_libdir}/*.so
 %{_mandir}/man3/*
 
 %files static
