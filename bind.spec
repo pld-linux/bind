@@ -18,7 +18,7 @@ Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	resolver.5
-Patch0:		%{name}-listen_error.patch
+Patch0:		%{name}-9.1.0-to-9.1.1rc5.patch.bz2
 Patch1:		%{name}-time.patch
 BuildRequires:	sed
 BuildRequires:	flex
