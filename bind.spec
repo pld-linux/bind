@@ -9,8 +9,8 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
-Version:	9.2.1
-Release:	12
+Version:	9.2.2
+Release:	1
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
@@ -290,11 +290,11 @@ BIND.
 %patch1 -p1
 %patch2 -p1
 %patch4 -p1
-%patch5 -p1
+#%patch5 -p1
 %patch6 -p1
 %patch7 -p1
 cd lib/bind
-%patch3 -p3
+#%patch3 -p3
 
 %build
 %{__libtoolize}
