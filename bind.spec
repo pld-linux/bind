@@ -31,7 +31,7 @@ Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
 Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
-Buildroot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_datadir	%{_prefix}/share/misc
 %define		_sysconfdir	/etc
