@@ -31,9 +31,9 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
-		touch /var/log/named && chown named.named /var/log/named
-	 	daemon named -u named -g named && chown named.named \
-						/var/run/named.pid
+		touch /var/lib/named/named.log && \
+			chown named.named /var/lib/named/named.log
+	 	daemon named -u named -t /var/lib/named -c named.conf
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
 	else
@@ -52,8 +52,10 @@ case "$1" in
         fi
 	;;
   status)
-	/usr/sbin/ndc status
-	exit $?
+# "status" Not implemented yet
+#	/usr/sbin/rndc status
+#	exit $?
+	status named
 	;;
   reload)
         if [ -f /var/lock/subsys/named ]; then
