@@ -57,7 +57,7 @@ case "$1" in
 	;;
   reload)
         if [ -f /var/lock/subsys/named ]; then
-	        msg_reload "Named"
+	        msg_reloading "Named"
 	        killproc named -HUP
 	else
 	        msg_Not_Running "Named"
