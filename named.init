@@ -49,7 +49,7 @@ case "$1" in
 	/usr/sbin/ndc status
 	;;
   reload)
-	echo -n "Reload named daemon"                                                                       
+	show Reload named daemon
         killproc named -HUP
 	;;
   restart)
