@@ -23,7 +23,7 @@ Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	94ae7b0f20dc406fdbbf6fac5d57b32f
 Source1:	%{name}-conf.tar.gz
-# Source1-md5:	3cab3fc9ba530d1067c48a7102b08735
+# Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
