@@ -341,8 +341,8 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(770,root,named) %dir %{_var}/lib/named/dev
 
-%{_var}/lib/named/M/*
-%{_var}/lib/named/root.*
+%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
+%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/etc/*
 
 %ghost %{_var}/lib/named/dev/*
