@@ -7,7 +7,7 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(pt_BR):	BIND - Servidor de nomes DNS
 Name:		bind
 Version:	9.1.3
-Release:	4
+Release:	5
 Epoch:		5
 License:	Distributable
 Group:		Networking/Daemons
@@ -27,6 +27,7 @@ BuildRequires:	bison
 BuildRequires:	openssl-devel 
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libtool
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 Prereq:		%{name}-libs
@@ -292,7 +293,6 @@ fi
 
 %post
 /sbin/chkconfig --add named
-
 if [ -f /var/lock/subsys/named ]; then
 	/etc/rc.d/init.d/named restart 1>&2
 else
