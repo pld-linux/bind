@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.0b1
-Release:	1
+Release:	2
 Epoch:		1
 License:	Distributable
 Group:		Networking/Daemons
@@ -22,6 +22,7 @@ BuildRequires:	sed
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
+Requires:	%{name}-libs = %{version}
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
 URL:		http://www.isc.org/products/BIND/bind9.html
@@ -77,6 +78,7 @@ Summary(tr):	DNS araçlarý - host, dig, dnsquery, nslookup
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
+Requires:	%{name}-libs = %{version}
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
@@ -108,6 +110,18 @@ i ich adresach IP.
 Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek
 için kullanýlan araçlar bulunmaktadýr.
 
+%package libs
+Summary:	DNS libraries
+Summary(pl):	Biblioteki DNS
+Group:		Libraries
+Group(de):	Libraries
+Group(fr):	Librairies
+Group(pl):	Biblioteki
+
+%description libs
+The bind-libs package contains all libraries required for
+running BIND and bind utils.
+
 %package devel
 Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
@@ -115,6 +129,7 @@ Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Requires:	%{name}-libs = %{version}
 
 %description devel
 The bind-devel package contains all the include files and the library
@@ -199,7 +214,6 @@ fi
 
 %post
 /sbin/chkconfig --add named
-/sbin/ldconfig
 
 if [ -f /var/lock/subsys/named ]; then
 	%{_sysconfdir}/rc.d/init.d/named restart 1>&2
@@ -227,8 +241,10 @@ fi
 if [ "$1" = "0" ]; then
 	%{_sbindir}/userdel named
 	%{_sbindir}/groupdel named
-	/sbin/ldconfig
 fi
+
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -237,7 +253,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc *.gz doc/misc/*.gz doc/arm/*
 
-%attr(755,root,root)  %{_libdir}/*.so.*.*
 %attr(754,root,root)  %{_sysconfdir}/rc.d/init.d/named
 %attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
@@ -272,6 +287,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man8/nslookup.8*
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root)  %{_libdir}/*.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
