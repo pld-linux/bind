@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	17
+Release:	18
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -302,6 +302,7 @@ eval "make -C src/bin/ndc ndc \
 	VER=`cat ./src/Version`"
 
 patch -p1 -R < %{PATCH21}
+touch src/bin/ndc/*
 
 mv src/bin/named/named src/bin/named/named.static
 mv src/bin/named-xfer/named-xfer src/bin/named-xfer/named-xfer.static
