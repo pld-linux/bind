@@ -19,7 +19,7 @@
 	
 # Check that networking is up.
 if is_no "${NETWORKING}"; then
-        msg_Network_Down "Named"
+        msg_network_down "Named"
 	exit 1
 fi
 			
@@ -39,7 +39,7 @@ case "$1" in
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
 	else
-		msg_Already_Running "Named"
+		msg_already_running "Named"
 		exit 1
 	fi
         ;;
@@ -49,7 +49,7 @@ case "$1" in
         	killproc named
         	rm -f /var/lock/subsys/named >/dev/null 2>&1
         else
-	        msg_Not_Running "Named"
+	        msg_not_running "Named"
                 exit 1
         fi
 	;;
@@ -64,7 +64,7 @@ case "$1" in
 	        msg_reloading "Named"
 	        killproc named -HUP
 	else
-	        msg_Not_Running "Named"
+	        msg_not_running "Named"
 	        exit 1
 	fi
 																							
@@ -74,7 +74,7 @@ case "$1" in
 	$0 start
 	;;
   *)
-        msg_Usage "$0 {start|stop|status|reload|restart}"
+        msg_usage "$0 {start|stop|status|reload|restart}"
         exit 1
 esac
 
