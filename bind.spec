@@ -22,7 +22,7 @@ Patch1:		%{name}-time.patch
 BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	bison
-BuildRequires:	openssl-devel >= 0.9.6b
+BuildRequires:	openssl-devel 
 BuildRequires:	autoconf
 BuildRequires:	automake
 Prereq:		rc-scripts >= 0.2.0
