@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.1.0
-Release:	5
+Release:	6
 Epoch:		3
 License:	Distributable
 Group:		Networking/Daemons
@@ -18,6 +18,8 @@ Source3:	named.sysconfig
 Source4:	named.logrotate
 Source5:	nslookup.8
 Source6:	resolver.5
+Patch0:		%{name}-listen_error.patch
+Patch1:		%{name}-time.patch
 BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	openssl-devel
@@ -175,6 +177,8 @@ Statyczne biblioteki binda.
 
 %prep
 %setup -q -a1
+%patch0 -p1
+%patch1 -p1
 
 %build
 autoconf
