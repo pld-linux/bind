@@ -1,0 +1,30 @@
+diff -urN bind-9.0.1rc2.org/make/rules.in bind-9.0.1rc2/make/rules.in
+--- bind-9.0.1rc2.org/make/rules.in	Tue Nov  7 11:04:08 2000
++++ bind-9.0.1rc2/make/rules.in	Tue Nov  7 16:40:21 2000
+@@ -65,7 +65,7 @@
+ 	@for i in ${ALL_SUBDIRS}; do \
+ 		if [ "$$i" != "nulldir" -a -d $$i ]; then \
+ 			echo "making all in `pwd`/$$i"; \
+-			(cd $$i; ${MAKE} ${MAKEDEFS} all); \
++			${MAKE} -C $$i ${MAKEDEFS} all || exit 1; \
+ 		fi \
+ 	done
+ 
+@@ -73,7 +73,7 @@
+ 	@for i in ${ALL_SUBDIRS}; do \
+ 		if [ "$$i" != "nulldir" -a -d $$i ]; then \
+ 			echo "making $@ in `pwd`/$$i"; \
+-			(cd $$i; ${MAKE} ${MAKEDEFS} $@); \
++			${MAKE} -C $$i ${MAKEDEFS} $@ || exit 1; \
+ 		fi \
+ 	done
+ 
+@@ -130,7 +130,7 @@
+ 	@for i in ${ALL_SUBDIRS}; do \
+ 		if [ "$$i" != "nulldir" -a -d $$i ]; then \
+ 			echo "making depend in `pwd`/$$i"; \
+-			(cd $$i; ${MAKE} ${MAKEDEFS} $@); \
++			${MAKE} -C $$i ${MAKEDEFS} $@ || exit 1; \
+ 		fi \
+ 	done
+ 	@if [ X"${SRCS}" != X -a X"${PSRCS}" != X ] ; then \
