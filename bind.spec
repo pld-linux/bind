@@ -248,34 +248,6 @@ if [ "$1" = "0" ]; then
 	%{_sbindir}/groupdel named
 fi
 
-%pre chroot
-if [ -f /etc/named.boot ]; then
-	cp /etc/named.boot /etc/named.boot.2conf
-	mv -f /etc/named.boot /etc/named.rpmsave
-	echo "Warrnig:/etc/named.boot saved as /etc/named.rpmsave" 1>&2
-fi
-if ! id -g named > /dev/null 2>&1 ; then
-	%{_sbindir}/groupadd -g 58 named
-fi
-if ! id -u named > /dev/null 2>&1 ; then
-	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
-fi
-
-%post chroot
-ln -sf named-chroot /etc/rc.d/init.d/named
-/sbin/chkconfig --add named
-
-if [ -f /var/lock/subsys/named ]; then
-	/etc/rc.d/init.d/named restart 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
-fi
-
-if [ -f /etc/named.boot.2conf ]; then
-	/usr/sbin/named-bootconf </etc/named.boot.2conf >%{_chroot}/etc/named.conf
-	rm -f /etc/named.boot.2conf
-fi
-
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 
