@@ -1,0 +1,1939 @@
+Index: bind9/CHANGES
+diff -u bind9/CHANGES:1.1048.2.294.4.10 bind9/CHANGES:1.1048.2.294.4.10.2.1
+--- bind9/CHANGES:1.1048.2.294.4.10	Wed Feb 19 04:32:39 2003
++++ bind9/CHANGES	Wed Sep 17 06:53:59 2003
+@@ -1,3 +1,6 @@
++	--- 9.2.2-P1 released ---
++
++1504.	[func]		New zone type "delegation-only".
+ 
+ 	--- 9.2.2 released ---
+ 
+Index: bind9/README
+diff -u bind9/README:1.93.2.30.4.5 bind9/README:1.93.2.30.4.5.2.1
+--- bind9/README:1.93.2.30.4.5	Fri Feb 21 05:15:59 2003
++++ bind9/README	Wed Sep 17 06:54:00 2003
+@@ -44,6 +44,10 @@
+ 		Nominum, Inc.
+ 
+ 
++BIND 9.2.2-P1
++
++	 A new zone type delegation-only is now supported.
++
+ BIND 9.2.2
+ 
+ 	BIND 9.2.2 is a maintenance release, containing fixes for
+Index: bind9/version
+diff -u bind9/version:1.26.2.15.4.1 bind9/version:1.26.2.15.4.1.2.1
+--- bind9/version:1.26.2.15.4.1	Mon Feb 17 06:26:27 2003
++++ bind9/version	Wed Sep 17 06:54:01 2003
+@@ -1,4 +1,4 @@
+-# $Id$
++# $Id$
+ #
+ # This file must follow /bin/sh rules.  It is imported directly via
+ # configure.
+@@ -6,5 +6,5 @@
+ MAJORVER=9
+ MINORVER=2
+ PATCHVER=2
+-RELEASETYPE=
+-RELEASEVER=
++RELEASETYPE=-P
++RELEASEVER=1
+Index: bind9/bin/named/server.c
+diff -u bind9/bin/named/server.c:1.339.2.8.4.3 bind9/bin/named/server.c:1.339.2.8.4.3.2.1
+--- bind9/bin/named/server.c:1.339.2.8.4.3	Tue Feb 18 03:27:58 2003
++++ bind9/bin/named/server.c	Wed Sep 17 05:40:36 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -1248,6 +1248,7 @@
+ 	cfg_obj_t *typeobj = NULL;
+ 	cfg_obj_t *forwarders = NULL;
+ 	cfg_obj_t *forwardtype = NULL;
++	cfg_obj_t *only = NULL;
+ 	isc_result_t result;
+ 	isc_buffer_t buffer;
+ 	dns_fixedname_t fixorigin;
+@@ -1349,6 +1350,14 @@
+ 	}
+ 
+ 	/*
++	 * "delegation-only zones" aren't zones either.
++	 */
++	if (strcasecmp(ztypestr, "delegation-only") == 0) {
++		result = dns_view_adddelegationonly(view, origin);
++		goto cleanup;
++	}
++
++	/*
+ 	 * Check for duplicates in the new zone table.
+ 	 */
+ 	result = dns_view_findzone(view, origin, &dupzone);
+@@ -1413,6 +1422,16 @@
+ 		cfg_map_get(zoptions, "forward", &forwardtype);
+ 		CHECK(configure_forward(config, view, origin, forwarders,
+ 					forwardtype));
++	}
++
++	/*
++	 * Stub and forward zones may also refer to delegation only points.
++	 */
++	only = NULL;
++	if (cfg_map_get(zoptions, "delegation-only", &only) == ISC_R_SUCCESS)
++	{
++		if (cfg_obj_asboolean(only))
++			CHECK(dns_view_adddelegationonly(view, origin));
+ 	}
+ 
+ 	/*
+Index: bind9/doc/arm/Bv9ARM-book.xml
+diff -u bind9/doc/arm/Bv9ARM-book.xml:1.155.2.22.4.1 bind9/doc/arm/Bv9ARM-book.xml:1.155.2.22.4.1.2.1
+--- bind9/doc/arm/Bv9ARM-book.xml:1.155.2.22.4.1	Mon Feb 17 01:29:29 2003
++++ bind9/doc/arm/Bv9ARM-book.xml	Wed Sep 17 05:40:37 2003
+@@ -2,7 +2,7 @@
+ <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.0//EN"
+                "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+ 
+-<!-- File: $Id$ -->
++<!-- File: $Id$ -->
+ 
+ <book>
+ <title>BIND 9 Administrator Reference Manual</title>
+@@ -2706,6 +2706,14 @@
+ those servers during resolution.
+ </para></entry>
+ </row>
++<row rowsep = "0">
++<entry colname = "1"><para><command>delegation-only</command></para></entry>
++<entry colname = "2"><para>Delegation only.  Logs queries that have have
++been forced to NXDOMAIN as the result of a delegation-only zone or
++a <command>delegation-only</command> in a stub or forward
++zone declartation.
++</para></entry>
++</row>
+ </tbody>
+ </tgroup></informaltable>
+ </sect3>
+@@ -4217,7 +4225,7 @@
+ <sect2 id="zone_statement_grammar"><title><command>zone</command>
+ Statement Grammar</title>
+       <programlisting>zone <replaceable>zone_name</replaceable> <optional><replaceable>class</replaceable></optional> <optional>{ 
+-    type ( master | slave | hint | stub | forward ) ;
++    type ( master | slave | hint | stub | forward /| delegation-only ) ;
+     <optional> allow-notify { <replaceable>address_match_list</replaceable> } ; </optional>
+     <optional> allow-query { <replaceable>address_match_list</replaceable> } ; </optional>
+     <optional> allow-transfer { <replaceable>address_match_list</replaceable> } ; </optional>
+@@ -4227,6 +4235,7 @@
+     <optional> also-notify { <replaceable>ip_addr</replaceable> <optional>port <replaceable>ip_port</replaceable></optional> ; <optional> <replaceable>ip_addr</replaceable> <optional>port <replaceable>ip_port</replaceable></optional> ; ... </optional> }; </optional>
+     <optional> check-names (<constant>warn</constant>|<constant>fail</constant>|<constant>ignore</constant>) ; </optional>
+     <optional> dialup <replaceable>dialup_option</replaceable> ; </optional>
++    <optional> delegation-only <replaceable>yes_or_no</replaceable> ; </optional>
+     <optional> file <replaceable>string</replaceable> ; </optional>
+     <optional> forward (<constant>only</constant>|<constant>first</constant>) ; </optional>
+     <optional> forwarders { <replaceable>ip_addr</replaceable> <optional>port <replaceable>ip_port</replaceable></optional> ; <optional> <replaceable>ip_addr</replaceable> <optional>port <replaceable>ip_port</replaceable></optional> ; ... </optional> }; </optional>
+@@ -4349,6 +4358,14 @@
+ IN, the server uses a compiled-in default set of root servers hints.
+ Classes other than IN have no built-in defaults hints.</para></entry>
+ </row>
++<row rowsep = "0">
++<entry colname = "1"><para><varname>delegation-only</varname></para></entry>
++<entry colname = "2"><para>This is used to enforce the delegation only
++status of infrastructure zones (e.g. COM, NET, ORG).  Any answer that
++is received without a explicit or implict delegation in the authority
++section will be treated as NXDOMAIN.  This does not apply to the zone
++apex.  This SHOULD NOT be applied to leaf zones.</para></entry>
++</row>
+ </tbody>
+ </tgroup></informaltable></sect3>
+ 
+@@ -4452,6 +4469,13 @@
+ <varlistentry><term><command>dialup</command></term>
+ <listitem><para>See the description of
+ <command>dialup</command> in <xref linkend="boolean_options"/>.</para>
++</listitem></varlistentry>
++
++<varlistentry><term><command>delegation-only</command></term>
++<listitem><para>The flag only applies to forward and stub zones.  If set
++to <userinput>yes</userinput> then the zone will also be treated as if it
++is also a delegation-only type zone.
++</para>
+ </listitem></varlistentry>
+ 
+ <varlistentry><term><command>forward</command></term>
+Index: bind9/doc/arm/Bv9ARM.ch06.html
+diff -u bind9/doc/arm/Bv9ARM.ch06.html:1.56.2.9.4.1 bind9/doc/arm/Bv9ARM.ch06.html:1.56.2.9.4.1.2.1
+--- bind9/doc/arm/Bv9ARM.ch06.html:1.56.2.9.4.1	Mon Feb 17 06:55:04 2003
++++ bind9/doc/arm/Bv9ARM.ch06.html	Wed Sep 17 06:52:11 2003
+@@ -94,7 +94,7 @@
+ ></DT
+ ><DT
+ >6.3. <A
+-HREF="Bv9ARM.ch06.html#AEN3565"
++HREF="Bv9ARM.ch06.html#AEN3586"
+ >Zone File</A
+ ></DT
+ ></DL
+@@ -2994,6 +2994,32 @@
+ </P
+ ></TD
+ ></TR
++><TR
++><TD
++WIDTH="110"
++ALIGN="LEFT"
++VALIGN="MIDDLE"
++><P
++><B
++CLASS="command"
++>delegation-only</B
++></P
++></TD
++><TD
++WIDTH="322"
++ALIGN="LEFT"
++VALIGN="MIDDLE"
++><P
++>Delegation only.  Logs queries that have have
++been forced to NXDOMAIN as the result of a delegation-only zone or
++a <B
++CLASS="command"
++>delegation-only</B
++> in a stub or forward
++zone declartation.
++</P
++></TD
++></TR
+ ></TBODY
+ ></TABLE
+ ><P
+@@ -3006,7 +3032,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN1859"
++NAME="AEN1866"
+ >6.2.11. <B
+ CLASS="command"
+ >lwres</B
+@@ -3103,7 +3129,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN1883"
++NAME="AEN1890"
+ >6.2.12. <B
+ CLASS="command"
+ >lwres</B
+@@ -3177,7 +3203,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN1902"
++NAME="AEN1909"
+ >6.2.13. <B
+ CLASS="command"
+ >options</B
+@@ -4166,7 +4192,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN2127"
++NAME="AEN2134"
+ >6.2.14. <B
+ CLASS="command"
+ >options</B
+@@ -5161,7 +5187,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2427"
++NAME="AEN2434"
+ >6.2.14.2. Forwarding</A
+ ></H3
+ ><P
+@@ -5365,7 +5391,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2492"
++NAME="AEN2499"
+ >6.2.14.4. Interfaces</A
+ ></H3
+ ><P
+@@ -5460,7 +5486,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2518"
++NAME="AEN2525"
+ >6.2.14.5. Query Address</A
+ ></H3
+ ><P
+@@ -5892,7 +5918,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2657"
++NAME="AEN2664"
+ >6.2.14.7. Operating System Resource Limits</A
+ ></H3
+ ><P
+@@ -6012,7 +6038,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2694"
++NAME="AEN2701"
+ >6.2.14.8. Server  Resource Limits</A
+ ></H3
+ ><P
+@@ -6096,7 +6122,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN2722"
++NAME="AEN2729"
+ >6.2.14.9. Periodic Task Intervals</A
+ ></H3
+ ><P
+@@ -6463,7 +6489,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN2810"
++NAME="AEN2817"
+ ></A
+ ><P
+ ></P
+@@ -6867,7 +6893,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN2925"
++NAME="AEN2932"
+ ></A
+ ><P
+ ></P
+@@ -7303,7 +7329,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3040"
++NAME="AEN3047"
+ >6.2.17. <B
+ CLASS="command"
+ >trusted-keys</B
+@@ -7378,7 +7404,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3056"
++NAME="AEN3063"
+ >6.2.18. <B
+ CLASS="command"
+ >trusted-keys</B
+@@ -7413,7 +7439,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3064"
++NAME="AEN3071"
+ >6.2.19. <B
+ CLASS="command"
+ >view</B
+@@ -7488,7 +7514,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3080"
++NAME="AEN3087"
+ >6.2.20. <B
+ CLASS="command"
+ >view</B
+@@ -7675,7 +7701,7 @@
+ >] [<SPAN
+ CLASS="optional"
+ >{ 
+-    type ( master | slave | hint | stub | forward ) ;
++    type ( master | slave | hint | stub | forward /| delegation-only ) ;
+     [<SPAN
+ CLASS="optional"
+ > allow-notify { <TT
+@@ -7790,6 +7816,15 @@
+ >]
+     [<SPAN
+ CLASS="optional"
++> delegation-only <TT
++CLASS="replaceable"
++><I
++>yes_or_no</I
++></TT
++> ; </SPAN
++>]
++    [<SPAN
++CLASS="optional"
+ > file <TT
+ CLASS="replaceable"
+ ><I
+@@ -8139,7 +8174,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3231"
++NAME="AEN3240"
+ >6.2.22. <B
+ CLASS="command"
+ >zone</B
+@@ -8150,13 +8185,13 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN3234"
++NAME="AEN3243"
+ >6.2.22.1. Zone Types</A
+ ></H3
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3236"
++NAME="AEN3245"
+ ></A
+ ><P
+ ></P
+@@ -8383,6 +8418,29 @@
+ Classes other than IN have no built-in defaults hints.</P
+ ></TD
+ ></TR
++><TR
++><TD
++WIDTH="87"
++ALIGN="LEFT"
++VALIGN="MIDDLE"
++><P
++><TT
++CLASS="varname"
++>delegation-only</TT
++></P
++></TD
++><TD
++WIDTH="405"
++ALIGN="LEFT"
++VALIGN="MIDDLE"
++><P
++>This is used to enforce the delegation only
++status of infrastructure zones (e.g. COM, NET, ORG).  Any answer that
++is received without a explicit or implict delegation in the authority
++section will be treated as NXDOMAIN.  This does not apply to the zone
++apex.  This SHOULD NOT be applied to leaf zones.</P
++></TD
++></TR
+ ></TBODY
+ ></TABLE
+ ><P
+@@ -8394,7 +8452,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN3291"
++NAME="AEN3306"
+ >6.2.22.2. Class</A
+ ></H3
+ ><P
+@@ -8432,7 +8490,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN3301"
++NAME="AEN3316"
+ >6.2.22.3. Zone Options</A
+ ></H3
+ ><P
+@@ -8655,6 +8713,23 @@
+ ><DT
+ ><B
+ CLASS="command"
++>delegation-only</B
++></DT
++><DD
++><P
++>The flag only applies to forward and stub zones.  If set
++to <TT
++CLASS="userinput"
++><B
++>yes</B
++></TT
++> then the zone will also be treated as if it
++is also a delegation-only type zone.
++</P
++></DD
++><DT
++><B
++CLASS="command"
+ >forward</B
+ ></DT
+ ><DD
+@@ -9073,7 +9148,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3535"
++NAME="AEN3556"
+ ></A
+ ><P
+ ></P
+@@ -9180,7 +9255,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN3565"
++NAME="AEN3586"
+ >6.3. Zone File</A
+ ></H1
+ ><DIV
+@@ -9201,7 +9276,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN3570"
++NAME="AEN3591"
+ >6.3.1.1. Resource Records</A
+ ></H3
+ ><P
+@@ -9224,7 +9299,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3576"
++NAME="AEN3597"
+ ></A
+ ><P
+ ></P
+@@ -9338,7 +9413,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3608"
++NAME="AEN3629"
+ ></A
+ ><P
+ ></P
+@@ -9832,7 +9907,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3755"
++NAME="AEN3776"
+ ></A
+ ><P
+ ></P
+@@ -9887,7 +9962,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3771"
++NAME="AEN3792"
+ ></A
+ ><P
+ ></P
+@@ -10064,7 +10139,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN3819"
++NAME="AEN3840"
+ >6.3.1.2. Textual expression of RRs</A
+ ></H3
+ ><P
+@@ -10094,7 +10169,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3826"
++NAME="AEN3847"
+ ></A
+ ><P
+ ></P
+@@ -10303,7 +10378,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3892"
++NAME="AEN3913"
+ ></A
+ ><P
+ ></P
+@@ -10394,7 +10469,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN3920"
++NAME="AEN3941"
+ >6.3.2. Discussion of MX Records</A
+ ></H2
+ ><P
+@@ -10430,7 +10505,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN3926"
++NAME="AEN3947"
+ ></A
+ ><P
+ ></P
+@@ -10726,7 +10801,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4018"
++NAME="AEN4039"
+ ></A
+ ><P
+ ></P
+@@ -10809,7 +10884,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4041"
++NAME="AEN4062"
+ >6.3.4. Inverse Mapping in IPv4</A
+ ></H2
+ ><P
+@@ -10836,7 +10911,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4046"
++NAME="AEN4067"
+ ></A
+ ><P
+ ></P
+@@ -10916,7 +10991,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4068"
++NAME="AEN4089"
+ >6.3.5. Other Zone File Directives</A
+ ></H2
+ ><P
+@@ -10941,7 +11016,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN4075"
++NAME="AEN4096"
+ >6.3.5.1. The <B
+ CLASS="command"
+ >$ORIGIN</B
+@@ -11011,7 +11086,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN4095"
++NAME="AEN4116"
+ >6.3.5.2. The <B
+ CLASS="command"
+ >$INCLUDE</B
+@@ -11093,7 +11168,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN4115"
++NAME="AEN4136"
+ >6.3.5.3. The <B
+ CLASS="command"
+ >$TTL</B
+@@ -11133,7 +11208,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4126"
++NAME="AEN4147"
+ >6.3.6. <SPAN
+ CLASS="acronym"
+ >BIND</SPAN
+@@ -11212,7 +11287,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4146"
++NAME="AEN4167"
+ ></A
+ ><P
+ ></P
+Index: bind9/doc/arm/Bv9ARM.ch07.html
+diff -u bind9/doc/arm/Bv9ARM.ch07.html:1.50.2.7 bind9/doc/arm/Bv9ARM.ch07.html:1.50.2.7.8.1
+--- bind9/doc/arm/Bv9ARM.ch07.html:1.50.2.7	Tue Aug  6 05:54:04 2002
++++ bind9/doc/arm/Bv9ARM.ch07.html	Wed Sep 17 06:52:13 2003
+@@ -89,7 +89,7 @@
+ ></DT
+ ><DT
+ >7.2. <A
+-HREF="Bv9ARM.ch07.html#AEN4218"
++HREF="Bv9ARM.ch07.html#AEN4239"
+ ><B
+ CLASS="command"
+ >chroot</B
+@@ -197,7 +197,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4218"
++NAME="AEN4239"
+ >7.2. <B
+ CLASS="command"
+ >chroot</B
+@@ -279,7 +279,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4241"
++NAME="AEN4262"
+ >7.2.1. The <B
+ CLASS="command"
+ >chroot</B
+@@ -355,7 +355,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4259"
++NAME="AEN4280"
+ >7.2.2. Using the <B
+ CLASS="command"
+ >setuid</B
+Index: bind9/doc/arm/Bv9ARM.ch08.html
+diff -u bind9/doc/arm/Bv9ARM.ch08.html:1.50.2.7 bind9/doc/arm/Bv9ARM.ch08.html:1.50.2.7.8.1
+--- bind9/doc/arm/Bv9ARM.ch08.html:1.50.2.7	Tue Aug  6 05:54:05 2002
++++ bind9/doc/arm/Bv9ARM.ch08.html	Wed Sep 17 06:52:13 2003
+@@ -81,17 +81,17 @@
+ ></DT
+ ><DT
+ >8.1. <A
+-HREF="Bv9ARM.ch08.html#AEN4280"
++HREF="Bv9ARM.ch08.html#AEN4301"
+ >Common Problems</A
+ ></DT
+ ><DT
+ >8.2. <A
+-HREF="Bv9ARM.ch08.html#AEN4285"
++HREF="Bv9ARM.ch08.html#AEN4306"
+ >Incrementing and Changing the Serial Number</A
+ ></DT
+ ><DT
+ >8.3. <A
+-HREF="Bv9ARM.ch08.html#AEN4290"
++HREF="Bv9ARM.ch08.html#AEN4311"
+ >Where Can I Get Help?</A
+ ></DT
+ ></DL
+@@ -101,7 +101,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4280"
++NAME="AEN4301"
+ >8.1. Common Problems</A
+ ></H1
+ ><DIV
+@@ -109,7 +109,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4282"
++NAME="AEN4303"
+ >8.1.1. It's not working; how can I figure out what's wrong?</A
+ ></H2
+ ><P
+@@ -125,7 +125,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4285"
++NAME="AEN4306"
+ >8.2. Incrementing and Changing the Serial Number</A
+ ></H1
+ ><P
+@@ -154,7 +154,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4290"
++NAME="AEN4311"
+ >8.3. Where Can I Get Help?</A
+ ></H1
+ ><P
+Index: bind9/doc/arm/Bv9ARM.ch09.html
+diff -u bind9/doc/arm/Bv9ARM.ch09.html:1.50.2.7 bind9/doc/arm/Bv9ARM.ch09.html:1.50.2.7.8.1
+--- bind9/doc/arm/Bv9ARM.ch09.html:1.50.2.7	Tue Aug  6 05:54:05 2002
++++ bind9/doc/arm/Bv9ARM.ch09.html	Wed Sep 17 06:52:13 2003
+@@ -74,7 +74,7 @@
+ ></DT
+ ><DT
+ >A.1. <A
+-HREF="Bv9ARM.ch09.html#AEN4306"
++HREF="Bv9ARM.ch09.html#AEN4327"
+ >Acknowledgements</A
+ ></DT
+ ><DT
+@@ -87,7 +87,7 @@
+ ></DT
+ ><DT
+ >A.3. <A
+-HREF="Bv9ARM.ch09.html#AEN4347"
++HREF="Bv9ARM.ch09.html#AEN4368"
+ >General <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -105,7 +105,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4306"
++NAME="AEN4327"
+ >A.1. Acknowledgements</A
+ ></H1
+ ><DIV
+@@ -113,7 +113,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4308"
++NAME="AEN4329"
+ >A.1.1. A Brief History of the <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -248,7 +248,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN4338"
++NAME="AEN4359"
+ >A.2.1.1. HS = hesiod</A
+ ></H3
+ ><P
+@@ -269,7 +269,7 @@
+ ><H3
+ CLASS="sect3"
+ ><A
+-NAME="AEN4343"
++NAME="AEN4364"
+ >A.2.1.2. CH = chaos</A
+ ></H3
+ ><P
+@@ -287,7 +287,7 @@
+ ><H1
+ CLASS="sect1"
+ ><A
+-NAME="AEN4347"
++NAME="AEN4368"
+ >A.3. General <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -335,7 +335,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4358"
++NAME="AEN4379"
+ ></A
+ ><P
+ ></P
+@@ -554,7 +554,7 @@
+ <DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4427"
++NAME="AEN4448"
+ ></A
+ ><P
+ ></P
+@@ -749,7 +749,7 @@
+ ><DIV
+ CLASS="informaltable"
+ ><A
+-NAME="AEN4482"
++NAME="AEN4503"
+ ></A
+ ><P
+ ></P
+@@ -909,19 +909,19 @@
+ </P
+ ><H3
+ ><A
+-NAME="AEN4526"
++NAME="AEN4547"
+ >Bibliography</A
+ ></H3
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4527"
++NAME="AEN4548"
+ >Standards</A
+ ></H2
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4529"
++NAME="AEN4550"
+ ></A
+ ><P
+ >[RFC974]&nbsp;<SPAN
+@@ -938,7 +938,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4536"
++NAME="AEN4557"
+ ></A
+ ><P
+ >[RFC1034]&nbsp;<SPAN
+@@ -955,7 +955,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4543"
++NAME="AEN4564"
+ ></A
+ ><P
+ >[RFC1035]&nbsp;<SPAN
+@@ -979,7 +979,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4552"
++NAME="AEN4573"
+ ></A
+ ><P
+ >[RFC2181]&nbsp;<SPAN
+@@ -999,7 +999,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4560"
++NAME="AEN4581"
+ ></A
+ ><P
+ >[RFC2308]&nbsp;<SPAN
+@@ -1019,7 +1019,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4568"
++NAME="AEN4589"
+ ></A
+ ><P
+ >[RFC1995]&nbsp;<SPAN
+@@ -1039,7 +1039,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4576"
++NAME="AEN4597"
+ ></A
+ ><P
+ >[RFC1996]&nbsp;<SPAN
+@@ -1056,7 +1056,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4583"
++NAME="AEN4604"
+ ></A
+ ><P
+ >[RFC2136]&nbsp;<SPAN
+@@ -1082,7 +1082,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4600"
++NAME="AEN4621"
+ ></A
+ ><P
+ >[RFC2845]&nbsp;<SPAN
+@@ -1111,13 +1111,13 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4619"
++NAME="AEN4640"
+ >Proposed Standards Still Under Development</A
+ ></H2
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4624"
++NAME="AEN4645"
+ ></A
+ ><P
+ >[RFC1886]&nbsp;<SPAN
+@@ -1140,7 +1140,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4636"
++NAME="AEN4657"
+ ></A
+ ><P
+ >[RFC2065]&nbsp;<SPAN
+@@ -1160,7 +1160,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4648"
++NAME="AEN4669"
+ ></A
+ ><P
+ >[RFC2137]&nbsp;<SPAN
+@@ -1177,7 +1177,7 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4656"
++NAME="AEN4677"
+ >Other Important RFCs About <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -1186,7 +1186,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4659"
++NAME="AEN4680"
+ ></A
+ ><P
+ >[RFC1535]&nbsp;<SPAN
+@@ -1206,7 +1206,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4667"
++NAME="AEN4688"
+ ></A
+ ><P
+ >[RFC1536]&nbsp;<SPAN
+@@ -1238,7 +1238,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4688"
++NAME="AEN4709"
+ ></A
+ ><P
+ >[RFC1982]&nbsp;<SPAN
+@@ -1258,13 +1258,13 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4699"
++NAME="AEN4720"
+ >Resource Record Types</A
+ ></H2
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4701"
++NAME="AEN4722"
+ ></A
+ ><P
+ >[RFC1183]&nbsp;<SPAN
+@@ -1293,7 +1293,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4719"
++NAME="AEN4740"
+ ></A
+ ><P
+ >[RFC1706]&nbsp;<SPAN
+@@ -1316,7 +1316,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4731"
++NAME="AEN4752"
+ ></A
+ ><P
+ >[RFC2168]&nbsp;<SPAN
+@@ -1337,7 +1337,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4742"
++NAME="AEN4763"
+ ></A
+ ><P
+ >[RFC1876]&nbsp;<SPAN
+@@ -1364,7 +1364,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4759"
++NAME="AEN4780"
+ ></A
+ ><P
+ >[RFC2052]&nbsp;<SPAN
+@@ -1388,7 +1388,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4771"
++NAME="AEN4792"
+ ></A
+ ><P
+ >[RFC2163]&nbsp;<SPAN
+@@ -1409,7 +1409,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4779"
++NAME="AEN4800"
+ ></A
+ ><P
+ >[RFC2230]&nbsp;<SPAN
+@@ -1429,7 +1429,7 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4787"
++NAME="AEN4808"
+ ><SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -1438,7 +1438,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4790"
++NAME="AEN4811"
+ ></A
+ ><P
+ >[RFC1101]&nbsp;<SPAN
+@@ -1458,7 +1458,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4798"
++NAME="AEN4819"
+ ></A
+ ><P
+ >[RFC1123]&nbsp;<SPAN
+@@ -1475,7 +1475,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4805"
++NAME="AEN4826"
+ ></A
+ ><P
+ >[RFC1591]&nbsp;<SPAN
+@@ -1492,7 +1492,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4812"
++NAME="AEN4833"
+ ></A
+ ><P
+ >[RFC2317]&nbsp;<SPAN
+@@ -1515,7 +1515,7 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4826"
++NAME="AEN4847"
+ ><SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -1524,7 +1524,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4829"
++NAME="AEN4850"
+ ></A
+ ><P
+ >[RFC1537]&nbsp;<SPAN
+@@ -1544,7 +1544,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4837"
++NAME="AEN4858"
+ ></A
+ ><P
+ >[RFC1912]&nbsp;<SPAN
+@@ -1564,7 +1564,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4845"
++NAME="AEN4866"
+ ></A
+ ><P
+ >[RFC1912]&nbsp;<SPAN
+@@ -1584,7 +1584,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4853"
++NAME="AEN4874"
+ ></A
+ ><P
+ >[RFC2010]&nbsp;<SPAN
+@@ -1604,7 +1604,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4864"
++NAME="AEN4885"
+ ></A
+ ><P
+ >[RFC2219]&nbsp;<SPAN
+@@ -1627,7 +1627,7 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4876"
++NAME="AEN4897"
+ >Other <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -1636,7 +1636,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4882"
++NAME="AEN4903"
+ ></A
+ ><P
+ >[RFC1464]&nbsp;<SPAN
+@@ -1653,7 +1653,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4889"
++NAME="AEN4910"
+ ></A
+ ><P
+ >[RFC1713]&nbsp;<SPAN
+@@ -1673,7 +1673,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4897"
++NAME="AEN4918"
+ ></A
+ ><P
+ >[RFC1794]&nbsp;<SPAN
+@@ -1693,7 +1693,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4905"
++NAME="AEN4926"
+ ></A
+ ><P
+ >[RFC2240]&nbsp;<SPAN
+@@ -1710,7 +1710,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4912"
++NAME="AEN4933"
+ ></A
+ ><P
+ >[RFC2345]&nbsp;<SPAN
+@@ -1733,7 +1733,7 @@
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4926"
++NAME="AEN4947"
+ ></A
+ ><P
+ >[RFC2352]&nbsp;<SPAN
+@@ -1750,13 +1750,13 @@
+ ><H2
+ CLASS="bibliodiv"
+ ><A
+-NAME="AEN4933"
++NAME="AEN4954"
+ >Obsolete and Unimplemented Experimental RRs</A
+ ></H2
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4935"
++NAME="AEN4956"
+ ></A
+ ><P
+ >[RFC1712]&nbsp;<SPAN
+@@ -1807,7 +1807,7 @@
+ ><H2
+ CLASS="sect2"
+ ><A
+-NAME="AEN4956"
++NAME="AEN4977"
+ >A.4.3. Other Documents About <SPAN
+ CLASS="acronym"
+ >BIND</SPAN
+@@ -1817,13 +1817,13 @@
+ ></P
+ ><H3
+ ><A
+-NAME="AEN4960"
++NAME="AEN4981"
+ >Bibliography</A
+ ></H3
+ ><DIV
+ CLASS="biblioentry"
+ ><A
+-NAME="AEN4961"
++NAME="AEN4982"
+ ></A
+ ><P
+ ><SPAN
+Index: bind9/doc/arm/Bv9ARM.html
+diff -u bind9/doc/arm/Bv9ARM.html:1.60.2.7 bind9/doc/arm/Bv9ARM.html:1.60.2.7.8.1
+--- bind9/doc/arm/Bv9ARM.html:1.60.2.7	Tue Aug  6 05:54:05 2002
++++ bind9/doc/arm/Bv9ARM.html	Wed Sep 17 06:52:13 2003
+@@ -494,7 +494,7 @@
+ ></DT
+ ><DT
+ >6.2.11. <A
+-HREF="Bv9ARM.ch06.html#AEN1859"
++HREF="Bv9ARM.ch06.html#AEN1866"
+ ><B
+ CLASS="command"
+ >lwres</B
+@@ -502,7 +502,7 @@
+ ></DT
+ ><DT
+ >6.2.12. <A
+-HREF="Bv9ARM.ch06.html#AEN1883"
++HREF="Bv9ARM.ch06.html#AEN1890"
+ ><B
+ CLASS="command"
+ >lwres</B
+@@ -510,7 +510,7 @@
+ ></DT
+ ><DT
+ >6.2.13. <A
+-HREF="Bv9ARM.ch06.html#AEN1902"
++HREF="Bv9ARM.ch06.html#AEN1909"
+ ><B
+ CLASS="command"
+ >options</B
+@@ -518,7 +518,7 @@
+ ></DT
+ ><DT
+ >6.2.14. <A
+-HREF="Bv9ARM.ch06.html#AEN2127"
++HREF="Bv9ARM.ch06.html#AEN2134"
+ ><B
+ CLASS="command"
+ >options</B
+@@ -542,7 +542,7 @@
+ ></DT
+ ><DT
+ >6.2.17. <A
+-HREF="Bv9ARM.ch06.html#AEN3040"
++HREF="Bv9ARM.ch06.html#AEN3047"
+ ><B
+ CLASS="command"
+ >trusted-keys</B
+@@ -550,7 +550,7 @@
+ ></DT
+ ><DT
+ >6.2.18. <A
+-HREF="Bv9ARM.ch06.html#AEN3056"
++HREF="Bv9ARM.ch06.html#AEN3063"
+ ><B
+ CLASS="command"
+ >trusted-keys</B
+@@ -559,7 +559,7 @@
+ ></DT
+ ><DT
+ >6.2.19. <A
+-HREF="Bv9ARM.ch06.html#AEN3064"
++HREF="Bv9ARM.ch06.html#AEN3071"
+ ><B
+ CLASS="command"
+ >view</B
+@@ -567,7 +567,7 @@
+ ></DT
+ ><DT
+ >6.2.20. <A
+-HREF="Bv9ARM.ch06.html#AEN3080"
++HREF="Bv9ARM.ch06.html#AEN3087"
+ ><B
+ CLASS="command"
+ >view</B
+@@ -584,7 +584,7 @@
+ ></DT
+ ><DT
+ >6.2.22. <A
+-HREF="Bv9ARM.ch06.html#AEN3231"
++HREF="Bv9ARM.ch06.html#AEN3240"
+ ><B
+ CLASS="command"
+ >zone</B
+@@ -594,7 +594,7 @@
+ ></DD
+ ><DT
+ >6.3. <A
+-HREF="Bv9ARM.ch06.html#AEN3565"
++HREF="Bv9ARM.ch06.html#AEN3586"
+ >Zone File</A
+ ></DT
+ ><DD
+@@ -606,7 +606,7 @@
+ ></DT
+ ><DT
+ >6.3.2. <A
+-HREF="Bv9ARM.ch06.html#AEN3920"
++HREF="Bv9ARM.ch06.html#AEN3941"
+ >Discussion of MX Records</A
+ ></DT
+ ><DT
+@@ -616,17 +616,17 @@
+ ></DT
+ ><DT
+ >6.3.4. <A
+-HREF="Bv9ARM.ch06.html#AEN4041"
++HREF="Bv9ARM.ch06.html#AEN4062"
+ >Inverse Mapping in IPv4</A
+ ></DT
+ ><DT
+ >6.3.5. <A
+-HREF="Bv9ARM.ch06.html#AEN4068"
++HREF="Bv9ARM.ch06.html#AEN4089"
+ >Other Zone File Directives</A
+ ></DT
+ ><DT
+ >6.3.6. <A
+-HREF="Bv9ARM.ch06.html#AEN4126"
++HREF="Bv9ARM.ch06.html#AEN4147"
+ ><SPAN
+ CLASS="acronym"
+ >BIND</SPAN
+@@ -656,7 +656,7 @@
+ ></DT
+ ><DT
+ >7.2. <A
+-HREF="Bv9ARM.ch07.html#AEN4218"
++HREF="Bv9ARM.ch07.html#AEN4239"
+ ><B
+ CLASS="command"
+ >chroot</B
+@@ -670,7 +670,7 @@
+ ><DL
+ ><DT
+ >7.2.1. <A
+-HREF="Bv9ARM.ch07.html#AEN4241"
++HREF="Bv9ARM.ch07.html#AEN4262"
+ >The <B
+ CLASS="command"
+ >chroot</B
+@@ -678,7 +678,7 @@
+ ></DT
+ ><DT
+ >7.2.2. <A
+-HREF="Bv9ARM.ch07.html#AEN4259"
++HREF="Bv9ARM.ch07.html#AEN4280"
+ >Using the <B
+ CLASS="command"
+ >setuid</B
+@@ -702,26 +702,26 @@
+ ><DL
+ ><DT
+ >8.1. <A
+-HREF="Bv9ARM.ch08.html#AEN4280"
++HREF="Bv9ARM.ch08.html#AEN4301"
+ >Common Problems</A
+ ></DT
+ ><DD
+ ><DL
+ ><DT
+ >8.1.1. <A
+-HREF="Bv9ARM.ch08.html#AEN4282"
++HREF="Bv9ARM.ch08.html#AEN4303"
+ >It's not working; how can I figure out what's wrong?</A
+ ></DT
+ ></DL
+ ></DD
+ ><DT
+ >8.2. <A
+-HREF="Bv9ARM.ch08.html#AEN4285"
++HREF="Bv9ARM.ch08.html#AEN4306"
+ >Incrementing and Changing the Serial Number</A
+ ></DT
+ ><DT
+ >8.3. <A
+-HREF="Bv9ARM.ch08.html#AEN4290"
++HREF="Bv9ARM.ch08.html#AEN4311"
+ >Where Can I Get Help?</A
+ ></DT
+ ></DL
+@@ -735,14 +735,14 @@
+ ><DL
+ ><DT
+ >A.1. <A
+-HREF="Bv9ARM.ch09.html#AEN4306"
++HREF="Bv9ARM.ch09.html#AEN4327"
+ >Acknowledgements</A
+ ></DT
+ ><DD
+ ><DL
+ ><DT
+ >A.1.1. <A
+-HREF="Bv9ARM.ch09.html#AEN4308"
++HREF="Bv9ARM.ch09.html#AEN4329"
+ >A Brief History of the <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -772,7 +772,7 @@
+ ></DD
+ ><DT
+ >A.3. <A
+-HREF="Bv9ARM.ch09.html#AEN4347"
++HREF="Bv9ARM.ch09.html#AEN4368"
+ >General <SPAN
+ CLASS="acronym"
+ >DNS</SPAN
+@@ -806,7 +806,7 @@
+ ></DT
+ ><DT
+ >A.4.3. <A
+-HREF="Bv9ARM.ch09.html#AEN4956"
++HREF="Bv9ARM.ch09.html#AEN4977"
+ >Other Documents About <SPAN
+ CLASS="acronym"
+ >BIND</SPAN
+Index: bind9/lib/dns/api
+diff -u bind9/lib/dns/api:1.5.2.4.4.1 bind9/lib/dns/api:1.5.2.4.4.1.2.1
+--- bind9/lib/dns/api:1.5.2.4.4.1	Tue Feb 18 03:43:06 2003
++++ bind9/lib/dns/api	Wed Sep 17 06:54:01 2003
+@@ -1,3 +1,3 @@
+-LIBINTERFACE = 8
+-LIBREVISION = 1
++LIBINTERFACE = 10
++LIBREVISION = 0
+ LIBAGE = 0
+Index: bind9/lib/dns/log.c
+diff -u bind9/lib/dns/log.c:1.33.2.2 bind9/lib/dns/log.c:1.33.2.2.12.1
+--- bind9/lib/dns/log.c:1.33.2.2	Thu Oct 11 23:07:00 2001
++++ bind9/lib/dns/log.c	Wed Sep 17 05:40:39 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ /* Principal Authors: DCL */
+ 
+@@ -40,6 +40,7 @@
+ 	{ "xfer-out",	0 },
+ 	{ "dispatch",	0 },
+ 	{ "lame-servers", 0 },
++	{ "delegation-only", 0 },
+ 	{ NULL, 	0 }
+ };
+ 
+Index: bind9/lib/dns/ncache.c
+diff -u bind9/lib/dns/ncache.c:1.24.2.2 bind9/lib/dns/ncache.c:1.24.2.2.6.1
+--- bind9/lib/dns/ncache.c:1.24.2.2	Fri Feb  8 03:57:29 2002
++++ bind9/lib/dns/ncache.c	Wed Sep 17 05:40:39 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -121,7 +121,10 @@
+ 	ttl = maxttl;
+ 	trust = 0xffff;
+ 	isc_buffer_init(&buffer, data, sizeof(data));
+-	result = dns_message_firstname(message, DNS_SECTION_AUTHORITY);
++	if (message->counts[DNS_SECTION_AUTHORITY])
++		result = dns_message_firstname(message, DNS_SECTION_AUTHORITY);
++	else
++		result = ISC_R_NOMORE;
+ 	while (result == ISC_R_SUCCESS) {
+ 		name = NULL;
+ 		dns_message_currentname(message, DNS_SECTION_AUTHORITY,
+Index: bind9/lib/dns/resolver.c
+diff -u bind9/lib/dns/resolver.c:1.218.2.12.4.4 bind9/lib/dns/resolver.c:1.218.2.12.4.4.2.2
+--- bind9/lib/dns/resolver.c:1.218.2.12.4.4	Tue Feb 18 03:32:01 2003
++++ bind9/lib/dns/resolver.c	Wed Sep 17 05:56:16 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -291,6 +291,53 @@
+ 				      dns_rdataset_t *ardataset,
+ 				      isc_result_t *eresultp);
+ 
++static isc_boolean_t
++fix_mustbedelegationornxdomain(dns_message_t *message, dns_name_t *domain) {
++
++	dns_name_t *name;
++	dns_rdataset_t *rdataset;
++	dns_rdatatype_t type;
++	isc_result_t result;
++	isc_boolean_t keep_auth = ISC_FALSE;
++
++	if (message->rcode == dns_rcode_nxdomain)
++		return (ISC_FALSE);
++
++	/* Look for referral. */
++	if (message->counts[DNS_SECTION_AUTHORITY] == 0)
++		goto munge;
++
++	result = dns_message_firstname(message, DNS_SECTION_AUTHORITY);
++	while (result == ISC_R_SUCCESS) {
++		name = NULL;
++		dns_message_currentname(message, DNS_SECTION_AUTHORITY,
++					&name);
++		for (rdataset = ISC_LIST_HEAD(name->list);
++		     rdataset != NULL;
++		     rdataset = ISC_LIST_NEXT(rdataset, link)) {
++			type = rdataset->type;
++			if (type == dns_rdatatype_soa &&
++			    dns_name_equal(name, domain))
++				keep_auth = ISC_TRUE;
++			if (type != dns_rdatatype_ns)
++				continue;
++			if (dns_name_equal(name, domain))
++				goto munge;
++			if (dns_name_issubdomain(name, domain))
++				return (ISC_FALSE);
++		}
++		result = dns_message_nextname(message, DNS_SECTION_AUTHORITY);
++	}
++
++ munge:
++	message->rcode = dns_rcode_nxdomain;
++	message->counts[DNS_SECTION_ANSWER] = 0;
++	if (!keep_auth)
++		message->counts[DNS_SECTION_AUTHORITY] = 0;
++	message->counts[DNS_SECTION_ADDITIONAL] = 0;
++	return (ISC_TRUE);
++}
++
+ static inline isc_result_t
+ fctx_starttimer(fetchctx_t *fctx) {
+ 	/*
+@@ -4373,6 +4420,24 @@
+ 		broken_server = ISC_TRUE;
+ 		keep_trying = ISC_TRUE;
+ 		goto done;
++	}
++
++	/*
++	 * Enforce delegations only zones like NET and COM.
++	 */
++	if (dns_view_isdelegationonly(fctx->res->view, &fctx->domain) &&
++	    !dns_name_equal(&fctx->domain, &fctx->name) &&
++	    fix_mustbedelegationornxdomain(message, &fctx->domain)) {
++		char namebuf[DNS_NAME_FORMATSIZE];
++		char domainbuf[DNS_NAME_FORMATSIZE];
++
++		dns_name_format(&fctx->name, namebuf, sizeof(namebuf));
++		dns_name_format(&fctx->domain, domainbuf, sizeof(domainbuf));
++
++		isc_log_write(dns_lctx, DNS_LOGCATEGORY_DELEGATION_ONLY,
++			     DNS_LOGMODULE_RESOLVER, ISC_LOG_NOTICE,
++			     "enforced delegation-only for '%s' (%s)",
++			     domainbuf, namebuf);
+ 	}
+ 
+ 	/*
+Index: bind9/lib/dns/view.c
+diff -u bind9/lib/dns/view.c:1.103.2.2 bind9/lib/dns/view.c:1.103.2.2.6.1
+--- bind9/lib/dns/view.c:1.103.2.2	Mon Aug  5 06:57:12 2002
++++ bind9/lib/dns/view.c	Wed Sep 17 05:40:40 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -45,6 +45,8 @@
+ #define ADBSHUTDOWN(v)	(((v)->attributes & DNS_VIEWATTR_ADBSHUTDOWN) != 0)
+ #define REQSHUTDOWN(v)	(((v)->attributes & DNS_VIEWATTR_REQSHUTDOWN) != 0)
+ 
++#define DNS_VIEW_DELONLYHASH 111
++
+ static void resolver_shutdown(isc_task_t *task, isc_event_t *event);
+ static void adb_shutdown(isc_task_t *task, isc_event_t *event);
+ static void req_shutdown(isc_task_t *task, isc_event_t *event);
+@@ -139,6 +141,7 @@
+ 	if (result != ISC_R_SUCCESS)
+ 		goto cleanup_fwdtable;
+ 	view->peers = NULL;
++	view->delonly = NULL;
+ 
+ 	/*
+ 	 * Initialize configuration data with default values.
+@@ -255,6 +258,23 @@
+ 		dns_acl_detach(&view->v6synthesisacl);
+ 	if (view->sortlist != NULL)
+ 		dns_acl_detach(&view->sortlist);
++	if (view->delonly != NULL) {
++		dns_name_t *name;
++		int i;
++
++		for (i = 0; i < DNS_VIEW_DELONLYHASH; i++) {
++			name = ISC_LIST_HEAD(view->delonly[i]);
++			while (name != NULL) {
++				ISC_LIST_UNLINK(view->delonly[i], name, link);
++				dns_name_free(name, view->mctx);
++				isc_mem_put(view->mctx, name, sizeof(*name));
++				name = ISC_LIST_HEAD(view->delonly[i]);
++			}
++		}
++		isc_mem_put(view->mctx, view->delonly, sizeof(dns_namelist_t) *
++			    DNS_VIEW_DELONLYHASH);
++		view->delonly = NULL;
++	}
+ 	dns_keytable_detach(&view->trustedkeys);
+ 	dns_keytable_detach(&view->secroots);
+ 	dns_fwdtable_destroy(&view->fwdtable);
+@@ -1134,4 +1154,58 @@
+ 
+ 	dns_adb_flush(view->adb);
+ 	return (ISC_R_SUCCESS);
++}
++
++isc_result_t
++dns_view_adddelegationonly(dns_view_t *view, dns_name_t *name) {
++	isc_result_t result;
++	dns_name_t *new;
++	isc_uint32_t hash;
++
++	REQUIRE(DNS_VIEW_VALID(view));
++
++	if (view->delonly == NULL) {
++		view->delonly = isc_mem_get(view->mctx,
++					    sizeof(dns_namelist_t) *
++					    DNS_VIEW_DELONLYHASH);
++		if (view->delonly == NULL)
++			return (ISC_R_NOMEMORY);
++		for (hash = 0; hash < DNS_VIEW_DELONLYHASH; hash++)
++			ISC_LIST_INIT(view->delonly[hash]);
++	}
++	hash = dns_name_hash(name, ISC_FALSE) % DNS_VIEW_DELONLYHASH;
++	new = ISC_LIST_HEAD(view->delonly[hash]);
++	while (new != NULL && !dns_name_equal(new, name))
++		new = ISC_LIST_NEXT(new, link);
++	if (new != NULL)
++		return (ISC_R_SUCCESS);
++	new = isc_mem_get(view->mctx, sizeof(*new));
++	if (new == NULL)
++		return (ISC_R_NOMEMORY);
++	dns_name_init(new, NULL);
++	result = dns_name_dup(name, view->mctx, new);
++	if (result == ISC_R_SUCCESS)
++		ISC_LIST_APPEND(view->delonly[hash], new, link);
++	else
++		isc_mem_put(view->mctx, new, sizeof(*new));
++	return (result);
++}
++
++isc_result_t
++dns_view_isdelegationonly(dns_view_t *view, dns_name_t *name) {
++	dns_name_t *new;
++	isc_uint32_t hash;
++
++	REQUIRE(DNS_VIEW_VALID(view));
++
++	if (view->delonly == NULL)
++		return (ISC_FALSE);
++
++	hash = dns_name_hash(name, ISC_FALSE) % DNS_VIEW_DELONLYHASH;
++	new = ISC_LIST_HEAD(view->delonly[hash]);
++	while (new != NULL && !dns_name_equal(new, name))
++		new = ISC_LIST_NEXT(new, link);
++	if (new == NULL)
++		return (ISC_FALSE);
++	return (ISC_TRUE);
+ }
+Index: bind9/lib/dns/include/dns/log.h
+diff -u bind9/lib/dns/include/dns/log.h:1.30.2.1 bind9/lib/dns/include/dns/log.h:1.30.2.1.12.1
+--- bind9/lib/dns/include/dns/log.h:1.30.2.1	Thu Oct 11 02:03:23 2001
++++ bind9/lib/dns/include/dns/log.h	Wed Sep 17 05:40:40 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ /* Principal Authors: DCL */
+ 
+@@ -39,6 +39,7 @@
+ #define DNS_LOGCATEGORY_XFER_OUT	(&dns_categories[7])
+ #define DNS_LOGCATEGORY_DISPATCH	(&dns_categories[8])
+ #define DNS_LOGCATEGORY_LAME_SERVERS	(&dns_categories[9])
++#define DNS_LOGCATEGORY_DELEGATION_ONLY	(&dns_categories[10])
+ 
+ /* Backwards compatibility. */
+ #define DNS_LOGCATEGORY_GENERAL		ISC_LOGCATEGORY_GENERAL
+Index: bind9/lib/dns/include/dns/view.h
+diff -u bind9/lib/dns/include/dns/view.h:1.73.2.2 bind9/lib/dns/include/dns/view.h:1.73.2.2.6.1
+--- bind9/lib/dns/include/dns/view.h:1.73.2.2	Mon Aug  5 06:57:13 2002
++++ bind9/lib/dns/include/dns/view.h	Wed Sep 17 05:40:40 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #ifndef DNS_VIEW_H
+ #define DNS_VIEW_H 1
+@@ -118,6 +118,7 @@
+ 	in_port_t			dstport;
+ 	dns_aclenv_t			aclenv;
+ 	isc_boolean_t			flush;
++	dns_namelist_t *		delonly;
+ 
+ 	/*
+ 	 * Configurable data for server use only,
+@@ -690,6 +691,35 @@
+  *	ISC_R_SUCCESS
+  *	ISC_R_NOMEMORY
+  */
++
++isc_result_t
++dns_view_adddelegationonly(dns_view_t *view, dns_name_t *name);
++/*
++ * Add the given name to the delegation only table.
++ *
++ * Requires:
++ *	'view' is valid.
++ *	'name' is valid.
++ *
++ * Returns:
++ *	ISC_R_SUCCESS
++ *	ISC_R_NOMEMORY
++ */
++
++isc_boolean_t
++dns_view_isdelegationonly(dns_view_t *view, dns_name_t *name);
++/*
++ * Check if 'name' is in the delegation only table.
++ *
++ * Requires:
++ *	'view' is valid.
++ *	'name' is valid.
++ *
++ * Returns:
++ *	ISC_TRUE if the name is is the table.
++ *	ISC_FALSE othewise.
++ */
++
+ 
+ ISC_LANG_ENDDECLS
+ 
+Index: bind9/lib/isccfg/api
+diff -u bind9/lib/isccfg/api:1.3.2.3.4.1 bind9/lib/isccfg/api:1.3.2.3.4.1.2.1
+--- bind9/lib/isccfg/api:1.3.2.3.4.1	Tue Feb 18 03:43:06 2003
++++ bind9/lib/isccfg/api	Wed Sep 17 06:54:01 2003
+@@ -1,3 +1,3 @@
+-LIBINTERFACE = 0
+-LIBREVISION = 4
++LIBINTERFACE = 1
++LIBREVISION = 0
+ LIBAGE = 0
+Index: bind9/lib/isccfg/check.c
+diff -u bind9/lib/isccfg/check.c:1.14.2.16 bind9/lib/isccfg/check.c:1.14.2.16.6.1
+--- bind9/lib/isccfg/check.c:1.14.2.16	Tue Apr 23 02:00:03 2002
++++ bind9/lib/isccfg/check.c	Wed Sep 17 05:40:40 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -100,6 +100,7 @@
+ #define STUBZONE	4
+ #define HINTZONE	8
+ #define FORWARDZONE	16
++#define DELEGATIONZONE	32
+ 
+ typedef struct {
+ 	const char *name;
+@@ -130,6 +131,7 @@
+ 	{ "notify", MASTERZONE | SLAVEZONE },
+ 	{ "also-notify", MASTERZONE | SLAVEZONE },
+ 	{ "dialup", MASTERZONE | SLAVEZONE | STUBZONE },
++	{ "delegation-only", STUBZONE | FORWARDZONE},
+ 	{ "forward", MASTERZONE | SLAVEZONE | STUBZONE | FORWARDZONE},
+ 	{ "forwarders", MASTERZONE | SLAVEZONE | STUBZONE | FORWARDZONE},
+ 	{ "maintain-ixfr-base", MASTERZONE | SLAVEZONE },
+@@ -189,6 +191,8 @@
+ 		ztype = FORWARDZONE;
+ 	else if (strcasecmp(typestr, "hint") == 0)
+ 		ztype = HINTZONE;
++	else if (strcasecmp(typestr, "delegation-only") == 0)
++		ztype = DELEGATIONZONE;
+ 	else {
+ 		cfg_obj_log(obj, logctx, ISC_LOG_ERROR,
+ 			    "zone '%s': invalid type %s",
+Index: bind9/lib/isccfg/parser.c
+diff -u bind9/lib/isccfg/parser.c:1.70.2.14.4.2 bind9/lib/isccfg/parser.c:1.70.2.14.4.2.2.1
+--- bind9/lib/isccfg/parser.c:1.70.2.14.4.2	Mon Feb 17 07:05:10 2003
++++ bind9/lib/isccfg/parser.c	Wed Sep 17 05:40:40 2003
+@@ -15,7 +15,7 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-/* $Id$ */
++/* $Id$ */
+ 
+ #include <config.h>
+ 
+@@ -755,7 +755,7 @@
+ };
+ 
+ static const char *zonetype_enums[] = {
+-	"master", "slave", "stub", "hint", "forward", NULL };
++	"master", "slave", "stub", "hint", "forward", "delegation-only", NULL };
+ static cfg_type_t cfg_type_zonetype = {
+ 	"zonetype", parse_enum, print_ustring, &cfg_rep_string,
+ 	&zonetype_enums
+@@ -955,6 +955,7 @@
+ 	  CFG_CLAUSEFLAG_MULTI | CFG_CLAUSEFLAG_OBSOLETE },
+ 	{ "update-policy", &cfg_type_updatepolicy, 0 },
+ 	{ "database", &cfg_type_astring, 0 },
++	{ "delegation-only", &cfg_type_boolean, 0 },
+ 	/*
+ 	 * Note that the format of the check-names option is different between
+ 	 * the zone options and the global/view options.  Ugh.
