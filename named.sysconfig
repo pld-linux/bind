@@ -1,0 +1,2 @@
+# Set nice level for named
+SERVICE_RUN_NICE_LEVEL="+2"
