@@ -1,0 +1,11 @@
+--- bind-9.2.1/lib/bind/Makefile.in~	Thu Aug  9 05:59:34 2001
++++ bind-9.2.1/lib/bind/Makefile.in	Fri Nov 29 16:55:09 2002
+@@ -19,6 +19,8 @@
+ VPATH =         @srcdir@
+ top_srcdir =    @top_srcdir@
+ 
++LIBS = @LIBS@
++
+ @LIBBIND_API@
+ 
+ DAEMON_OBJS=bsd/daemon.@O@

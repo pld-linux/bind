@@ -1,0 +1,11 @@
+--- bind-9.2.1/lib/bind/configure.in~	Fri Nov 29 16:11:01 2002
++++ bind-9.2.1/lib/bind/configure.in	Fri Nov 29 16:43:15 2002
+@@ -14,7 +14,7 @@
+ # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ 
+ dnl
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
++AC_DIVERT_PUSH(NOTICE)dnl
+ esyscmd([sed "s/^/# /" COPYRIGHT])dnl
+ AC_DIVERT_POP()dnl
+ 
