@@ -9,7 +9,7 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Name:		bind
 Version:	9.2.0
-Release:	5
+Release:	6
 Epoch:		5
 License:	BSD-like
 Group:		Networking/Daemons
