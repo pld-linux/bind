@@ -142,16 +142,16 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
 
 cd doc/man
-install {dig,host,dnsquery}.1 $RPM_BUILD_ROOT/usr/man/man1
-install {gethostbyname,resolver,getnetent}.3 $RPM_BUILD_ROOT/usr/man/man3
-install resolver.5 $RPM_BUILD_ROOT/usr/man/man5
-install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT/usr/man/man8
-install hostname.7 $RPM_BUILD_ROOT/usr/man/man7
+install {dig,host,dnsquery}.1 $RPM_BUILD_ROOT%{_mandir}/man1
+install {gethostbyname,resolver,getnetent}.3 $RPM_BUILD_ROOT%{_mandir}/man3
+install resolver.5 $RPM_BUILD_ROOT%{_mandir}/man5
+install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install hostname.7 $RPM_BUILD_ROOT%{_mandir}/man7
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
 
-gzip -9fn $RPM_BUILD_ROOT/usr/man/man[13578]/* \
+gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	../../{README,Version,CHANGES} 
 
 %post
@@ -176,28 +176,28 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/sbin/named-xfer
 %attr(750,root,root) /usr/sbin/ndc
 
-/usr/man/man8/named.8.gz
-/usr/man/man8/ndc.8.gz
-/usr/man/man8/named-xfer.8.gz
-/usr/man/man7/hostname.7.gz
+%{_mandir}/man8/named.8.gz
+%{_mandir}/man8/ndc.8.gz
+%{_mandir}/man8/named-xfer.8.gz
+%{_mandir}/man7/hostname.7.gz
 
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) /usr/bin/*
 %attr(644,root,root) /usr/lib/nslookup.help
 
-/usr/man/man1/dig.1.gz
-/usr/man/man1/host.1.gz
-/usr/man/man1/dnsquery.1.gz
-/usr/man/man8/nslookup.8.gz
-/usr/man/man5/resolver.5.gz
+%{_mandir}/man1/dig.1.gz
+%{_mandir}/man1/host.1.gz
+%{_mandir}/man1/dnsquery.1.gz
+%{_mandir}/man8/nslookup.8.gz
+%{_mandir}/man5/resolver.5.gz
 
 %files devel
 %defattr(644,root,root,755)
 
 /usr/include/bind/*
 /usr/lib/*.a
-/usr/man/man3/*
+%{_mandir}/man3/*
 
 %changelog
 * Fri Apr 30 1999 Artur Frysiak <wiget@pld.org.pl>
