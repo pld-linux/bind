@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	12
+Release:	13
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -28,7 +28,7 @@ Patch9:		bind-pidfile.patch
 Patch10:	bind-ttl.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
-Requires:	rc-scripts
+Requires:	rc-scripts >= 0.2.0
 Obsoletes:      caching-nameserver
 URL:		http://www.isc.org/bind.html
 Buildroot:	/tmp/%{name}-%{version}-root
