@@ -377,8 +377,8 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
 	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
 fi
-if [ -n "`getgid named`" ]; then
-	if [ "`getgid named`" != "58" ]; then
+if [ -n "`/usr/bin/getgid named`" ]; then
+	if [ "`/usr/bin/getgid named`" != "58" ]; then
 		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
 		exit 1
 	fi
