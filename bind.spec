@@ -1,8 +1,10 @@
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver  
+Summary(es):	BIND - Servidor de nombres DNS
 Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
+Summary(pt_BR):	BIND - Servidor de nomes DNS
 Name:		bind
 Version:	9.1.3
 Release:	4
@@ -29,11 +31,6 @@ Prereq:		rc-scripts >= 0.2.0
 Prereq:		%{name}-libs
 Requires:	%{name}-libs = %{version}
 Requires:	psmisc >= 20.1
-%requires_eq	openssl
-#Requires(pre,post):	fileutils
-#Requires(pre,postun):	shadow
-#Requires(post,preun):	chkconfig
-#Requires(post,preun):	rc-scripts
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	caching-nameserver
@@ -62,6 +59,12 @@ IP-Adressen und umgekehrt verwendet wird. Er kann auf Workstations als
 caching Namen-Server verwendet werden, ist aber i.d.R. nur auf einem
 Recher des Netzwerks erforderlich.
 
+%description -l es
+Incluye el servidor de nombres (DNS), que se usa para traducir nombres
+para IP (y viceversa). Puede ser usado en estaciones de trabajo como
+un servidor de nombres caché, pero generalmente sólo hace falta en una
+máquina para toda la red.
+
 %description -l fr
 Contient le serveur de noms named, utilisé pour définir les
 traductions nom d'hôte vers adresse IP (et vice versa). Il peut être
@@ -75,6 +78,12 @@ roboczych jako bufor odwo³añ do serwisu nazw (caching name server),
 ale generalnie wystarczy tylko jedna jednostka wyposa¿ona w ten
 program na fragment sieci.
 
+%description -l pt_BR
+Inclui o servidor de nomes (DNS), que é usado para traduzir nomes para
+IP (e vice-versa). Pode ser usado em estações de trabalho como um
+servidor de nomes cache, mas geralmente só é necessário em uma máquina
+para toda a rede.
+
 %description -l tr
 Bu paket, makina adýný IP numarasýna (ya da tersi) çevirmek için
 kullanýlan alan adý sunucusunu içerir. Ýþ istasyonlarýnda bir önbellek
@@ -84,12 +93,16 @@ için sadece bir makina üzerinde kurulur.
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
 Summary(de):	DNS-Utils - Host, Dig, Dnsquery, Nslookup 
+Summary(es):	Utilitarios DNS - host, dig, dnsquery y nslookup
 Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
 Summary(pl):	Narzêdzia DNS - host, dig, dnsquery, nslookup
+Summary(pt_BR):	Utilitários DNS - host, dig, dnsquery e nslookup
 Summary(tr):	DNS araçlarý - host, dig, dnsquery, nslookup
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
 Group(pl):	Sieciowe/Narzêdzia
+Group(pt_BR):	Rede/Utilitários
 Requires:	%{name}-libs = %{version}
 
 %description utils
@@ -107,6 +120,12 @@ Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts. Diese
 Tools bestimmen die IP-Adresse eines angegebenen Host-Namen und finden
 Informationen über registrierte Domains und Netzwerk-Adressen.
 
+%description -l es utils
+Conjunto de utilitarios para consulta a servidores de nombres. Estas
+herramientas permiten la determinación de direcciones IP para nombres
+de máquinas informados y busca información sobre dominios registrados
+y direcciones de red.
+
 %description -l fr utils
 Ensemble d'utilitaires pour interroger les serveurs de noms et
 rechercher des hôtes. Ces outils vous permettent de déterminer les
@@ -117,6 +136,13 @@ sur les noms de domaine déclarés et les adresses réseau.
 Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie
 serwerów nazw z innych domen w celu uzyskania informacji o komputerach
 i ich adresach IP.
+
+%description -l pt_BR utils
+Conjunto de utilitários para consulta a servidores DNS. Estas
+ferramentas permitem a determinação de endereços IP para nomes de
+máquinas informados e busca informações sobre domínios registrados e
+endereços de rede. Você deveria instalar este pacote se necessitar
+obter informações de servidores DNS.
 
 %description -l tr utils
 Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek
@@ -144,7 +170,9 @@ lub programów z pakietu bind-utils.
 
 %package devel
 Summary:	DNS development includes
+Summary(es):	Archivos de inclusión y bibliotecas para desarrollo DNS
 Summary(pl):	Pliki nag³ówkowe bibliotek DNS
+Summary(pt_BR):	Todos os arquivos de cabeçalho e bibliotecas para desenvolvimento DNS
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(es):	Desarrollo/Bibliotecas
@@ -163,15 +191,25 @@ You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
 bind-libs.
 
+%description -l es devel
+Todos los archivos de inclusión y bibliotecas necesarios al desarrollo
+DNS para el bind.
+
 %description -l pl devel
 Pakiet zawiera pliki nag³ówkowe. Je¿eli bêdziesz pisa³ programy pod
-binda, lub kompilowa³ kod ¼ród³owy oprogramowania korzystaj±cego
-z tych plików nag³ówkowych czy biblioteki powiniene¶ zainstalowaæ ten
+binda, lub kompilowa³ kod ¼ród³owy oprogramowania korzystaj±cego z
+tych plików nag³ówkowych czy biblioteki powiniene¶ zainstalowaæ ten
 pakiet.
+
+%description -l pt_BR devel
+Todos os arquivos de cabeçalho e bibliotecas necessários para o
+desenvolvimento com o bind.
 
 %package static
 Summary:	DNS static libs
+Summary(es):	Static libraris for development with bind
 Summary(pl):	Biblioteki statyczne DNS
+Summary(pt_BR):	Bibliotecas estáticas para desenvolvimento DNS
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(es):	Desarrollo/Bibliotecas
@@ -184,8 +222,14 @@ Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 %description static
 Static bind libraries.
 
+%description -l es static
+Static libraris for development with bind.
+
 %description -l pl static
 Statyczne biblioteki binda.
+
+%description -l pt_BR static
+Bibliotecas estáticas para desenvolvimento DNS.
 
 %prep
 %setup -q -a1
@@ -205,7 +249,7 @@ autoconf
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,logrotate.d,sysconfig}
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig}
 install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
 install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
 
@@ -224,10 +268,10 @@ install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
 install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named/etc
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
-install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
-install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
-install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
-ln -sf %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
+install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
+install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
+ln -sf %{_var}/lib/named/etc/named.conf $RPM_BUILD_ROOT%{_sysconfdir}/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
@@ -250,15 +294,15 @@ fi
 /sbin/chkconfig --add named
 
 if [ -f /var/lock/subsys/named ]; then
-	%{_sysconfdir}/rc.d/init.d/named restart 1>&2
+	/etc/rc.d/init.d/named restart 1>&2
 else
-	echo "Type \"%{_sysconfdir}/rc.d/init.d/named start\" to start named" 1>&2
+	echo "Type \"/etc/rc.d/init.d/named start\" to start named" 1>&2
 fi
 
 %preun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/named ]; then
-		%{_sysconfdir}/rc.d/init.d/named stop 1>&2
+		/etc/rc.d/init.d/named stop 1>&2
 	fi
 	/sbin/chkconfig --del named
 fi    
@@ -279,10 +323,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc *.gz doc/misc/*.gz doc/arm/*
 
-%attr(754,root,root)  %{_sysconfdir}/rc.d/init.d/named
-%attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/named
+%attr(754,root,root)  /etc/rc.d/init.d/named
+%attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root)  %config %verify(not size mtime md5) %{_sysconfdir}/logrotate.d/named
+%attr(640,root,root)  %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{_bindir}/nsupdate
