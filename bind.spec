@@ -7,7 +7,7 @@ Summary(pt_BR):	BIND - Servidor de nomes DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.2.0
-Release:	4
+Release:	5
 Epoch:		5
 License:	BSD Like
 Group:		Networking/Daemons
@@ -227,6 +227,8 @@ cd ../..
 %install
 rm -rf $RPM_BUILD_ROOT
 
+rm -f doc/rfc/rfc*
+
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig}
 install -d $RPM_BUILD_ROOT%{_mandir}/man{1,3,5,8}
@@ -251,7 +253,7 @@ ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
-gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/*
+gzip -9nf README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/rfc/index
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -296,7 +298,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz doc/misc/*.gz doc/arm/*.html
+%doc *.gz doc/misc/*.gz doc/arm/*.html doc/rfc
 
 %attr(754,root,root)  /etc/rc.d/init.d/named
 %attr(640,root,root)  %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
