@@ -292,11 +292,11 @@ cd lib/bind
 
 %build
 %{__libtoolize}
-aclocal
+%{__aclocal}
 %{__autoconf}
 cd lib/bind
 %{__libtoolize}
-aclocal
+%{__aclocal}
 %{__autoconf}
 cd ../..
 %configure \
