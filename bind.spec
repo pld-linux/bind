@@ -3,13 +3,13 @@ Summary(de):	BIND - DNS-Namenserver
 Summary(es):	BIND - Servidor de nombres DNS
 Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
-Summary(tr):	DNS alan adý sunucusu
 Summary(pt_BR):	BIND - Servidor de nomes DNS
+Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	9.2.0
 Release:	1
 Epoch:		5
-License:	distributable
+License:	BSD Like
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
@@ -22,13 +22,13 @@ Source5:	nslookup.8
 Source6:	%{name}-non-english-man-pages.tar.bz2
 Patch1:		%{name}-time.patch
 Patch2:		%{name}-autoconf.patch
-BuildRequires:	sed
-BuildRequires:	flex
-BuildRequires:	bison
-BuildRequires:	openssl-devel 
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	bison
+BuildRequires:	flex
 BuildRequires:	libtool
+BuildRequires:	openssl-devel 
+BuildRequires:	sed
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 Prereq:		%{name}-libs
