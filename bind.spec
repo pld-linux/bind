@@ -5,7 +5,7 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adı sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	14
+Release:	15
 Copyright:	distributable
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -240,10 +240,10 @@ if [ -f /etc/named.boot ]; then
 	mv -f /etc/named.boot /etc/named.rpmsave
 	echo "Warrnig: /etc/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
-if ! id -g named; then
+if ! id -g named > /dev/null 2>&1 ; then
 	%{_sbindir}/groupadd -g 58 named
 fi
-if ! id -u named; then
+if ! id -u named > /dev/null 2>&1 ; then
 	%{_sbindir}/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named
 fi
 %{_bindir}/update-db
