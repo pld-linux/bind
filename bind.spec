@@ -304,7 +304,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(770,root,named) %dir /var/state/named
 %attr(750,root,root) %dir /var/state/named/M
-%attr(750,root,named) %dir /var/state/named/S
+%attr(770,root,named) %dir /var/state/named/S
 
 /var/state/named/M/*
 /var/state/named/root.*
