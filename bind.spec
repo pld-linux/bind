@@ -11,8 +11,6 @@ Release:	4
 Epoch:		5
 License:	BSD Like
 Group:		Networking/Daemons
-Group(de):	Netzwerkwesen/Server
-Group(pl):	Sieciowe/Serwery
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}-conf.tar.gz
 Source2:	named.init
@@ -102,10 +100,6 @@ Summary(pl):	Narzêdzia DNS - host, dig, dnsquery, nslookup
 Summary(pt_BR):	Utilitários DNS - host, dig, dnsquery e nslookup
 Summary(tr):	DNS araçları - host, dig, dnsquery, nslookup
 Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
 Requires:	%{name}-libs = %{version}
 
 %description utils
@@ -155,13 +149,6 @@ için kullanılan araçlar bulunmaktadır.
 Summary:	DNS libraries
 Summary(pl):	Biblioteki DNS
 Group:		Libraries
-Group(de):	Libraries
-Group(es):	Bibliotecas
-Group(fr):	Librairies
-Group(pl):	Biblioteki
-Group(pt_BR):	Bibliotecas
-Group(ru):	âÉÂÌÉÏÔÅËÉ
-Group(uk):	â¦ÂÌ¦ÏÔÅËÉ
 
 %description libs
 The bind-libs package contains all libraries required for running BIND
@@ -177,13 +164,6 @@ Summary(es):	Archivos de inclusión y bibliotecas para desarrollo DNS
 Summary(pl):	Pliki nag³ówkowe bibliotek DNS
 Summary(pt_BR):	Todos os arquivos de cabeçalho e bibliotecas para desenvolvimento DNS
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-libs = %{version}
 
 %description devel
@@ -213,13 +193,6 @@ Summary:	DNS static libs
 Summary(pl):	Biblioteki statyczne DNS
 Summary(pt_BR):	Bibliotecas estáticas para desenvolvimento DNS
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-devel = %{version}
 
 %description static
