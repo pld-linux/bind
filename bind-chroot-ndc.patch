@@ -9,8 +9,8 @@
 +#endif
 +
  #ifndef _PATH_CONF
--#define _PATH_CONF	"/named.conf"
-+#define _PATH_CONF	"/etc/named.conf"
+-#define _PATH_CONF	"/etc/named.conf"
++#define _PATH_CONF	_CHROOTDIR "/etc/named.conf"
  #endif
  
  #ifndef _PATH_DEBUG
@@ -24,21 +24,21 @@
  #endif
  
  #ifndef _PATH_NAMED
--#define _PATH_NAMED	"/usr/local/sbin/named"
+-#define _PATH_NAMED	"/usr/sbin/named"
 +#define _PATH_NAMED	_CHROOTDIR "/usr/sbin/named"
  #endif
  
  #ifndef _PATH_PIDFILE
--#define _PATH_PIDFILE	"/named.pid"
+-#define _PATH_PIDFILE	"/var/run/named.pid"
 +#define _PATH_PIDFILE	_CHROOTDIR "/var/run/named.pid"
  #endif
  
  #ifndef _PATH_NDCSOCK
  #ifdef NEED_SECURE_DIRECTORY
--#define _PATH_NDCSOCK	"/ndc.d/ndc"
+-#define _PATH_NDCSOCK	"/var/run/ndc.d/ndc"
 +#define _PATH_NDCSOCK	_CHROOTDIR "/var/run/ndc.d/ndc"
  #else
--#define _PATH_NDCSOCK	"/ndc"
+-#define _PATH_NDCSOCK	"/var/run/ndc"
 +#define _PATH_NDCSOCK	_CHROOTDIR "/var/run/ndc"
  #endif
  #endif
@@ -59,7 +59,7 @@
  #endif
  
  #ifndef _PATH_XFER
--#define _PATH_XFER	"/usr/local/libexec/named-xfer"
+-#define _PATH_XFER	"/usr/sbin/named-xfer"
 +#define _PATH_XFER	_CHROOTDIR "/usr/sbin/named-xfer"
  #endif
  
