@@ -5,8 +5,8 @@ Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
 Version:	8.2.2_P5
-Release:	21
-Copyright:	distributable
+Release:	26
+License:	Distributable
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
@@ -273,7 +273,7 @@ eval "make -C src/bin/named named \
 	'DESTHELP=%{_datadir}/misc' \
 	'DESTETC=%{_sysconfdir}' \
 	'DESTRUN=%{_chroot}/var/run' \
-	'LDFLAGS=-static -s' \
+	'LDFLAGS=-static %{!?debug:-s}' \
 	'SYSTYPE=linux' \
 	`sh ./src/port/settings ./src/.settings < ./src/port/linux/Makefile.set` \
 	VER=`cat ./src/Version`"
@@ -287,7 +287,7 @@ eval "make -C src/bin/named-xfer named-xfer \
 	'DESTHELP=%{_datadir}/misc' \
 	'DESTETC=%{_sysconfdir}' \
 	'DESTRUN=%{_chroot}/var/run' \
-	'LDFLAGS=-static -s' \
+	'LDFLAGS=-static %{!?debug:-s}' \
 	'SYSTYPE=linux' \
 	`sh ./src/port/settings ./src/.settings < ./src/port/linux/Makefile.set` \
 	VER=`cat ./src/Version`"
@@ -301,7 +301,7 @@ eval "make -C src/bin/ndc ndc \
 	'DESTHELP=%{_datadir}/misc' \
 	'DESTETC=%{_sysconfdir}' \
 	'DESTRUN=%{_chroot}/var/run' \
-	'LDFLAGS=-s' \
+	'LDFLAGS=%{!?debug:-s}' \
 	'SYSTYPE=linux' \
 	`sh ./src/port/settings ./src/.settings < ./src/port/linux/Makefile.set` \
 	VER=`cat ./src/Version`"
@@ -318,7 +318,7 @@ mv -f src/bin/named-xfer/named-xfer.dynamic src/bin/named-xfer/named-xfer
 mv -f src/bin/ndc/ndc.nonc src/bin/ndc/ndc
 
 cd utils-1.0
-gcc -s $RPM_OPT_FLAGS -o holelogd holelogd.c
+gcc $RPM_OPT_FLAGS -o holelogd holelogd.c
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -402,11 +402,7 @@ mv -f $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb \
 	$RPM_BUILD_ROOT%{_mandir}/man5/resolver.5
 
-strip $RPM_BUILD_ROOT{%{_sbindir}/*,%{_bindir}/*} || :
-strip $RPM_BUILD_ROOT%{_chroot}%{_sbindir}/*
-
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
-	src/README src/Version src/CHANGES EXAMPLE-CONFIG \
+gzip -9nf src/README src/Version src/CHANGES EXAMPLE-CONFIG \
 	*.holelogd
 
 %pre
