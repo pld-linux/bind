@@ -167,7 +167,7 @@ Dokumentacja programu bind
 %build
 rm -f compat/include/sys/cdefs.h
 cd src
-make 	clean \
+%{__make} 	clean \
 	depend \
 	all \
 	DESTDIR="" \
@@ -187,7 +187,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir},%{_datadir}} \
 	$RPM_BUILD_ROOT%{_mandir}/man{1,3,5,7,8}
 
 cd src
-make install \
+%{__make} install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	DESTINC="%{_includedir}/bind" \
 	DESTLIB="%{_libdir}" \
@@ -204,8 +204,8 @@ strip $RPM_BUILD_ROOT{%{_sbin}/*,%{_bindir}/*} || :
 cd ..
 
 cd doc/man
-make clean
-make install \
+%{__make} clean
+%{__make} install \
 	MANROFF=cat \
 	CATEXT=\$\$N \
 	DESTDIR=$RPM_BUILD_ROOT \
