@@ -232,10 +232,10 @@ GROUP=named; GID=58; %groupadd
 USER=named; UID=58; HOMEDIR=/dev/null; COMMENT="BIND user"; %useradd
 
 %post
-NAME=named; %chkconfig_post
+NAME=named; %chkconfig_add
 
 %preun
-NAME=named; %chkconfig_preun
+NAME=named; %chkconfig_del
 
 %postun
 USER=named; %userdel
