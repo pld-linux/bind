@@ -1,6 +1,6 @@
 diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
 --- bind-9.3.0rc3.orig/configure.in	2004-07-23 06:40:00.000000000 +0200
-+++ bind-9.3.0rc3/configure.in	2004-09-02 20:41:45.951887176 +0200
++++ bind-9.3.0rc3/configure.in	2004-09-02 21:50:22.318104392 +0200
 @@ -1111,45 +1111,6 @@
  	 found_ipv6=no])
  
@@ -47,12 +47,10 @@ diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
  # Whether netinet6/in6.h is needed has to be defined in isc/platform.h.
  # Including it on Kame-using platforms is very bad, though, because
  # Kame uses #error against direct inclusion.   So include it on only
-@@ -1575,39 +1536,6 @@
-              glibc: Use getifaddrs() in glibc if you know it supports IPv6.],
-     want_getifaddrs="$enableval",  want_getifaddrs="yes")
+@@ -1577,32 +1538,7 @@
  
--case $want_getifaddrs in
--yes|glibc)
+ case $want_getifaddrs in
+ yes|glibc)
 -#
 -# Do we have getifaddrs() ?
 -#
@@ -79,17 +77,13 @@ diff -ur bind-9.3.0rc3.orig/configure.in bind-9.3.0rc3/configure.in
 -	AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS))
 -	;;
 -esac
--;;
--no)
--;;
--esac
--
- #
- # Look for a sysctl call to get the list of network interfaces.
- #
++AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS))
+ ;;
+ no)
+ ;;
 diff -ur bind-9.3.0rc3.orig/lib/bind/configure.in bind-9.3.0rc3/lib/bind/configure.in
 --- bind-9.3.0rc3.orig/lib/bind/configure.in	2004-08-10 04:19:54.000000000 +0200
-+++ bind-9.3.0rc3/lib/bind/configure.in	2004-09-02 20:38:17.138631616 +0200
++++ bind-9.3.0rc3/lib/bind/configure.in	2004-09-02 21:48:06.216794936 +0200
 @@ -790,45 +790,6 @@
  	 found_ipv6=no])
  
