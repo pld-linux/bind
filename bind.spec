@@ -15,6 +15,7 @@ Source2:	ftp://ftp.isc.org/isc/bind/%{version}/%{name}-%{version}-contrib.tar.gz
 Source3:	named.init
 Source4:	named.sysconfig
 Source5:	named.logrotate
+Source6:	named.conf
 Patch1:		bind-pselect.patch
 Patch2:		bind-fds.patch
 Patch3:		bind-nonlist.patch
@@ -185,12 +186,13 @@ install -d $RPM_BUILD_ROOT/var/{log,state/named/{M,S}}
 install bin/named/test/127.*    $RPM_BUILD_ROOT/var/state/named/M
 install bin/named/test/loca*    $RPM_BUILD_ROOT/var/state/named/M
 install conf/workstation/root.* $RPM_BUILD_ROOT/var/state/named/root.hint
-install named.conf              $RPM_BUILD_ROOT/etc
+install %{SOURCE6}              $RPM_BUILD_ROOT/etc
 
 cp bin/named/named.conf EXAMPLE-CONFIG
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/named
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/named
 touch $RPM_BUILD_ROOT/var/log/named
 
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
