@@ -11,7 +11,7 @@ Name:		bind
 Version:	9.2.0
 Release:	5
 Epoch:		5
-License:	BSD Like
+License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}-conf.tar.gz
