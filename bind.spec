@@ -4,18 +4,26 @@ Summary(fr):	BIND - serveur de noms DNS
 Summary(pl):	BIND - serwer nazw DNS
 Summary(tr):	DNS alan adý sunucusu
 Name:		bind
-Version:	8.1.2
-Release:	4d
+Version:	8.2
+Release:	7
 Copyright:	distributable
-Group:		Daemons
-Group(pl):	Serwery
+Group:		Networking/Daemons
+Group(pl):	Sieciowe/Serwery
 Source0:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-src.tar.gz
 Source1:	ftp://ftp.isc.org/isc/bind/cur/%{name}-doc.tar.gz
-Source2:	named.init
+Source2:	ftp://ftp.isc.org/isc/bind/cur/%{name}-%{version}-contrib.tar.gz
+Source3:	named.init
 Prereq:		/sbin/chkconfig
-Patch0:		%{name}.patch
-Patch1:		%{name}-pselect.patch
+Patch0:		bind.patch
+Patch1:		bind-pselect.patch
+Patch2:		bind-fds.patch
+Patch3:		bind-nonlist.patch
+Patch4:		bind-opt.patch
+Patch5:		bind-host.patch
+Patch6:		bind-glibc21.patch
+Patch7:		bind-db_glue.patch
 URL:		http://www.isc.org/bind.html
+BuildPrereq:	byacc
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -86,8 +94,8 @@ kullanýlan araçlar bulunmaktadýr.
 %package	devel
 Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
-Group:		Development
-Group(pl):	Programowanie
+Group:		Development/Libraries
+Group(pl):	Programowanie/Biblioteki
 Requires:	%{name} = %{version}
 
 %description devel
@@ -101,23 +109,36 @@ korzystaj±cego z tych plików nag³ówkowych czy biblioteki powiniene¶
 zainstalowaæ ten pakiet.
 
 %prep
-%setup -q -n src
-%setup -q -n src -T -D -a 1
-%patch0 -p1
+%setup -q -n src -a 1 -a 2
+
+#patch0 -p1
 %patch1 -p1
+%patch2 -p2
+%patch3 -p1
+%patch4 -p1
+%patch5 -p2
+%patch6 -p2
+%patch7 -p1
+rm -f compat/include/sys/cdefs.h
 
 %build
-RPM_PREFIX="" make RPM_OPT_FLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE"
+make \
+	clean \
+	depend \
+	all \
+	DESTDIR="" \
+	OPT_FLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make install RPM_PREFIX=$RPM_BUILD_ROOT
+make install \
+	DESTDIR="$RPM_BUILD_ROOT" \
+	DESTINC="/usr/include/bind" \
+	DESTLIB="/usr/lib"
 
 install -d $RPM_BUILD_ROOT/usr/{bin,sbin,lib,man/man{1,3,5,7,8}}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
-
-install bin/named/named-bootconf.pl $RPM_BUILD_ROOT/usr/bin
 
 strip $RPM_BUILD_ROOT/usr/{sbin/*,bin/*} || :
 
@@ -128,7 +149,7 @@ install resolver.5 $RPM_BUILD_ROOT/usr/man/man5
 install {named,ndc,named-xfer,nslookup}.8 $RPM_BUILD_ROOT/usr/man/man8
 install hostname.7 $RPM_BUILD_ROOT/usr/man/man7
 
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/named
 
 gzip -9fn $RPM_BUILD_ROOT/usr/man/man[13578]/* \
 	../../{README,Version,CHANGES} 
@@ -161,14 +182,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/bin/nslookup
+%attr(755,root,root) /usr/bin/*
 %attr(644,root,root) /usr/lib/nslookup.help
-%attr(755,root,root) /usr/bin/host
-%attr(755,root,root) /usr/bin/dig
-%attr(755,root,root) /usr/bin/dnsquery
-%attr(755,root,root) /usr/bin/addr
-%attr(755,root,root) /usr/bin/named-bootconf.pl
-%attr(755,root,root) /usr/bin/nsupdate
 
 /usr/man/man1/dig.1.gz
 /usr/man/man1/host.1.gz
