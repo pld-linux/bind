@@ -390,7 +390,7 @@ if [ -n "`id -u named 2>/dev/null`" ]; then
 	fi
 else
 	echo "Adding user named UID=58."
-	/usr/sbin/useradd -u 58 -g 58 -d /dev/null -s /bin/false -c "BIND user" named || exit 1
+	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
 fi
 
 %post
