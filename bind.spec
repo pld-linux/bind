@@ -29,7 +29,7 @@ Patch10:	bind-ttl.patch
 BuildRequires:	flex
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts >= 0.2.0
-Obsoletes:      caching-nameserver
+Obsoletes:	caching-nameserver
 URL:		http://www.isc.org/bind.html
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -37,44 +37,45 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	/etc
 
 %description
-BIND (Berkeley Internet Name Domain) is an implementation of the DNS (Domain
-Name System) protocols. BIND includes a DNS server (named), which resolves
-host names to IP addresses, and a resolver library (routines for
-applications to use when interfacing with DNS). A DNS server allows clients
-to name resources or objects and share the information with other network
-machines. The named DNS server can be used on workstations as a caching name
-server, but is generally only needed on one machine for an entire network.
-Note that the configuration files for making BIND act as a simple caching
-nameserver are included in the caching-nameserver package.
+BIND (Berkeley Internet Name Domain) is an implementation of the DNS
+(Domain Name System) protocols. BIND includes a DNS server (named),
+which resolves host names to IP addresses, and a resolver library
+(routines for applications to use when interfacing with DNS). A DNS
+server allows clients to name resources or objects and share the
+information with other network machines. The named DNS server can be
+used on workstations as a caching name server, but is generally only
+needed on one machine for an entire network. Note that the
+configuration files for making BIND act as a simple caching nameserver
+are included in the caching-nameserver package.
 
-Install the bind package if you need a DNS server for your network.  If you
-want bind to act a caching name server, you will also need to install the
-caching-nameserver package.
+Install the bind package if you need a DNS server for your network. If
+you want bind to act a caching name server, you will also need to
+install the caching-nameserver package.
 
 %description -l de
 Enthält den Namen-Server, der zum Umwandeln von Host-Namen in
-IP-Adressen und umgekehrt verwendet wird. Er kann auf
-Workstations als caching Namen-Server verwendet werden, ist aber
-i.d.R. nur auf einem Recher des Netzwerks erforderlich.
+IP-Adressen und umgekehrt verwendet wird. Er kann auf Workstations als
+caching Namen-Server verwendet werden, ist aber i.d.R. nur auf einem
+Recher des Netzwerks erforderlich.
 
 %description -l fr
-Contient le serveur de noms named, utilisé pour définir les traductions
-nom d'hôte vers adresse IP (et vice versa). Il peut être utilisé sur
-les stations de travail comme serveur de nom en cache mais n'est souvent
-nécessaire que sur une machine pour un réseau entier.
+Contient le serveur de noms named, utilisé pour définir les
+traductions nom d'hôte vers adresse IP (et vice versa). Il peut être
+utilisé sur les stations de travail comme serveur de nom en cache mais
+n'est souvent nécessaire que sur une machine pour un réseau entier.
 
 %description -l pl
 Pakiet ten zawiera demona named, który s³u¿y do zmieniania nazw
 komputerów na numery IP i odwrotnie. Mo¿e byæ on u¿ywany na stacjach
-roboczych jako bufor odwo³añ do serwisu nazw (caching name server), ale
-generalnie wystarczy tylko jedna jednostka wyposa¿ona w ten program na
-fragment sieci.
+roboczych jako bufor odwo³añ do serwisu nazw (caching name server),
+ale generalnie wystarczy tylko jedna jednostka wyposa¿ona w ten
+program na fragment sieci.
 
 %description -l tr
-Bu paket, makina adýný IP numarasýna (ya da tersi) çevirmek için kullanýlan
-alan adý sunucusunu içerir. Ýþ istasyonlarýnda bir önbellek isim sunucusu
-olarak da kullanýlabilir ama genellikle bütün bir að için sadece bir makina
-üzerinde kurulur.
+Bu paket, makina adýný IP numarasýna (ya da tersi) çevirmek için
+kullanýlan alan adý sunucusunu içerir. Ýþ istasyonlarýnda bir önbellek
+isim sunucusu olarak da kullanýlabilir ama genellikle bütün bir að
+için sadece bir makina üzerinde kurulur.
 
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
@@ -86,54 +87,56 @@ Group:		Networking/Utilities
 Group(pl):	Sieciowe/Narzêdzia
 
 %description utils
-Bind-utils contains a collection of utilities for querying DNS (Domain Name
-Service) name servers to find out information about Internet hosts. These
-tools will provide you with the IP addresses for given host names, as well
-as other information about registered domains and network addresses.
+Bind-utils contains a collection of utilities for querying DNS (Domain
+Name Service) name servers to find out information about Internet
+hosts. These tools will provide you with the IP addresses for given
+host names, as well as other information about registered domains and
+network addresses.
 
-You should install bind-utils if you need to get information from DNS name
-servers.
+You should install bind-utils if you need to get information from DNS
+name servers.
 
 %description -l de utils
-Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts.
-Diese Tools bestimmen die IP-Adresse eines angegebenen Host-Namen
-und finden Informationen über registrierte Domains und Netzwerk-Adressen.
+Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts. Diese
+Tools bestimmen die IP-Adresse eines angegebenen Host-Namen und finden
+Informationen über registrierte Domains und Netzwerk-Adressen.
 
 %description -l fr utils
-Ensemble d'utilitaires pour interroger les serveurs de noms et rechercher
-des hôtes. Ces outils vous permettent de déterminer les adresses IP pour
-des noms d'hôtes donnés, et trouver des informations sur les noms de
-domaine déclarés et les adresses réseau.
+Ensemble d'utilitaires pour interroger les serveurs de noms et
+rechercher des hôtes. Ces outils vous permettent de déterminer les
+adresses IP pour des noms d'hôtes donnés, et trouver des informations
+sur les noms de domaine déclarés et les adresses réseau.
 
 %description -l pl utils
-Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie serwerów
-nazw z innych domen w celu uzyskania informacji o komupterach i ich
-adresach IP.
+Pakiet ten zawiera zbiór aplikacji umo¿liwiaj±cych odpytywanie
+serwerów nazw z innych domen w celu uzyskania informacji o komupterach
+i ich adresach IP.
 
 %description -l tr utils
-Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek için
-kullanýlan araçlar bulunmaktadýr.
+Bu pakette isim sunucularýný sorgulamak ve makina adreslerini çözmek
+için kullanýlan araçlar bulunmaktadýr.
 
 %package devel
 Summary:	DNS development includes and libs
 Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
 Group:		Development/Libraries
+Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
 
 %description devel
-The bind-devel package contains all the include files and the 
-library required for DNS (Domain Name Service) development for 
-BIND versions 8.x.x.
+The bind-devel package contains all the include files and the library
+required for DNS (Domain Name Service) development for BIND versions
+8.x.x.
 
 You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
 bind.
 
 %description -l pl devel
-Pakiet zawiera pliki nag³ówkowe i bibliotekê statyczn±. Je¿eli bêdziesz
-pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy oprogramowania
-korzystaj±cego z tych plików nag³ówkowych czy biblioteki powiniene¶
-zainstalowaæ ten pakiet.
+Pakiet zawiera pliki nag³ówkowe i bibliotekê statyczn±. Je¿eli
+bêdziesz pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy
+oprogramowania korzystaj±cego z tych plików nag³ówkowych czy
+biblioteki powiniene¶ zainstalowaæ ten pakiet.
 
 %package doc
 Summary:	Bind documentation
@@ -212,10 +215,10 @@ make install \
 cd ../../
 install -d $RPM_BUILD_ROOT/var/{log,lib/named/{M,S}}
 
-install src/bin/named/test/127.*    $RPM_BUILD_ROOT/var/lib/named/M
-install src/bin/named/test/loca*    $RPM_BUILD_ROOT/var/lib/named/M
+install src/bin/named/test/127.* $RPM_BUILD_ROOT/var/lib/named/M
+install src/bin/named/test/loca* $RPM_BUILD_ROOT/var/lib/named/M
 install src/conf/workstation/root.* $RPM_BUILD_ROOT/var/lib/named/root.hint
-install %{SOURCE6}              $RPM_BUILD_ROOT/etc
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
 
 cp src/bin/named/named.conf EXAMPLE-CONFIG
 
@@ -228,7 +231,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/nsupdate $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/mkservdb \
 	$RPM_BUILD_ROOT%{_mandir}/man5/resolver.5
 
-gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man[13578]/* \
 	src/README src/Version src/CHANGES EXAMPLE-CONFIG 
 
 %pre
@@ -287,7 +290,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) /etc/named.conf
+%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
 %attr(640,root,root) %config %verify(not size mtime md5) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
