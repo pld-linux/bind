@@ -183,7 +183,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/bin/*
+%attr(755,root,root) %{_bindir}/*
 %attr(644,root,root) %{_libdir}/nslookup.help
 
 %{_mandir}/man1/dig.1.gz
