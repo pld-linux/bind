@@ -21,7 +21,8 @@ Source6:	resolver.5
 BuildRequires:	sed
 BuildRequires:	flex
 BuildRequires:	openssl-devel
-BuildRequires:	byacc
+BuildRequires:	bison
+BuildRequires:	autoconf
 Prereq:		rc-scripts >= 0.2.0
 Requires:	%{name}-libs = %{version}
 Prereq:		/sbin/chkconfig
@@ -123,6 +124,7 @@ Summary:	DNS libraries
 Summary(pl):	Biblioteki DNS
 Group:		Libraries
 Group(de):	Libraries
+Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
 
@@ -130,9 +132,13 @@ Group(pl):	Biblioteki
 The bind-libs package contains all libraries required for
 running BIND and bind utils.
 
+%description -l pl libs
+Pakiet zawiera wszystkie biblioteki potrzebne do uruchomienia binda
+lub programów z pakietu bind-utils.
+
 %package devel
-Summary:	DNS development includes and libs
-Summary(pl):	Pliki nag³ówkowe i biblioteka statyczna
+Summary:	DNS development includes
+Summary(pl):	Pliki nag³ówkowe bibliotek DNS
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(fr):	Development/Librairies
@@ -140,22 +146,22 @@ Group(pl):	Programowanie/Biblioteki
 Requires:	%{name}-libs = %{version}
 
 %description devel
-The bind-devel package contains all the include files and the library
+The bind-devel package contains all the include files and symlinks
 required for DNS (Domain Name Service) development for BIND.
 
 You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
-bind.
+bind-libs.
 
 %description -l pl devel
-Pakiet zawiera pliki nag³ówkowe i bibliotekê statyczn±. Je¿eli
-bêdziesz pisa³ programy pod binda, lub kompilowa³ kod ¼ród³owy
-oprogramowania korzystaj±cego z tych plików nag³ówkowych czy
-biblioteki powiniene¶ zainstalowaæ ten pakiet.
+Pakiet zawiera pliki nag³ówkowe. Je¿eli bêdziesz pisa³ programy pod
+binda, lub kompilowa³ kod ¼ród³owy oprogramowania korzystaj±cego
+z tych plików nag³ówkowych czy biblioteki powiniene¶ zainstalowaæ ten
+pakiet.
 
 %package static
 Summary:	DNS static libs
-Summary(pl):	Biblioteka statyczna
+Summary(pl):	Biblioteki statyczne
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(fr):	Development/Librairies
@@ -190,6 +196,7 @@ install -d $RPM_BUILD_ROOT%{_var}/{lib/named/{M,S,dev,etc},run,log}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install doc/man/bin/*.1			$RPM_BUILD_ROOT%{_mandir}/man1
+install doc/man/lwres/*.3		$RPM_BUILD_ROOT%{_mandir}/man3
 install doc/man/bin/*.5			$RPM_BUILD_ROOT%{_mandir}/man5
 install %{SOURCE6}			$RPM_BUILD_ROOT%{_mandir}/man5
 install doc/man/{bin/*.8,dnssec/*.8}	$RPM_BUILD_ROOT%{_mandir}/man8
@@ -203,17 +210,17 @@ install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install %{SOURCE2}			$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/named
 install %{SOURCE3}			$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/named
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/named
-ln -s %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
-ln -s %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
+ln -sf %{_var}/lib/named/etc/named.conf	$RPM_BUILD_ROOT%{_sysconfdir}/named.conf
+ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 touch		$RPM_BUILD_ROOT%{_var}/lib/named/{named.log,dev/{random,null}}
 
 gzip -9nf README EXAMPLE-CONFIG-* doc/misc/*
 
 %pre
 if [ -f %{_sysconfdir}/named.boot ]; then
-	cp %{_sysconfdir}/named.boot /etc/named.boot.2conf
+	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warrnig:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
+	echo "Warning:%{_sysconfdir}/named.boot saved as /etc/named.rpmsave" 1>&2
 fi
 if ! id -g named > /dev/null 2>&1 ; then
 	%{_sbindir}/groupadd -g 58 named
@@ -300,6 +307,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*.sh
 %{_includedir}/*
 %{_libdir}/*.so
+%{_mandir}/man3/*
 
 %files static
 %defattr(644,root,root,755)
