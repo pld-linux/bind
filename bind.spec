@@ -41,6 +41,7 @@ Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
 Patch6:		%{name}-sdb-ldap.patch
+Patch7:		%{name}-pic.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -315,6 +316,7 @@ BIND.
 %patch4 -p1
 %patch5 -p0
 %{?with_ldap:%patch6 -p1}
+%patch7 -p1
 
 %build
 %{__libtoolize}
