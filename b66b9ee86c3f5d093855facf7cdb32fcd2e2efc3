@@ -1,0 +1,3 @@
+- added missing files: *.la to -devel and ja nsupdate(8) man page
+- new %doc
+- release 7
