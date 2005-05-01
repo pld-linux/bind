@@ -49,7 +49,7 @@ BuildRequires:	libtool
 BuildRequires:	idnkit-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.202
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	fileutils
@@ -381,24 +381,8 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
 	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
 fi
-if [ -n "`/usr/bin/getgid named`" ]; then
-	if [ "`/usr/bin/getgid named`" != "58" ]; then
-		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
-		exit 1
-	fi
-else
-	echo "Adding group named GID=58."
-	/usr/sbin/groupadd -g 58 named || exit 1
-fi
-if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
-	if [ "`/bin/id -u named`" != "58" ]; then
-		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
-		exit 1
-	fi
-else
-	echo "Adding user named UID=58."
-	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
-fi
+%groupadd -g 58 named
+%useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
 
 %post
 /sbin/chkconfig --add named
