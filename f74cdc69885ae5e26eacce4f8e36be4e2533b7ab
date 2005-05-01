@@ -1,0 +1,2 @@
+- mv /usr/bin/nsupdate from bind to bind-utils
+- release 7
