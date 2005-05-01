@@ -1,0 +1,3 @@
+- reelase 3,
+- rebuild against openssl 0.9.6b,
+- added "%requires_eq openssl".
