@@ -1,0 +1,1 @@
+- %config(noreplace) to files in /var/lib/named/{,M}/*
