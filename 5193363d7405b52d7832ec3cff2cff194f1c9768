@@ -1,0 +1,5 @@
+- bind-utils requires iconv (it's not functional without it on a typical
+  system)
+- if anybody knows a way to make bind-utils work w/o iconv, go ahead and
+  implement it. For now...
+- release 6, STBR
