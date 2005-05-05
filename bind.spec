@@ -16,7 +16,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.3.1
-Release:	1
+Release:	1.1
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -429,7 +429,8 @@ fi
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
-%attr(770,root,named) %dir %{_var}/lib/named/M
+%attr(770,root,named) %dir %{_var}/lib/named/D
+%attr(740,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
