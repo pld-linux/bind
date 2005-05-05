@@ -430,7 +430,7 @@ fi
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/D
-%attr(740,root,named) %dir %{_var}/lib/named/M
+%attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 %attr(770,root,named) %dir %{_var}/lib/named/dev
