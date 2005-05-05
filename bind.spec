@@ -27,7 +27,6 @@ Source1:	%{name}-conf.tar.gz
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
-#Source5:	nslookup.8
 Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
