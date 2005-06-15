@@ -16,7 +16,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.3.1
-Release:	1.1
+Release:	1.2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -433,15 +433,15 @@ fi
 %attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
-%attr(770,root,named) %dir %{_var}/lib/named/dev
 
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
 
-#%ghost %{_var}/lib/named/dev/*
-%attr(770,root,named) %{_var}/lib/named/dev/*
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
+# devices for chrooted bind
+%attr(750,root,named) %dir %{_var}/lib/named/dev
+%dev(c,1,3) %attr(660,root,named) %{_var}/lib/named/dev/null
+%dev(c,1,8) %attr(640,root,named) %{_var}/lib/named/dev/random
 
 %files utils
 %defattr(644,root,root,755)
