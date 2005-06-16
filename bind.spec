@@ -437,6 +437,10 @@ fi
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
+%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
+#Something like that should be added...
+#%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
+#%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
 
 # devices for chrooted bind
 %attr(750,root,named) %dir %{_var}/lib/named/dev
