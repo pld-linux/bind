@@ -426,6 +426,7 @@ fi
 %{_mandir}/man8/named*
 %{_mandir}/man8/rndc*
 %{_mandir}/man5/rndc*
+%{_mandir}/man5/named.conf*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
@@ -437,7 +438,7 @@ fi
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
+#%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
 #Something like that should be added...
 #%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
 #%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
