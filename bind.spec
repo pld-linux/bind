@@ -413,9 +413,9 @@ fi
 %doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
@@ -435,10 +435,10 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 size mtime) %{_var}/log/named*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
+%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
 #Something like that should be added...
 #%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
 #%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
