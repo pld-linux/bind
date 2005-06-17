@@ -3,6 +3,7 @@
 %bcond_without	ssl	# build without OpenSSL support
 %bcond_without	ipv6	# build without IPv6 support
 %bcond_without	ldap	# build without LDAP support
+%bcond_without	static_libs # build without static libraries
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -330,6 +331,7 @@ cd ../..
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
+	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
 	--disable-getifaddrs
 
@@ -484,6 +486,8 @@ fi
 %{_includedir}/*
 %{_mandir}/man3/*
 
+%if %{with static}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/*.a
+%endif
