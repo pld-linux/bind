@@ -3,6 +3,7 @@
 %bcond_without	ssl	# build without OpenSSL support
 %bcond_without	ipv6	# build without IPv6 support
 %bcond_without	ldap	# build without LDAP support
+%bcond_without	static_libs # build without static libraries
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -16,7 +17,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.5
-Release:	2
+Release:	2.1
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -331,6 +332,7 @@ cd ../..
 	--enable-threads \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
+	%{!?with_static_libs:--enable-static=no} \
 	--with-idn
 %{__make}
 
@@ -450,26 +452,29 @@ fi
 
 %{?with_ldap:%{_datadir}/openldap/schema/*.schema}
 
+%{_mandir}/man5/named.conf*
+%{_mandir}/man5/rndc*
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
 %{_mandir}/man8/named*
 %{_mandir}/man8/rndc*
-%{_mandir}/man5/rndc*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
-%attr(770,root,named) %dir %{_var}/lib/named/dev
 
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
 %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
 
-#%ghost %{_var}/lib/named/dev/*
-%attr(770,root,named) %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named*
+
+# devices for chrooted bind
+%attr(750,root,named) %dir %{_var}/lib/named/dev
+%dev(c,1,3) %attr(660,root,named) %{_var}/lib/named/dev/null
+%dev(c,1,8) %attr(640,root,named) %{_var}/lib/named/dev/random
 
 %files utils
 %defattr(644,root,root,755)
@@ -507,6 +512,8 @@ fi
 %{_includedir}/*
 %{_mandir}/man3/*
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/*.a
+%endif
