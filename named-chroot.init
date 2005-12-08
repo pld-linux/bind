@@ -15,7 +15,7 @@
 
 # Try get config..
 [ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
-	
+
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network ]; then
@@ -25,7 +25,7 @@ if is_yes "${NETWORKING}"; then
 else
 	exit 0
 fi
-			
+
 # Sanity check
 [ -f /etc/named.conf ] || exit 0
 
@@ -77,7 +77,6 @@ case "$1" in
 		msg_not_running "Named" >&2
 		exit 7
 	fi
-																							
 	;;
   restart)
 	$0 stop
