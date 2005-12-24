@@ -299,21 +299,21 @@ diff -urN bind-9.2.3.org/bin/dig/dighost.c bind-9.2.3/bin/dig/dighost.c
 diff -urN bind-9.2.3.org/bin/dig/host.1 bind-9.2.3/bin/dig/host.1
 --- bind-9.2.3.org/bin/dig/host.1	2003-10-24 23:31:26.000000000 +0200
 +++ bind-9.2.3/bin/dig/host.1	2003-10-24 23:46:54.000000000 +0200
-@@ -164,6 +164,17 @@
- option is used,
- \fBhost\fR
- will effectively wait forever for a reply. The time to wait for a response will be set to the number of seconds given by the hardware's maximum value for an integer quantity.
+@@ -120,6 +120,17 @@
+ effectively wait forever for a reply. The time to wait for a response
+ will be set to the number of seconds given by the hardware's maximum
+ value for an integer quantity.
 +.SH "IDN SUPPORT"
 +.PP
-+If
-+\fBhost\fR
-+has been built with IDN (internationalized domain name) support, it can accept and display non-ASCII domain names.
-+\fBhost\fR
-+appropriately converts character encoding of domain name before sending a request to DNS server or displaying a reply from the server. If you'd like to turn off the IDN support for some reason, defines the
-+\fBIDN_DISABLE\fR
-+environment variable. The IDN support is disabled if the the variable is set when
-+\fBhost\fR
-+runs.
++If \fBhost\fR has been built with IDN (internationalized
++domain name) support, it can accept and display non-ASCII domain names.
++\fBhost\fR appropriately converts character encoding of
++domain name before sending a request to DNS server or displaying a
++reply from the server.
++If you'd like to turn off the IDN support for some reason, defines
++the \fBIDN_DISABLE\fR environment variable.
++The IDN support is disabled if the the variable is set when
++\fBhost\fR runs.
  .SH "FILES"
  .PP
  \fI/etc/resolv.conf\fR
@@ -715,10 +715,10 @@ diff -urN bind-9.2.3.org/configure bind-9.2.3/configure
  # Substitutions
  #
  
-@@ -27478,6 +27478,7 @@
- s,@XSLT_DOCBOOK_CHUNK_XHTML@,$XSLT_DOCBOOK_CHUNK_XHTML,;t t
- s,@XSLT_DB2LATEX_STYLE@,$XSLT_DB2LATEX_STYLE,;t t
- s,@XSLT_DB2LATEX_ADMONITIONS@,$XSLT_DB2LATEX_ADMONITIONS,;t t
+@@ -14247,6 +14557,7 @@
+ s,@PRINTSTYLE@,$PRINTSTYLE,;t t
+ s,@XMLDCL@,$XMLDCL,;t t
+ s,@DOCBOOK2MANSPEC@,$DOCBOOK2MANSPEC,;t t
 +s,@IDNLIBS@,$IDNLIBS,;t t
  s,@BIND9_TOP_BUILDDIR@,$BIND9_TOP_BUILDDIR,;t t
  s,@BIND9_ISC_BUILDINCLUDE@,$BIND9_ISC_BUILDINCLUDE,;t t
