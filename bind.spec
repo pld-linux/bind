@@ -17,7 +17,7 @@ Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
 Version:	9.2.6
-Release:	2
+Release:	3
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -48,7 +48,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{?with_ldap:BuildRequires:	openldap-devel}
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 BuildRequires:	rpmbuild(macros) >= 1.176
 PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
