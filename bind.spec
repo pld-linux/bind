@@ -46,22 +46,22 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	libtool
 BuildRequires:	idnkit-devel
+BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 BuildRequires:	rpmbuild(macros) >= 1.176
-PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
-PreReq:		rc-scripts >= 0.2.0
-Requires(pre):	fileutils
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,preun):	/sbin/chkconfig
+Requires(pre):	fileutils
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
+Requires:	rc-scripts >= 0.2.0
 Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
@@ -442,9 +442,9 @@ fi
 %doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
@@ -463,9 +463,9 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
 
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
 
 %attr(660,named,named) %ghost %{_var}/log/named*
 
