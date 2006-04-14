@@ -50,7 +50,7 @@ BuildRequires:	idnkit-devel
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.176
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -364,10 +364,11 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
-%{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
+%{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
+# FIXME: breaks re-entrant install
 rm -f doc/misc/Makefile*
 
 %clean
@@ -412,19 +413,11 @@ fi
 
 %post
 /sbin/chkconfig --add named
-if [ -f /var/lock/subsys/named ]; then
-	/etc/rc.d/init.d/named restart 1>&2
-else
-	%banner %{name} -e << EOF
-Type "/etc/rc.d/init.d/named start" to start named.
-EOF
-fi
+%service named restart
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/named ]; then
-		/etc/rc.d/init.d/named stop 1>&2
-	fi
+	%service named stop
 	/sbin/chkconfig --del named
 fi
 
