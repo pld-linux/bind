@@ -17,7 +17,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.2.6
-Release:	4
+Release:	5
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -384,32 +384,8 @@ if [ -f %{_sysconfdir}/named.boot ]; then
 Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave.
 EOF
 fi
-if [ -n "`/usr/bin/getgid named`" ]; then
-	if [ "`/usr/bin/getgid named`" != "58" ]; then
-		%banner %{name}-prescript -a -e << EOF
-Error: group named doesn't have gid=58. Correct this before installing bind.
-EOF
-		exit 1
-	fi
-else
-	%banner %{name}-prescript -a << EOF
-Adding group named GID=58.
-EOF
-	/usr/sbin/groupadd -g 58 named || exit 1
-fi
-if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
-	if [ "`/bin/id -u named`" != "58" ]; then
-		%banner %{name}-prescript -a -e << EOF
-Error: user named doesn't have uid=58. Correct this before installing bind.
-EOF
-		exit 1
-	fi
-else
-	%banner %{name}-prescript -a << EOF
-Adding user named UID=58.
-EOF
-	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
-fi
+%groupadd -g 58 named
+%useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
 
 %post
 /sbin/chkconfig --add named
