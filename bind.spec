@@ -387,6 +387,20 @@ fi
 %useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
 
 %post
+if [ "$1" = 1 ]; then
+	mknod -m 660 %{_var}/lib/named/dev/null c 1 3 2>/dev/null
+	chown root:named %{_var}/lib/named/dev/null 2>/dev/null
+	mknod -m 640 %{_var}/lib/named/dev/null c 1 8 2>/dev/null
+	chown root:named %{_var}/lib/named/dev/random 2>/dev/null
+	if [ ! -c %{_var}/lib/named/dev/null ] || [ ! -c %{_var}/lib/named/dev/random ]; then
+%banner -e %{name}-devs <<-EOF
+Device nodes were not created!!!
+
+Please read PLD Linux Vserver FAQ if you're installing %{name} inside
+vserver: <http://www.pld-linux.org/Vserver>.
+EOF
+	fi #'
+fi
 /sbin/chkconfig --add named
 %service named restart
 
@@ -442,8 +456,8 @@ fi
 
 # devices for chrooted bind
 %attr(750,root,named) %dir %{_var}/lib/named/dev
-%dev(c,1,3) %attr(660,root,named) %{_var}/lib/named/dev/null
-%dev(c,1,8) %attr(640,root,named) %{_var}/lib/named/dev/random
+%ghost %attr(660,root,named) %{_var}/lib/named/dev/null
+%ghost %attr(640,root,named) %{_var}/lib/named/dev/random
 
 %files utils
 %defattr(644,root,root,755)
