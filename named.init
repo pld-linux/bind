@@ -77,7 +77,7 @@ case "$1" in
 			RETVAL=$?
 		fi
 	else
-		msg_not_running "Named" >&2
+		msg_not_running "Named"
 		exit 7
 	fi
 
