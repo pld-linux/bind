@@ -1,9 +1,9 @@
 #
 # Conditional build:
-%bcond_without	ssl	# build without OpenSSL support
-%bcond_without	ipv6	# build without IPv6 support
-%bcond_without	ldap	# build without LDAP support
-%bcond_without	static_libs # build without static libraries
+%bcond_without	ssl		# build without OpenSSL support
+%bcond_without	ipv6		# build without IPv6 support
+%bcond_without	ldap		# build without LDAP support
+%bcond_without	static_libs	# build without static libraries
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
