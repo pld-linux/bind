@@ -1,8 +1,9 @@
 #
 # Conditional build:
-%bcond_without	ssl	# build without OpenSSL support
-%bcond_without	ipv6	# build without IPv6 support
-%bcond_without	ldap	# build without LDAP support
+%bcond_without	ssl		# build without OpenSSL support
+%bcond_without	ipv6		# build without IPv6 support
+%bcond_without	ldap		# build without LDAP support
+%bcond_without	static_libs	# build without static libraries
 #
 Summary:	BIND - DNS name server
 Summary(de):	BIND - DNS-Namenserver
@@ -15,19 +16,19 @@ Summary(tr):	DNS alan adý sunucusu
 Summary(uk):	BIND - cÅÒ×ÅÒ ÓÉÓÔÅÍÉ ÄÏÍÅÎÎÉÈ ¦ÍÅÎ (DNS)
 Summary(zh_CN):	Internet ÓòÃû·þÎñÆ÷
 Name:		bind
-Version:	9.3.0
+Version:	9.2.6p1
+%define		_version	9.2.6-P1
 Release:	2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	fdb42fff7e345372ac52a4493b77b694
+Source0:	ftp://ftp.isc.org/isc/bind9/%{_version}/%{name}-%{_version}.tar.gz
+# Source0-md5:	1efb07dc442ffe6ab742c2eb45e0f761
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
-#Source5:	nslookup.8
 Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
@@ -40,33 +41,31 @@ Patch4:		%{name}-pmake.patch
 # from idnkit
 Patch5:		%{name}-idn.patch
 Patch6:		%{name}-sdb-ldap.patch
-Patch7:		%{name}-noinet6.patch
+Patch7:		%{name}-destaddr.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	libtool
 BuildRequires:	idnkit-devel
-%{?with_ldap:BuildRequires:	openldap-devel}
+BuildRequires:	libtool
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	rpmbuild(macros) >= 1.159
-PreReq:		%{name}-libs = %{epoch}:%{version}-%{release}
-PreReq:		rc-scripts >= 0.2.0
-Requires(pre):	fileutils
+BuildRequires:	rpmbuild(macros) >= 1.268
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,preun):	/sbin/chkconfig
+Requires(pre):	fileutils
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
+Requires:	rc-scripts >= 0.2.0
 Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
-Obsoletes:	caching-nameserver
-Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -259,8 +258,8 @@ applications. If you install bind-devel, you'll also need to install
 bind-libs.
 
 %description devel -l es
-Los archivos de inclusión y bibliotecas necesarios al desarrollo DNS
-para el bind.
+Todos los archivos de inclusión y bibliotecas necesarios al desarrollo
+DNS para el bind.
 
 %description devel -l pl
 Pakiet zawiera pliki nag³ówkowe. Je¿eli bêdziesz pisa³ programy pod
@@ -307,13 +306,13 @@ Bibliotecas estáticas para desenvolvimento DNS.
 BIND.
 
 %prep
-%setup -q -a1
+%setup -q -a1 -n %{name}-%{_version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p0
+%patch5 -p1
 %{?with_ldap:%patch6 -p1}
 %patch7 -p1
 
@@ -327,14 +326,13 @@ cd lib/bind
 %{__autoconf}
 cd ../..
 %configure \
-	--with-idn \
-	--with-libtool \
 	%{?with_ssl:--with-openssl=%{_prefix}} \
+	--with-libtool \
+	--enable-threads \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
-	--enable-threads \
-	--disable-getifaddrs
-
+	%{!?with_static_libs:--enable-static=no} \
+	--with-idn
 %{__make}
 
 %install
@@ -367,53 +365,50 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
-%{?with_ldap:mkdir -p $RPM_BUILD_ROOT%{_datadir}/openldap/schema/}
+%{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 # we don't want Makefiles in documentation...
+# FIXME: breaks re-entrant install
 rm -f doc/misc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %pre
+%banner %{name}-prescript << EOF
+EOF
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
+	%banner %{name}-prescript -a -e << EOF
+Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave.
+EOF
 fi
-if [ -n "`/usr/bin/getgid named`" ]; then
-	if [ "`/usr/bin/getgid named`" != "58" ]; then
-		echo "Error: group named doesn't have gid=58. Correct this before installing bind." 1>&2
-		exit 1
-	fi
-else
-	echo "Adding group named GID=58."
-	/usr/sbin/groupadd -g 58 named || exit 1
-fi
-if [ -n "`/bin/id -u named 2>/dev/null`" ]; then
-	if [ "`/bin/id -u named`" != "58" ]; then
-		echo "Error: user named doesn't have uid=58. Correct this before installing bind." 1>&2
-		exit 1
-	fi
-else
-	echo "Adding user named UID=58."
-	/usr/sbin/useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named || exit 1
-fi
+%groupadd -g 58 named
+%useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
 
 %post
-/sbin/chkconfig --add named
-if [ -f /var/lock/subsys/named ]; then
-	/etc/rc.d/init.d/named restart 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/named start\" to start named." 1>&2
+if [ "$1" = 1 ]; then
+	mknod -m 660 %{_var}/lib/named/dev/null c 1 3 2>/dev/null
+	chown root:named %{_var}/lib/named/dev/null 2>/dev/null
+	mknod -m 640 %{_var}/lib/named/dev/null c 1 8 2>/dev/null
+	chown root:named %{_var}/lib/named/dev/random 2>/dev/null
+	if [ ! -c %{_var}/lib/named/dev/null ] || [ ! -c %{_var}/lib/named/dev/random ]; then
+%banner -e %{name}-devs <<-EOF
+Device nodes were not created!!!
+
+Please read PLD Linux Vserver FAQ if you're installing %{name} inside
+vserver: <http://www.pld-linux.org/Vserver>.
+EOF
+	fi #'
 fi
+/sbin/chkconfig --add named
+%service named restart
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/named ]; then
-		/etc/rc.d/init.d/named stop 1>&2
-	fi
+	%service named stop
 	/sbin/chkconfig --del named
 fi
 
@@ -423,42 +418,45 @@ if [ "$1" = "0" ]; then
 	%groupremove named
 fi
 
-%post	libs -p /sbin/ldconfig
-%postun	libs -p /sbin/ldconfig
+%post   libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/named
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/named.conf
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/named
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
 
 %{?with_ldap:%{_datadir}/openldap/schema/*.schema}
 
+%{_mandir}/man5/named.conf*
+%{_mandir}/man5/rndc*
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
 %{_mandir}/man8/named*
 %{_mandir}/man8/rndc*
-%{_mandir}/man5/rndc*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
-%attr(770,root,named) %dir %{_var}/lib/named/dev
 
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/M/*
-%config(noreplace) %verify(not size mtime md5) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not size mtime md5) %{_var}/lib/named%{_sysconfdir}/*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
 
-#%ghost %{_var}/lib/named/dev/*
-%attr(770,root,named) %{_var}/lib/named/dev/*
 %attr(660,named,named) %ghost %{_var}/log/named*
+
+# devices for chrooted bind
+%attr(750,root,named) %dir %{_var}/lib/named/dev
+%ghost %attr(660,root,named) %{_var}/lib/named/dev/null
+%ghost %attr(640,root,named) %{_var}/lib/named/dev/random
 
 %files utils
 %defattr(644,root,root,755)
@@ -496,6 +494,8 @@ fi
 %{_includedir}/*
 %{_mandir}/man3/*
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/*.a
+%endif
