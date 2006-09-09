@@ -18,7 +18,7 @@ Summary(zh_CN):	Internet ÓòÃû·şÎñÆ÷
 Name:		bind
 Version:	9.2.6p1
 %define		_version	9.2.6-P1
-Release:	1
+Release:	2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
