@@ -32,10 +32,7 @@ fi
 # Sanity check
 [ -e /etc/named.conf ] || exit 0
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
@@ -49,8 +46,9 @@ case "$1" in
 	else
 		msg_already_running "Named"
 	fi
-	;;
-  stop)
+}
+
+stop() {
 	if [ -f /var/lock/subsys/named ]; then
 		msg_stopping "Named"
 		killproc named
@@ -58,6 +56,16 @@ case "$1" in
 	else
 		msg_not_running "Named"
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
 	;;
   status)
 	status named
@@ -83,9 +91,8 @@ case "$1" in
 
 	;;
   restart)
-	$0 stop
-	$0 start
-	exit $?
+	stop
+	start
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
