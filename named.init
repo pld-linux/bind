@@ -18,7 +18,7 @@ CHROOT_TO_DIR="/var/lib/named"
 
 # Try get config..
 [ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
-	
+
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
@@ -28,14 +28,11 @@ if is_yes "${NETWORKING}"; then
 else
 	exit 0
 fi
-			
+
 # Sanity check
 [ -e /etc/named.conf ] || exit 0
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
@@ -49,8 +46,9 @@ case "$1" in
 	else
 		msg_already_running "Named"
 	fi
-	;;
-  stop)
+}
+
+stop() {
 	if [ -f /var/lock/subsys/named ]; then
 		msg_stopping "Named"
 		killproc named
@@ -58,13 +56,26 @@ case "$1" in
 	else
 		msg_not_running "Named"
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
 	;;
   status)
 	status named
 	RETVAL=$?
 	if [ -f /etc/rndc.conf ]; then
 		/usr/sbin/rndc status
-#		RETVAL=$?
+		RET=$?
+		if [ $RET -ne 0 ]; then
+			RETVAL=$RET
+		fi
 	fi
 	;;
   reload|force-reload)
@@ -77,15 +88,14 @@ case "$1" in
 			RETVAL=$?
 		fi
 	else
-		msg_not_running "Named" >&2
+		msg_not_running "Named"
 		exit 7
 	fi
-																							
+
 	;;
   restart)
-	$0 stop
-	$0 start
-	exit $?
+	stop
+	start
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
