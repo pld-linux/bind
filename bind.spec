@@ -18,7 +18,7 @@ Summary(zh_CN):	Internet ÓòÃû·şÎñÆ÷
 Name:		bind
 Version:	9.2.6p1
 %define		_version	9.2.6-P1
-Release:	2
+Release:	3
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -392,7 +392,7 @@ fi
 if [ "$1" = 1 ]; then
 	mknod -m 660 %{_var}/lib/named/dev/null c 1 3 2>/dev/null
 	chown root:named %{_var}/lib/named/dev/null 2>/dev/null
-	mknod -m 640 %{_var}/lib/named/dev/null c 1 8 2>/dev/null
+	mknod -m 640 %{_var}/lib/named/dev/random c 1 8 2>/dev/null
 	chown root:named %{_var}/lib/named/dev/random 2>/dev/null
 	if [ ! -c %{_var}/lib/named/dev/null ] || [ ! -c %{_var}/lib/named/dev/random ]; then
 %banner -e %{name}-devs <<-EOF
