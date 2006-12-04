@@ -72,7 +72,10 @@ case "$1" in
 	RETVAL=$?
 	if [ -f /etc/rndc.conf ]; then
 		/usr/sbin/rndc status
-#		RETVAL=$?
+		RET=$?
+		if [ $RET -ne 0 ]; then
+			RETVAL=$RET
+		fi
 	fi
 	;;
   reload|force-reload)
