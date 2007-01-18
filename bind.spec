@@ -16,14 +16,14 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
-Version:	9.2.6p1
-%define		_version	9.2.6-P1
-Release:	3
+Version:	9.2.7
+%define		_version	9.2.7
+Release:	1
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{_version}/%{name}-%{_version}.tar.gz
-# Source0-md5:	1efb07dc442ffe6ab742c2eb45e0f761
+# Source0-md5:	4f3c993923872750d9261d38f35e36bb
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
