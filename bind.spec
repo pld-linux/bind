@@ -16,14 +16,14 @@ Summary(tr):	DNS alan adЩ sunucusu
 Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
-Version:	9.2.7
-%define		_version	9.2.7
+Version:	9.2.8
+%define		_version	9.2.8
 Release:	1
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{_version}/%{name}-%{_version}.tar.gz
-# Source0-md5:	4f3c993923872750d9261d38f35e36bb
+# Source0-md5:	55455401e8b45b79cea89d3d79118ced
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
@@ -32,7 +32,7 @@ Source4:	named.logrotate
 Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source6-md5:	c9a17d8cf8c1a6d4fad6138a1c3f36c4
+# Source6-md5:	2f1c442dade19f83770b55425d14b0b4
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
