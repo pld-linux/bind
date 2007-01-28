@@ -32,7 +32,7 @@ Source4:	named.logrotate
 Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source6-md5:	2f1c442dade19f83770b55425d14b0b4
+# Source6-md5:	49fe799c6eca54ae227b22d57ebc1145
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
