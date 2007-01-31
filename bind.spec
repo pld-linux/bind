@@ -1,3 +1,6 @@
+# TODO: package contains symlinks pointing to unpackaged files:
+#	/var/lib/named/named.log
+#	/var/lib/named/named.stats
 #
 # Conditional build:
 %bcond_without	ssl		# build without OpenSSL support
