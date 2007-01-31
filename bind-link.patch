@@ -63,15 +63,6 @@ diff -Nur bind-9.3.2.orig/lib/dns/Makefile.in bind-9.3.2.link/lib/dns/Makefile.i
  
  # Alphabetically
  
-@@ -156,7 +156,7 @@
- 	./gen -s ${srcdir} > code.h
- 
- gen: gen.c
--	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
-+	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}/gen.c
- 
- rbtdb64.@O@: rbtdb.c
- 
 diff -Nur bind-9.3.2.orig/lib/isccc/Makefile.in bind-9.3.2.link/lib/isccc/Makefile.in
 --- bind-9.3.2.orig/lib/isccc/Makefile.in	2004-07-20 09:01:58.000000000 +0200
 +++ bind-9.3.2.link/lib/isccc/Makefile.in	2006-08-05 01:45:55.000000000 +0200
