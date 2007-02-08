@@ -1,6 +1,3 @@
-# TODO: package contains symlinks pointing to unpackaged files:
-#	/var/lib/named/named.log
-#	/var/lib/named/named.stats
 #
 # Conditional build:
 %bcond_without	ssl		# build without OpenSSL support
@@ -20,7 +17,7 @@ Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
 Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
 Name:		bind
 Version:	9.3.4
-Release:	1
+Release:	2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -453,9 +450,8 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
 %attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
-#Something like that should be added...
-#%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
-#%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
+%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
+%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
 
 # devices for chrooted bind
 %attr(750,root,named) %dir %{_var}/lib/named/dev
