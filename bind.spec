@@ -5,15 +5,15 @@
 %bcond_without	ldap	# build without LDAP support
 #
 Summary:	BIND - DNS name server
-Summary(de):	BIND - DNS-Namenserver
-Summary(es):	BIND - Servidor de nombres DNS
-Summary(fr):	BIND - serveur de noms DNS
-Summary(pl):	BIND - serwer nazw DNS
-Summary(pt_BR):	BIND - Servidor de nomes DNS
-Summary(ru):	BIND - cервер системы доменных имен (DNS)
-Summary(tr):	DNS alan adЩ sunucusu
-Summary(uk):	BIND - cервер системи доменних ╕мен (DNS)
-Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ
+Summary(de.UTF-8):   BIND - DNS-Namenserver
+Summary(es.UTF-8):   BIND - Servidor de nombres DNS
+Summary(fr.UTF-8):   BIND - serveur de noms DNS
+Summary(pl.UTF-8):   BIND - serwer nazw DNS
+Summary(pt_BR.UTF-8):   BIND - Servidor de nomes DNS
+Summary(ru.UTF-8):   BIND - cп╣я─п╡п╣я─ я│п╦я│я┌п╣п╪я▀ п╢п╬п╪п╣п╫п╫я▀я┘ п╦п╪п╣п╫ (DNS)
+Summary(tr.UTF-8):   DNS alan adд╠ sunucusu
+Summary(uk.UTF-8):   BIND - cп╣я─п╡п╣я─ я│п╦я│я┌п╣п╪п╦ п╢п╬п╪п╣п╫п╫п╦я┘ я√п╪п╣п╫ (DNS)
+Summary(zh_CN.UTF-8):   Internet Е÷÷Е░█Ф°█Е┼║Е≥╗
 Name:		bind
 Version:	9.3.0
 Release:	0.2
@@ -87,78 +87,78 @@ Install the bind package if you need a DNS server for your network. If
 you want bind to act a caching name server, you will also need to
 install the caching-nameserver package.
 
-%description -l de
-EnthДlt den Namen-Server, der zum Umwandeln von Host-Namen in
+%description -l de.UTF-8
+Enthц╓lt den Namen-Server, der zum Umwandeln von Host-Namen in
 IP-Adressen und umgekehrt verwendet wird. Er kann auf Workstations als
 caching Namen-Server verwendet werden, ist aber i.d.R. nur auf einem
 Recher des Netzwerks erforderlich.
 
-%description -l es
+%description -l es.UTF-8
 Incluye el servidor de nombres (DNS), que se usa para traducir nombres
 para IP (y viceversa). Puede ser usado en estaciones de trabajo como
-un servidor de nombres cachИ, pero generalmente sСlo hace falta en una
-mАquina para toda la red.
+un servidor de nombres cachц╘, pero generalmente sцЁlo hace falta en una
+mц║quina para toda la red.
 
-%description -l fr
-Contient le serveur de noms named, utilisИ pour dИfinir les
-traductions nom d'hТte vers adresse IP (et vice versa). Il peut Йtre
-utilisИ sur les stations de travail comme serveur de nom en cache mais
-n'est souvent nИcessaire que sur une machine pour un rИseau entier.
+%description -l fr.UTF-8
+Contient le serveur de noms named, utilisц╘ pour dц╘finir les
+traductions nom d'hц╢te vers adresse IP (et vice versa). Il peut ц╙tre
+utilisц╘ sur les stations de travail comme serveur de nom en cache mais
+n'est souvent nц╘cessaire que sur une machine pour un rц╘seau entier.
 
-%description -l pl
-Pakiet ten zawiera demona named, ktСry sЁu©y do zmieniania nazw
-komputerСw na numery IP i odwrotnie. Mo©e byФ on u©ywany na stacjach
-roboczych jako bufor odwoЁaЯ do serwisu nazw (caching name server),
-ale generalnie wystarczy tylko jedna jednostka wyposa©ona w ten
+%description -l pl.UTF-8
+Pakiet ten zawiera demona named, ktцЁry sе┌uе╪y do zmieniania nazw
+komputerцЁw na numery IP i odwrotnie. Moе╪e byд┤ on uе╪ywany na stacjach
+roboczych jako bufor odwoе┌aе└ do serwisu nazw (caching name server),
+ale generalnie wystarczy tylko jedna jednostka wyposaе╪ona w ten
 program na fragment sieci.
 
-%description -l pt_BR
-Inclui o servidor de nomes (DNS), que И usado para traduzir nomes para
-IP (e vice-versa). Pode ser usado em estaГУes de trabalho como um
-servidor de nomes cache, mas geralmente sС И necessАrio em uma mАquina
+%description -l pt_BR.UTF-8
+Inclui o servidor de nomes (DNS), que ц╘ usado para traduzir nomes para
+IP (e vice-versa). Pode ser usado em estaц╖ц╣es de trabalho como um
+servidor de nomes cache, mas geralmente sцЁ ц╘ necessц║rio em uma mц║quina
 para toda a rede.
 
-%description -l ru
-BIND (Berkeley Internet Name Domain) является реализацией протоколов
-DNS (Domain Name System). BIND включает DNS сервер (named) и
-библиотеку "резолвера" (подпрограммы для приложений, через которые
-происходят обращения к DNS). DNS сервер named может быть использован
-на рабочих станциях как кеширующий сервер, но обычно запускается на
-одной машине в локальной сети и используется остальными машинами (этим
-достигается намного более эффективное кеширование).
+%description -l ru.UTF-8
+BIND (Berkeley Internet Name Domain) я▐п╡п╩я▐п╣я┌я│я▐ я─п╣п╟п╩п╦п╥п╟я├п╦п╣п╧ п©я─п╬я┌п╬п╨п╬п╩п╬п╡
+DNS (Domain Name System). BIND п╡п╨п╩я▌я┤п╟п╣я┌ DNS я│п╣я─п╡п╣я─ (named) п╦
+п╠п╦п╠п╩п╦п╬я┌п╣п╨я┐ "я─п╣п╥п╬п╩п╡п╣я─п╟" (п©п╬п╢п©я─п╬пЁя─п╟п╪п╪я▀ п╢п╩я▐ п©я─п╦п╩п╬п╤п╣п╫п╦п╧, я┤п╣я─п╣п╥ п╨п╬я┌п╬я─я▀п╣
+п©я─п╬п╦я│я┘п╬п╢я▐я┌ п╬п╠я─п╟я┴п╣п╫п╦я▐ п╨ DNS). DNS я│п╣я─п╡п╣я─ named п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫
+п╫п╟ я─п╟п╠п╬я┤п╦я┘ я│я┌п╟п╫я├п╦я▐я┘ п╨п╟п╨ п╨п╣я┬п╦я─я┐я▌я┴п╦п╧ я│п╣я─п╡п╣я─, п╫п╬ п╬п╠я▀я┤п╫п╬ п╥п╟п©я┐я│п╨п╟п╣я┌я│я▐ п╫п╟
+п╬п╢п╫п╬п╧ п╪п╟я┬п╦п╫п╣ п╡ п╩п╬п╨п╟п╩я▄п╫п╬п╧ я│п╣я┌п╦ п╦ п╦я│п©п╬п╩я▄п╥я┐п╣я┌я│я▐ п╬я│я┌п╟п╩я▄п╫я▀п╪п╦ п╪п╟я┬п╦п╫п╟п╪п╦ (я█я┌п╦п╪
+п╢п╬я│я┌п╦пЁп╟п╣я┌я│я▐ п╫п╟п╪п╫п╬пЁп╬ п╠п╬п╩п╣п╣ я█я└я└п╣п╨я┌п╦п╡п╫п╬п╣ п╨п╣я┬п╦я─п╬п╡п╟п╫п╦п╣).
 
-Конфигурационные файлы, настраивающие BIND на работу в режиме простого
-кеширующего сервера, включены в пакет caching-nameserver.
+п п╬п╫я└п╦пЁя┐я─п╟я├п╦п╬п╫п╫я▀п╣ я└п╟п╧п╩я▀, п╫п╟я│я┌я─п╟п╦п╡п╟я▌я┴п╦п╣ BIND п╫п╟ я─п╟п╠п╬я┌я┐ п╡ я─п╣п╤п╦п╪п╣ п©я─п╬я│я┌п╬пЁп╬
+п╨п╣я┬п╦я─я┐я▌я┴п╣пЁп╬ я│п╣я─п╡п╣я─п╟, п╡п╨п╩я▌я┤п╣п╫я▀ п╡ п©п╟п╨п╣я┌ caching-nameserver.
 
-%description -l tr
-Bu paket, makina adЩnЩ IP numarasЩna (ya da tersi) Гevirmek iГin
-kullanЩlan alan adЩ sunucusunu iГerir. щЧ istasyonlarЩnda bir Жnbellek
-isim sunucusu olarak da kullanЩlabilir ama genellikle bЭtЭn bir aП
-iГin sadece bir makina Эzerinde kurulur.
+%description -l tr.UTF-8
+Bu paket, makina adд╠nд╠ IP numarasд╠na (ya da tersi) ц╖evirmek iц╖in
+kullanд╠lan alan adд╠ sunucusunu iц╖erir. д╟е÷ istasyonlarд╠nda bir ц╤nbellek
+isim sunucusu olarak da kullanд╠labilir ama genellikle bц╪tц╪n bir aд÷
+iц╖in sadece bir makina ц╪zerinde kurulur.
 
-%description -l uk
-BIND (Berkeley Internet Name Domain) ╓ реал╕зац╕╓ю протокол╕в DNS
-(Domain Name System). BIND включа╓ DNS сервер (named) та б╕бл╕отеку
-"резолвера" (п╕дпрограми, що забезпечують ╕нтерфейс до DNS). DNS
-сервер named може бути використаний на робочих станц╕ях як кешируючий
-сервер, але звичайно запуска╓ться на одн╕й машин╕ в локальн╕й мереж╕ ╕
-використову╓ться ╕ншими (цим досяга╓ться б╕льша ефективн╕сть
-використання кешу).
+%description -l uk.UTF-8
+BIND (Berkeley Internet Name Domain) я■ я─п╣п╟п╩я√п╥п╟я├я√я■я▌ п©я─п╬я┌п╬п╨п╬п╩я√п╡ DNS
+(Domain Name System). BIND п╡п╨п╩я▌я┤п╟я■ DNS я│п╣я─п╡п╣я─ (named) я┌п╟ п╠я√п╠п╩я√п╬я┌п╣п╨я┐
+"я─п╣п╥п╬п╩п╡п╣я─п╟" (п©я√п╢п©я─п╬пЁя─п╟п╪п╦, я┴п╬ п╥п╟п╠п╣п╥п©п╣я┤я┐я▌я┌я▄ я√п╫я┌п╣я─я└п╣п╧я│ п╢п╬ DNS). DNS
+я│п╣я─п╡п╣я─ named п╪п╬п╤п╣ п╠я┐я┌п╦ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╦п╧ п╫п╟ я─п╬п╠п╬я┤п╦я┘ я│я┌п╟п╫я├я√я▐я┘ я▐п╨ п╨п╣я┬п╦я─я┐я▌я┤п╦п╧
+я│п╣я─п╡п╣я─, п╟п╩п╣ п╥п╡п╦я┤п╟п╧п╫п╬ п╥п╟п©я┐я│п╨п╟я■я┌я▄я│я▐ п╫п╟ п╬п╢п╫я√п╧ п╪п╟я┬п╦п╫я√ п╡ п╩п╬п╨п╟п╩я▄п╫я√п╧ п╪п╣я─п╣п╤я√ я√
+п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐я■я┌я▄я│я▐ я√п╫я┬п╦п╪п╦ (я├п╦п╪ п╢п╬я│я▐пЁп╟я■я┌я▄я│я▐ п╠я√п╩я▄я┬п╟ п╣я└п╣п╨я┌п╦п╡п╫я√я│я┌я▄
+п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╫я▐ п╨п╣я┬я┐).
 
-Конф╕гурац╕йн╕ файли, ща настроюють BIND на роботу в режим╕ простого
-кешируючого серверу, включен╕ в пакет caching-nameserver.
+п п╬п╫я└я√пЁя┐я─п╟я├я√п╧п╫я√ я└п╟п╧п╩п╦, я┴п╟ п╫п╟я│я┌я─п╬я▌я▌я┌я▄ BIND п╫п╟ я─п╬п╠п╬я┌я┐ п╡ я─п╣п╤п╦п╪я√ п©я─п╬я│я┌п╬пЁп╬
+п╨п╣я┬п╦я─я┐я▌я┤п╬пЁп╬ я│п╣я─п╡п╣я─я┐, п╡п╨п╩я▌я┤п╣п╫я√ п╡ п©п╟п╨п╣я┌ caching-nameserver.
 
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
-Summary(de):	DNS-Utils - Host, Dig, Dnsquery, Nslookup
-Summary(es):	Utilitarios DNS - host, dig, dnsquery y nslookup
-Summary(fr):	Utilitaires DNS - host, dig, dnsquery, nslookup
-Summary(pl):	NarzЙdzia DNS - host, dig, dnsquery, nslookup
-Summary(pt_BR):	UtilitАrios DNS - host, dig, dnsquery e nslookup
-Summary(ru):	Утилиты для посылки запросов к серверам DNS
-Summary(tr):	DNS araГlarЩ - host, dig, dnsquery, nslookup
-Summary(uk):	Утил╕ти для надсилання запит╕в до сервер╕в DNS
-Summary(zh_CN):	Internet сРцШ╥ЧнЯфВй╣сц╧╓╬ъ
+Summary(de.UTF-8):   DNS-Utils - Host, Dig, Dnsquery, Nslookup
+Summary(es.UTF-8):   Utilitarios DNS - host, dig, dnsquery y nslookup
+Summary(fr.UTF-8):   Utilitaires DNS - host, dig, dnsquery, nslookup
+Summary(pl.UTF-8):   Narzд≥dzia DNS - host, dig, dnsquery, nslookup
+Summary(pt_BR.UTF-8):   Utilitц║rios DNS - host, dig, dnsquery e nslookup
+Summary(ru.UTF-8):   пёя┌п╦п╩п╦я┌я▀ п╢п╩я▐ п©п╬я│я▀п╩п╨п╦ п╥п╟п©я─п╬я│п╬п╡ п╨ я│п╣я─п╡п╣я─п╟п╪ DNS
+Summary(tr.UTF-8):   DNS araц╖larд╠ - host, dig, dnsquery, nslookup
+Summary(uk.UTF-8):   пёя┌п╦п╩я√я┌п╦ п╢п╩я▐ п╫п╟п╢я│п╦п╩п╟п╫п╫я▐ п╥п╟п©п╦я┌я√п╡ п╢п╬ я│п╣я─п╡п╣я─я√п╡ DNS
+Summary(zh_CN.UTF-8):   Internet Е÷÷Е░█Ф°█Е┼║Е≥╗Е╝·Г■╗Е╥╔Е┘╥
 Group:		Networking/Utilities
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	iconv
@@ -173,80 +173,80 @@ network addresses.
 You should install bind-utils if you need to get information from DNS
 name servers.
 
-%description utils -l de
+%description utils -l de.UTF-8
 Dienstprogrammsammlung zum Abfragen von Namen-Servern und Hosts. Diese
 Tools bestimmen die IP-Adresse eines angegebenen Host-Namen und finden
-Informationen Эber registrierte Domains und Netzwerk-Adressen.
+Informationen ц╪ber registrierte Domains und Netzwerk-Adressen.
 
-%description utils -l es
+%description utils -l es.UTF-8
 Conjunto de utilitarios para consulta a servidores de nombres. Estas
-herramientas permiten la determinaciСn de direcciones IP para nombres
-de mАquinas informados y busca informaciСn sobre dominios registrados
+herramientas permiten la determinaciцЁn de direcciones IP para nombres
+de mц║quinas informados y busca informaciцЁn sobre dominios registrados
 y direcciones de red.
 
-%description utils -l fr
+%description utils -l fr.UTF-8
 Ensemble d'utilitaires pour interroger les serveurs de noms et
-rechercher des hТtes. Ces outils vous permettent de dИterminer les
-adresses IP pour des noms d'hТtes donnИs, et trouver des informations
-sur les noms de domaine dИclarИs et les adresses rИseau.
+rechercher des hц╢tes. Ces outils vous permettent de dц╘terminer les
+adresses IP pour des noms d'hц╢tes donnц╘s, et trouver des informations
+sur les noms de domaine dц╘clarц╘s et les adresses rц╘seau.
 
-%description utils -l pl
-Pakiet ten zawiera zbiСr aplikacji umo©liwiaj╠cych odpytywanie
-serwerСw nazw z innych domen w celu uzyskania informacji o komputerach
+%description utils -l pl.UTF-8
+Pakiet ten zawiera zbiцЁr aplikacji umoе╪liwiajд┘cych odpytywanie
+serwerцЁw nazw z innych domen w celu uzyskania informacji o komputerach
 i ich adresach IP.
 
-%description utils -l pt_BR
-Conjunto de utilitАrios para consulta a servidores DNS. Estas
-ferramentas permitem a determinaГЦo de endereГos IP para nomes de
-mАquinas informados e busca informaГУes sobre domМnios registrados e
-endereГos de rede. VocЙ deveria instalar este pacote se necessitar
-obter informaГУes de servidores DNS.
+%description utils -l pt_BR.UTF-8
+Conjunto de utilitц║rios para consulta a servidores DNS. Estas
+ferramentas permitem a determinaц╖цёo de endereц╖os IP para nomes de
+mц║quinas informados e busca informaц╖ц╣es sobre domц╜nios registrados e
+endereц╖os de rede. Vocц╙ deveria instalar este pacote se necessitar
+obter informaц╖ц╣es de servidores DNS.
 
-%description utils -l ru
-Набор утилит для генерации запросов к серверам имен (DNS) и поиска
-адресов машин. Эти утилиты позволяют определить IP-адрес по известному
-доменному имени (и наоборот) и другую информацию о зарегистрированных
-доменах и сетевых адресах.
+%description utils -l ru.UTF-8
+п²п╟п╠п╬я─ я┐я┌п╦п╩п╦я┌ п╢п╩я▐ пЁп╣п╫п╣я─п╟я├п╦п╦ п╥п╟п©я─п╬я│п╬п╡ п╨ я│п╣я─п╡п╣я─п╟п╪ п╦п╪п╣п╫ (DNS) п╦ п©п╬п╦я│п╨п╟
+п╟п╢я─п╣я│п╬п╡ п╪п╟я┬п╦п╫. п╜я┌п╦ я┐я┌п╦п╩п╦я┌я▀ п©п╬п╥п╡п╬п╩я▐я▌я┌ п╬п©я─п╣п╢п╣п╩п╦я┌я▄ IP-п╟п╢я─п╣я│ п©п╬ п╦п╥п╡п╣я│я┌п╫п╬п╪я┐
+п╢п╬п╪п╣п╫п╫п╬п╪я┐ п╦п╪п╣п╫п╦ (п╦ п╫п╟п╬п╠п╬я─п╬я┌) п╦ п╢я─я┐пЁя┐я▌ п╦п╫я└п╬я─п╪п╟я├п╦я▌ п╬ п╥п╟я─п╣пЁп╦я│я┌я─п╦я─п╬п╡п╟п╫п╫я▀я┘
+п╢п╬п╪п╣п╫п╟я┘ п╦ я│п╣я┌п╣п╡я▀я┘ п╟п╢я─п╣я│п╟я┘.
 
-%description utils -l tr
-Bu pakette isim sunucularЩnЩ sorgulamak ve makina adreslerini ГЖzmek
-iГin kullanЩlan araГlar bulunmaktadЩr.
+%description utils -l tr.UTF-8
+Bu pakette isim sunucularд╠nд╠ sorgulamak ve makina adreslerini ц╖ц╤zmek
+iц╖in kullanд╠lan araц╖lar bulunmaktadд╠r.
 
-%description utils -l uk
-Наб╕р утил╕т для генерац╕╖ запит╕в до сервер╕в ╕мен (DNS) та пошуку
-адрес машин. Ц╕ утил╕ти дозволяють отримати IP-адресу за в╕домим
-доменним ╕менем та навпаки, а також ╕ншу ╕нформац╕ю про заре╓строван╕
-домени та адреси.
+%description utils -l uk.UTF-8
+п²п╟п╠я√я─ я┐я┌п╦п╩я√я┌ п╢п╩я▐ пЁп╣п╫п╣я─п╟я├я√я≈ п╥п╟п©п╦я┌я√п╡ п╢п╬ я│п╣я─п╡п╣я─я√п╡ я√п╪п╣п╫ (DNS) я┌п╟ п©п╬я┬я┐п╨я┐
+п╟п╢я─п╣я│ п╪п╟я┬п╦п╫. п╕я√ я┐я┌п╦п╩я√я┌п╦ п╢п╬п╥п╡п╬п╩я▐я▌я┌я▄ п╬я┌я─п╦п╪п╟я┌п╦ IP-п╟п╢я─п╣я│я┐ п╥п╟ п╡я√п╢п╬п╪п╦п╪
+п╢п╬п╪п╣п╫п╫п╦п╪ я√п╪п╣п╫п╣п╪ я┌п╟ п╫п╟п╡п©п╟п╨п╦, п╟ я┌п╟п╨п╬п╤ я√п╫я┬я┐ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ п╥п╟я─п╣я■я│я┌я─п╬п╡п╟п╫я√
+п╢п╬п╪п╣п╫п╦ я┌п╟ п╟п╢я─п╣я│п╦.
 
 %package libs
 Summary:	DNS libraries
-Summary(pl):	Biblioteki DNS
-Summary(ru):	Библиотеки, необходимые для bind
-Summary(uk):	Б╕бл╕отеки, необх╕дн╕ для bind
-Summary(zh_CN):	Internet сРцШ╥ЧнЯфВ©╙╥╒©Б
+Summary(pl.UTF-8):   Biblioteki DNS
+Summary(ru.UTF-8):   п▒п╦п╠п╩п╦п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣ п╢п╩я▐ bind
+Summary(uk.UTF-8):   п▒я√п╠п╩я√п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘я√п╢п╫я√ п╢п╩я▐ bind
+Summary(zh_CN.UTF-8):   Internet Е÷÷Е░█Ф°█Е┼║Е≥╗Е╪─Е▐▒Е╨⌠
 Group:		Libraries
 
 %description libs
 The bind-libs package contains all libraries required for running BIND
 and bind utils.
 
-%description libs -l pl
+%description libs -l pl.UTF-8
 Pakiet zawiera wszystkie biblioteki potrzebne do uruchomienia binda
-lub programСw z pakietu bind-utils.
+lub programцЁw z pakietu bind-utils.
 
-%description libs -l ru
-Библиотеки, необходимые для работы bind.
+%description libs -l ru.UTF-8
+п▒п╦п╠п╩п╦п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣ п╢п╩я▐ я─п╟п╠п╬я┌я▀ bind.
 
-%description libs -l uk
-Б╕бл╕отеки, необх╕дн╕ для роботи bind.
+%description libs -l uk.UTF-8
+п▒я√п╠п╩я√п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘я√п╢п╫я√ п╢п╩я▐ я─п╬п╠п╬я┌п╦ bind.
 
 %package devel
 Summary:	DNS development includes
-Summary(es):	Archivos de inclusiСn y bibliotecas para desarrollo DNS
-Summary(pl):	Pliki nagЁСwkowe bibliotek DNS
-Summary(pt_BR):	Todos os arquivos de cabeГalho e bibliotecas para desenvolvimento DNS
-Summary(ru):	Хедеры и библиотеки разработчика для bind
-Summary(uk):	Хедери та б╕бл╕отеки програм╕ста для bind
+Summary(es.UTF-8):   Archivos de inclusiцЁn y bibliotecas para desarrollo DNS
+Summary(pl.UTF-8):   Pliki nagе┌цЁwkowe bibliotek DNS
+Summary(pt_BR.UTF-8):   Todos os arquivos de cabeц╖alho e bibliotecas para desenvolvimento DNS
+Summary(ru.UTF-8):   п╔п╣п╢п╣я─я▀ п╦ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦ я─п╟п╥я─п╟п╠п╬я┌я┤п╦п╨п╟ п╢п╩я▐ bind
+Summary(uk.UTF-8):   п╔п╣п╢п╣я─п╦ я┌п╟ п╠я√п╠п╩я√п╬я┌п╣п╨п╦ п©я─п╬пЁя─п╟п╪я√я│я┌п╟ п╢п╩я▐ bind
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
@@ -258,52 +258,52 @@ You should install bind-devel if you want to develop bind DNS
 applications. If you install bind-devel, you'll also need to install
 bind-libs.
 
-%description devel -l es
-Todos los archivos de inclusiСn y bibliotecas necesarios al desarrollo
+%description devel -l es.UTF-8
+Todos los archivos de inclusiцЁn y bibliotecas necesarios al desarrollo
 DNS para el bind.
 
-%description devel -l pl
-Pakiet zawiera pliki nagЁСwkowe. Je©eli bЙdziesz pisaЁ programy pod
-binda, lub kompilowaЁ kod ╪rСdЁowy oprogramowania korzystaj╠cego z
-tych plikСw nagЁСwkowych czy biblioteki powiniene╤ zainstalowaФ ten
+%description devel -l pl.UTF-8
+Pakiet zawiera pliki nagе┌цЁwkowe. Jeе╪eli bд≥dziesz pisaе┌ programy pod
+binda, lub kompilowaе┌ kod е╨rцЁdе┌owy oprogramowania korzystajд┘cego z
+tych plikцЁw nagе┌цЁwkowych czy biblioteki powinieneе⌡ zainstalowaд┤ ten
 pakiet.
 
-%description devel -l pt_BR
-Todos os arquivos de cabeГalho e bibliotecas necessАrios para o
+%description devel -l pt_BR.UTF-8
+Todos os arquivos de cabeц╖alho e bibliotecas necessц║rios para o
 desenvolvimento com o bind.
 
-%description devel -l ru
-Все хедеры и библиотеки, необходимые для написания программ с
-использованием BIND 9.x.x.
+%description devel -l ru.UTF-8
+п▓я│п╣ я┘п╣п╢п╣я─я▀ п╦ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣ п╢п╩я▐ п╫п╟п©п╦я│п╟п╫п╦я▐ п©я─п╬пЁя─п╟п╪п╪ я│
+п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣п╪ BIND 9.x.x.
 
-%description devel -l uk
-Вс╕ хедери та б╕бл╕отеки, необх╕дн╕ для розробки програм з
-використанням BIND 9.x.x.
+%description devel -l uk.UTF-8
+п▓я│я√ я┘п╣п╢п╣я─п╦ я┌п╟ п╠я√п╠п╩я√п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘я√п╢п╫я√ п╢п╩я▐ я─п╬п╥я─п╬п╠п╨п╦ п©я─п╬пЁя─п╟п╪ п╥
+п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╫я▐п╪ BIND 9.x.x.
 
 %package static
 Summary:	DNS static libs
-Summary(pl):	Biblioteki statyczne DNS
-Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento DNS
-Summary(ru):	Статические библиотеки разработчика для bind
-Summary(uk):	Статичн╕ б╕бл╕отеки програм╕ста для bind
+Summary(pl.UTF-8):   Biblioteki statyczne DNS
+Summary(pt_BR.UTF-8):   Bibliotecas estц║ticas para desenvolvimento DNS
+Summary(ru.UTF-8):   п║я┌п╟я┌п╦я┤п╣я│п╨п╦п╣ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦ я─п╟п╥я─п╟п╠п╬я┌я┤п╦п╨п╟ п╢п╩я▐ bind
+Summary(uk.UTF-8):   п║я┌п╟я┌п╦я┤п╫я√ п╠я√п╠п╩я√п╬я┌п╣п╨п╦ п©я─п╬пЁя─п╟п╪я√я│я┌п╟ п╢п╩я▐ bind
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static bind libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczne biblioteki binda.
 
-%description static -l pt_BR
-Bibliotecas estАticas para desenvolvimento DNS.
+%description static -l pt_BR.UTF-8
+Bibliotecas estц║ticas para desenvolvimento DNS.
 
-%description static -l ru
-Статические библиотеки, необходимые для написания программ с
-использованием BIND.
+%description static -l ru.UTF-8
+п║я┌п╟я┌п╦я┤п╣я│п╨п╦п╣ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣ п╢п╩я▐ п╫п╟п©п╦я│п╟п╫п╦я▐ п©я─п╬пЁя─п╟п╪п╪ я│
+п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣п╪ BIND.
 
-%description static -l uk
-Статичн╕ б╕бл╕отеки, необх╕дн╕ для розробки програм з використанням
+%description static -l uk.UTF-8
+п║я┌п╟я┌п╦я┤п╫я√ п╠я√п╠п╩я√п╬я┌п╣п╨п╦, п╫п╣п╬п╠я┘я√п╢п╫я√ п╢п╩я▐ я─п╬п╥я─п╬п╠п╨п╦ п©я─п╬пЁя─п╟п╪ п╥ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╫я▐п╪
 BIND.
 
 %prep
