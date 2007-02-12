@@ -6,15 +6,15 @@
 %bcond_without	static_libs	# build without static libraries
 #
 Summary:	BIND - DNS name server
-Summary(de.UTF-8):   BIND - DNS-Namenserver
-Summary(es.UTF-8):   BIND - Servidor de nombres DNS
-Summary(fr.UTF-8):   BIND - serveur de noms DNS
-Summary(pl.UTF-8):   BIND - serwer nazw DNS
-Summary(pt_BR.UTF-8):   BIND - Servidor de nomes DNS
-Summary(ru.UTF-8):   BIND - cервер системы доменных имен (DNS)
-Summary(tr.UTF-8):   DNS alan adı sunucusu
-Summary(uk.UTF-8):   BIND - cервер системи доменних імен (DNS)
-Summary(zh_CN.UTF-8):   Internet 域名服务器
+Summary(de.UTF-8):	BIND - DNS-Namenserver
+Summary(es.UTF-8):	BIND - Servidor de nombres DNS
+Summary(fr.UTF-8):	BIND - serveur de noms DNS
+Summary(pl.UTF-8):	BIND - serwer nazw DNS
+Summary(pt_BR.UTF-8):	BIND - Servidor de nomes DNS
+Summary(ru.UTF-8):	BIND - cервер системы доменных имен (DNS)
+Summary(tr.UTF-8):	DNS alan adı sunucusu
+Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
+Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.3.4
 Release:	2
@@ -149,15 +149,15 @@ BIND (Berkeley Internet Name Domain) є реалізацією протокол�
 
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
-Summary(de.UTF-8):   DNS-Utils - Host, Dig, Dnsquery, Nslookup
-Summary(es.UTF-8):   Utilitarios DNS - host, dig, dnsquery y nslookup
-Summary(fr.UTF-8):   Utilitaires DNS - host, dig, dnsquery, nslookup
-Summary(pl.UTF-8):   Narzędzia DNS - host, dig, dnsquery, nslookup
-Summary(pt_BR.UTF-8):   Utilitários DNS - host, dig, dnsquery e nslookup
-Summary(ru.UTF-8):   Утилиты для посылки запросов к серверам DNS
-Summary(tr.UTF-8):   DNS araçları - host, dig, dnsquery, nslookup
-Summary(uk.UTF-8):   Утиліти для надсилання запитів до серверів DNS
-Summary(zh_CN.UTF-8):   Internet 域名服务器实用工具
+Summary(de.UTF-8):	DNS-Utils - Host, Dig, Dnsquery, Nslookup
+Summary(es.UTF-8):	Utilitarios DNS - host, dig, dnsquery y nslookup
+Summary(fr.UTF-8):	Utilitaires DNS - host, dig, dnsquery, nslookup
+Summary(pl.UTF-8):	Narzędzia DNS - host, dig, dnsquery, nslookup
+Summary(pt_BR.UTF-8):	Utilitários DNS - host, dig, dnsquery e nslookup
+Summary(ru.UTF-8):	Утилиты для посылки запросов к серверам DNS
+Summary(tr.UTF-8):	DNS araçları - host, dig, dnsquery, nslookup
+Summary(uk.UTF-8):	Утиліти для надсилання запитів до серверів DNS
+Summary(zh_CN.UTF-8):	Internet 域名服务器实用工具
 Group:		Networking/Utilities
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	iconv
@@ -219,10 +219,10 @@ için kullanılan araçlar bulunmaktadır.
 
 %package libs
 Summary:	DNS libraries
-Summary(pl.UTF-8):   Biblioteki DNS
-Summary(ru.UTF-8):   Библиотеки, необходимые для bind
-Summary(uk.UTF-8):   Бібліотеки, необхідні для bind
-Summary(zh_CN.UTF-8):   Internet 域名服务器开发库
+Summary(pl.UTF-8):	Biblioteki DNS
+Summary(ru.UTF-8):	Библиотеки, необходимые для bind
+Summary(uk.UTF-8):	Бібліотеки, необхідні для bind
+Summary(zh_CN.UTF-8):	Internet 域名服务器开发库
 Group:		Libraries
 
 %description libs
@@ -241,11 +241,11 @@ lub programów z pakietu bind-utils.
 
 %package devel
 Summary:	DNS development includes
-Summary(es.UTF-8):   Archivos de inclusión y bibliotecas para desarrollo DNS
-Summary(pl.UTF-8):   Pliki nagłówkowe bibliotek DNS
-Summary(pt_BR.UTF-8):   Todos os arquivos de cabeçalho e bibliotecas para desenvolvimento DNS
-Summary(ru.UTF-8):   Хедеры и библиотеки разработчика для bind
-Summary(uk.UTF-8):   Хедери та бібліотеки програміста для bind
+Summary(es.UTF-8):	Archivos de inclusión y bibliotecas para desarrollo DNS
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek DNS
+Summary(pt_BR.UTF-8):	Todos os arquivos de cabeçalho e bibliotecas para desenvolvimento DNS
+Summary(ru.UTF-8):	Хедеры и библиотеки разработчика для bind
+Summary(uk.UTF-8):	Хедери та бібліотеки програміста для bind
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
@@ -281,10 +281,10 @@ desenvolvimento com o bind.
 
 %package static
 Summary:	DNS static libs
-Summary(pl.UTF-8):   Biblioteki statyczne DNS
-Summary(pt_BR.UTF-8):   Bibliotecas estáticas para desenvolvimento DNS
-Summary(ru.UTF-8):   Статические библиотеки разработчика для bind
-Summary(uk.UTF-8):   Статичні бібліотеки програміста для bind
+Summary(pl.UTF-8):	Biblioteki statyczne DNS
+Summary(pt_BR.UTF-8):	Bibliotecas estáticas para desenvolvimento DNS
+Summary(ru.UTF-8):	Статические библиотеки разработчика для bind
+Summary(uk.UTF-8):	Статичні бібліотеки програміста для bind
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
