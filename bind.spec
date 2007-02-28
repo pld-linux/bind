@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.3.4
-Release:	2
+Release:	3
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -305,6 +305,19 @@ Bibliotecas estáticas para desenvolvimento DNS.
 Статичні бібліотеки, необхідні для розробки програм з використанням
 BIND.
 
+%package -n openldap-schema-bind
+Summary:	BIND schema for openldap
+Summary(pl.UTF-8):	Schemat BIND dla openldap
+Group:		Development/Libraries
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	openldap-servers
+
+%description -n openldap-schema-bind
+BIND schema for openldap.
+
+%description -n openldap-schema-bind -l pl.UTF-8
+Schemat BIND dla openldap.
+
 %prep
 %setup -q -a1
 %patch0 -p1
@@ -430,8 +443,6 @@ fi
 
 %attr(755,root,root) %{_sbindir}/*
 
-%{?with_ldap:%{_datadir}/openldap/schema/*.schema}
-
 %{_mandir}/man8/dns*
 %{_mandir}/man8/lwres*
 %{_mandir}/man8/named*
@@ -498,4 +509,10 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/*.a
+%endif
+
+%if %{with ldap}
+%files -n openldap-schema-bind
+%defattr(644,root,root,755)
+%{_datadir}/openldap/schema/*.schema
 %endif
