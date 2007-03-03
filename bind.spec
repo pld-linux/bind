@@ -1,3 +1,5 @@
+# TODO
+# - schema regstering in openldap-schema-bind
 #
 # Conditional build:
 %bcond_without	ssl		# build without OpenSSL support
