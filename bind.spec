@@ -39,7 +39,6 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
-Patch7:		%{name}-idn.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
