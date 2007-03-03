@@ -16,13 +16,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.3.4
-Release:	3
+Version:	9.4.0
+Release:	1
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	df5417e7e7cf017fa28b65d0a3d6e999
+# Source0-md5:	e85347f03f0d841b596422d5252a0869
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
 Source2:	named.init
@@ -49,6 +49,9 @@ BuildRequires:	idnkit-devel
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
+BuildRequires:	mysql-devel
+BuildRequires:	postgresql-devel
+BuildRequires:	unixODBC-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -327,7 +330,6 @@ Schemat BIND dla openldap.
 %patch4 -p1
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
-%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -344,9 +346,17 @@ cd ../..
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
+	--with-dlz-postgres=yes \
+	--with-dlz-mysql=yes \
+	--with-dlz-bdb=no \
+	--with-dlz-filesystem=yes \
+	%{?with_ldap:--with-dlz-ldap=yes} \
+	--with-dlz-odbc=no \
+	--with-dlz-stub=yes \
+	--enable-largefile \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
-	--disable-getifaddrs
+	--enable-getifaddrs=glibc
 
 %{__make}
 
