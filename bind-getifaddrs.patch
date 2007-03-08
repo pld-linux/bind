@@ -1,0 +1,13 @@
+--- bind-9.4.0/lib/isc/unix/ifiter_getifaddrs.c.org	2007-03-08 13:28:25.234354162 +0100
++++ bind-9.4.0/lib/isc/unix/ifiter_getifaddrs.c	2007-03-08 13:29:02.205146577 +0100
+@@ -111,7 +111,9 @@
+ 
+ 	INSIST(ifa != NULL);
+ 	INSIST(ifa->ifa_name != NULL);
+-	INSIST(ifa->ifa_addr != NULL);
++
++	if (ifa->ifa_addr == NULL)
++		return (ISC_R_IGNORE);
+ 
+ 	family = ifa->ifa_addr->sa_family;
+ 	if (family != AF_INET && family != AF_INET6)
