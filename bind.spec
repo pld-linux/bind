@@ -394,6 +394,9 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 %{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
+rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
+echo ".so named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
+
 # we don't want Makefiles in documentation...
 # FIXME: breaks re-entrant install
 rm -f doc/misc/Makefile*
