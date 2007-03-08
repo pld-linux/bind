@@ -19,7 +19,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.0
-Release:	1
+Release:	2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -41,6 +41,7 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
+Patch7:		%{name}-getifaddrs.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -331,6 +332,7 @@ Schemat BIND dla openldap.
 %patch4 -p1
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -395,7 +397,7 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
-echo ".so named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
+echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 
 # we don't want Makefiles in documentation...
 # FIXME: breaks re-entrant install
