@@ -6,6 +6,7 @@
 %bcond_without	ipv6		# build without IPv6 support
 %bcond_without	ldap		# build without LDAP support
 %bcond_without	static_libs	# build without static libraries
+%bcond_with	hip		# build with HIP RR support
 #
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
@@ -34,6 +35,8 @@ Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 # Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 # Source6-md5:	49fe799c6eca54ae227b22d57ebc1145
+Source7:	%{name}-hip.tar.gz
+# Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -48,6 +51,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	idnkit-devel
+%{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
@@ -324,7 +328,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1
+%setup -q -a1 %{?with_hip:-a7}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -333,6 +337,7 @@ Schemat BIND dla openldap.
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
 %patch7 -p1
+%{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 %build
 %{__libtoolize}
@@ -362,6 +367,7 @@ cd ../..
 	--enable-getifaddrs=glibc
 
 %{__make}
+%{?with_hip:cd bind-hip/; %{__make}}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -395,13 +401,14 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
 
 %{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
+%{?with_hip:install bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 
 # we don't want Makefiles in documentation...
 # FIXME: breaks re-entrant install
-rm -f doc/misc/Makefile*
+#rm -f doc/misc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -450,7 +457,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap}
+%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap} %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
@@ -491,6 +498,7 @@ fi
 %attr(755,root,root) %{_bindir}/host
 %attr(755,root,root) %{_bindir}/nslookup
 %attr(755,root,root) %{_bindir}/nsupdate
+%{?with_hip:%attr(755,root,root) %{_bindir}/hi2dns}
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/nslookup.1*
