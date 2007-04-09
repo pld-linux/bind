@@ -36,7 +36,6 @@ start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
-		modprobe -s capability > /dev/null 2>&1
 		[ -f /etc/localtime ] && cp -a /etc/localtime /var/lib/named/etc/localtime
 		touch /var/lib/named/named.log && \
 			chown named:named /var/lib/named/named.log
