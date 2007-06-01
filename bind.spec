@@ -20,7 +20,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.1
-Release:	2
+Release:	3
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -401,7 +401,7 @@ ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
-touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/null}
+touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
 %{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
@@ -427,18 +427,6 @@ fi
 %useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
 
 %post
-if [ "$1" = 1 ]; then
-	mknod -m 660 %{_var}/lib/named/dev/null c 1 3 2>/dev/null
-	chown root:named %{_var}/lib/named/dev/null 2>/dev/null
-	if [ ! -c %{_var}/lib/named/dev/null ]; then
-%banner -e %{name}-devs <<-EOF
-Device node was not created!!!
-
-Please read PLD Linux Vserver FAQ if you're installing %{name} inside
-vserver: <http://www.pld-linux.org/Vserver>.
-EOF
-	fi #'
-fi
 /sbin/chkconfig --add named
 %service named restart
 
@@ -492,10 +480,6 @@ sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /etc/n
 %attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
 %attr(660,named,named) %ghost  %{_var}/lib/named/named.log
 %attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
-
-# devices for chrooted bind
-%attr(750,root,named) %dir %{_var}/lib/named/dev
-%ghost %attr(660,root,named) %{_var}/lib/named/dev/null
 
 %files utils
 %defattr(644,root,root,755)
