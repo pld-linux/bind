@@ -6,6 +6,7 @@
 %bcond_without	ipv6		# build without IPv6 support
 %bcond_without	ldap		# build without LDAP support
 %bcond_without	static_libs	# build without static libraries
+%bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
 #
 Summary:	BIND - DNS name server
@@ -372,6 +373,8 @@ cd ../..
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
+
+%{?with_tests:%{__make} tests}
 
 %install
 rm -rf $RPM_BUILD_ROOT
