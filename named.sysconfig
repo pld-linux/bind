@@ -1,5 +1,6 @@
 # Set nice level for named
 SERVICE_RUN_NICE_LEVEL="+2"
 
-# Take advantage of SMP (default use 1 CPU)
-NUM_CPUS=1
+# Take advantage of SMP. If not set then named autodetects number of online CPUs
+# and runs that number of workers. You can force other value here.
+#NUM_CPUS=1

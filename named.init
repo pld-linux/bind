@@ -16,6 +16,8 @@ CHROOT_TO_DIR="/var/lib/named"
 # Source networking configuration
 . /etc/sysconfig/network
 
+NAMED_OPT=""
+
 # Try get config..
 [ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
 
@@ -32,6 +34,8 @@ fi
 # Sanity check
 [ -e /etc/named.conf ] || exit 0
 
+[ -n "$NUM_CPUS" ] && NAMED_OPT="$NAMED_OPT -n $NUM_CPUS"
+
 start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
@@ -40,7 +44,7 @@ start() {
 		touch $CHROOT_TO_DIR/named.log && \
 			chown named:named $CHROOT_TO_DIR/named.log
 	 	daemon named -u named -t $CHROOT_TO_DIR \
-			-c /etc/named.conf -n ${NUM_CPUS:-1} </dev/null
+			-c /etc/named.conf $NAMED_OPT </dev/null
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
 	else
