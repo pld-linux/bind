@@ -20,7 +20,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.1
-Release:	1
+Release:	1.2
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -46,6 +46,7 @@ Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
 Patch7:		%{name}-getifaddrs.patch
 Patch8:		%{name}-dighost_asccheck.patch
+Patch9:		%{name}-chroot-numcpus.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -339,6 +340,7 @@ Schemat BIND dla openldap.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 %build
