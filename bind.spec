@@ -399,7 +399,7 @@ ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
-touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/{random,null}}
+touch $RPM_BUILD_ROOT%{_var}/lib/named/{named.{log,stats},dev/null}
 
 %{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
 %{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
@@ -428,11 +428,9 @@ fi
 if [ "$1" = 1 ]; then
 	mknod -m 660 %{_var}/lib/named/dev/null c 1 3 2>/dev/null
 	chown root:named %{_var}/lib/named/dev/null 2>/dev/null
-	mknod -m 640 %{_var}/lib/named/dev/random c 1 8 2>/dev/null
-	chown root:named %{_var}/lib/named/dev/random 2>/dev/null
-	if [ ! -c %{_var}/lib/named/dev/null ] || [ ! -c %{_var}/lib/named/dev/random ]; then
+	if [ ! -c %{_var}/lib/named/dev/null ]; then
 %banner -e %{name}-devs <<-EOF
-Device nodes were not created!!!
+Device node was not created!!!
 
 Please read PLD Linux Vserver FAQ if you're installing %{name} inside
 vserver: <http://www.pld-linux.org/Vserver>.
@@ -492,7 +490,6 @@ fi
 # devices for chrooted bind
 %attr(750,root,named) %dir %{_var}/lib/named/dev
 %ghost %attr(660,root,named) %{_var}/lib/named/dev/null
-%ghost %attr(640,root,named) %{_var}/lib/named/dev/random
 
 %files utils
 %defattr(644,root,root,755)
