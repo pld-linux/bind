@@ -374,7 +374,7 @@ cd ../..
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
 
-%{?with_tests:%{__make} tests}
+%{?with_tests:%{__make} test}
 
 %install
 rm -rf $RPM_BUILD_ROOT
