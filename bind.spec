@@ -21,7 +21,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.1
-Release:	3
+Release:	4
 Epoch:		6
 License:	BSD-like
 Group:		Networking/Daemons
@@ -77,7 +77,6 @@ Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
 Obsoletes:	caching-nameserver
-Obsoletes:	nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
