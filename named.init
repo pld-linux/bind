@@ -40,6 +40,7 @@ start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
+		modprobe -s capability > /dev/null 2>&1
 		[ -f /etc/localtime ] && cp -a /etc/localtime $CHROOT_TO_DIR/etc/localtime
 		touch $CHROOT_TO_DIR/named.log && \
 			chown named:named $CHROOT_TO_DIR/named.log
