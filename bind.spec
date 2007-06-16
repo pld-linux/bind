@@ -5,6 +5,7 @@
 %bcond_without	ssl		# build without OpenSSL support
 %bcond_without	ipv6		# build without IPv6 support
 %bcond_without	ldap		# build without LDAP support
+%bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
@@ -58,8 +59,8 @@ BuildRequires:	idnkit-devel
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	mysql-devel
-BuildRequires:	postgresql-devel
+%{?with_sql:BuildRequires:	mysql-devel}
+%{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	unixODBC-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
@@ -358,8 +359,8 @@ cd ../..
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
-	--with-dlz-postgres=yes \
-	--with-dlz-mysql=yes \
+	%{?with_sql:--with-dlz-postgres=yes} \
+	%{?with_sql:--with-dlz-mysql=yes} \
 	--with-dlz-bdb=no \
 	--with-dlz-filesystem=yes \
 	%{?with_ldap:--with-dlz-ldap=yes} \
