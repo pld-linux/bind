@@ -24,8 +24,8 @@ Name:		bind
 %define	sver	9.4.1
 %define	plevel	P1
 Version:	%{sver}.%{plevel}
-Release:	2
-Epoch:		6
+Release:	3
+Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{sver}-%{plevel}/%{name}-%{sver}-%{plevel}.tar.gz
