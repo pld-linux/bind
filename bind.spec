@@ -59,7 +59,7 @@ BuildRequires:	flex
 BuildRequires:	idnkit-devel
 %{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
-%{?with_ldap:BuildRequires:	openldap-devel}
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_sql:BuildRequires:	postgresql-devel}
