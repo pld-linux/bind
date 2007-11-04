@@ -24,7 +24,7 @@ Name:		bind
 %define	sver	9.4.1
 %define	plevel	P1
 Version:	%{sver}.%{plevel}
-Release:	3
+Release:	4
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
