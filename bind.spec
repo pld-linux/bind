@@ -5,6 +5,7 @@
 %bcond_without	ssl		# build without OpenSSL support
 %bcond_without	ipv6		# build without IPv6 support
 %bcond_without	ldap		# build without LDAP support
+%bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
@@ -20,15 +21,17 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.4.1
+%define	sver	9.4.1
+%define	plevel	P1
+Version:	%{sver}.%{plevel}
 Release:	4
-Epoch:		6
+Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	09b54d35036cb0423b2e618f21766285
+Source0:	ftp://ftp.isc.org/isc/bind9/%{sver}-%{plevel}/%{name}-%{sver}-%{plevel}.tar.gz
+# Source0-md5:	44e0514e6105ddaa235394045d9aeb0c
 Source1:	%{name}-conf.tar.gz
-# Source1-md5:	8ee77729f806fcd548fe0cceb34b4a06
+# Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
 Source3:	named.sysconfig
 Source4:	named.logrotate
@@ -58,8 +61,8 @@ BuildRequires:	idnkit-devel
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-BuildRequires:	mysql-devel
-BuildRequires:	postgresql-devel
+%{?with_sql:BuildRequires:	mysql-devel}
+%{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	unixODBC-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
@@ -330,7 +333,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1 %{?with_hip:-a7}
+%setup -q -a1 %{?with_hip:-a7} -n %{name}-%{sver}-%{plevel}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -358,8 +361,8 @@ cd ../..
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	--enable-libbind \
-	--with-dlz-postgres=yes \
-	--with-dlz-mysql=yes \
+	%{?with_sql:--with-dlz-postgres=yes} \
+	%{?with_sql:--with-dlz-mysql=yes} \
 	--with-dlz-bdb=no \
 	--with-dlz-filesystem=yes \
 	%{?with_ldap:--with-dlz-ldap=yes} \
@@ -448,8 +451,9 @@ fi
 %postun	libs -p /sbin/ldconfig
 
 %triggerpostun -- %{name} < 6:9.4.1
-sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /etc/named.conf
-sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /etc/named.conf
+sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
+sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
+sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 
 %files
 %defattr(644,root,root,755)
