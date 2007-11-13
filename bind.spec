@@ -41,6 +41,8 @@ Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 # Source6-md5:	49fe799c6eca54ae227b22d57ebc1145
 Source7:	%{name}-hip.tar.gz
 # Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
+Source8:	ftp://rs.internic.net/domain/named.root
+# Source8-md5:	8c212c0260d708f15f75d3adc71f0149
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -345,6 +347,8 @@ Schemat BIND dla openldap.
 %patch8 -p1
 %patch9 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
+
+install %{SOURCE8} conf-pld/root.hint
 
 %build
 %{__libtoolize}
