@@ -65,7 +65,7 @@ BuildRequires:	libtool
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_sql:BuildRequires:	postgresql-devel}
-BuildRequires:	unixODBC-devel
+%{?with_sql:BuildRequires:	unixODBC-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
