@@ -21,15 +21,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-%define	sver	9.4.1
-%define	plevel	P1
-Version:	%{sver}.%{plevel}
-Release:	5
+Version:	9.4.2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{sver}-%{plevel}/%{name}-%{sver}-%{plevel}.tar.gz
-# Source0-md5:	44e0514e6105ddaa235394045d9aeb0c
+Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	57953d7264139b9506b9d66174125179
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
@@ -50,9 +48,7 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
-Patch7:		%{name}-getifaddrs.patch
-Patch8:		%{name}-dighost_asccheck.patch
-Patch9:		%{name}-chroot-numcpus.patch
+Patch7:		%{name}-chroot-numcpus.patch
 URL:		http://www.isc.org/products/BIND/bind9.html
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -335,7 +331,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1 %{?with_hip:-a7} -n %{name}-%{sver}-%{plevel}
+%setup -q -a1 %{?with_hip:-a7}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -344,8 +340,6 @@ Schemat BIND dla openldap.
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 install %{SOURCE8} conf-pld/root.hint
