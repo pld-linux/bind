@@ -22,7 +22,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.2
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -448,7 +448,9 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%triggerpostun -- %{name} < 6:9.4.1
+%triggerpostun -- %{name} < 7:9.4.2-2
+/sbin/chkconfig named reset
+#triggerpostun -- %{name} < 6:9.4.1
 sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
