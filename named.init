@@ -3,7 +3,7 @@
 # named		This shell script takes care of starting and stopping
 #		named (BIND DNS server).
 #
-# chkconfig:	345 14 89
+# chkconfig:	345 11 89
 #
 # description:	named (BIND) is a Domain Name Server (DNS) \
 #		that is used to resolve host names to IP addresses.
