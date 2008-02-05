@@ -22,7 +22,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.4.2
-Release:	2
+Release:	3
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -40,7 +40,7 @@ Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source7:	%{name}-hip.tar.gz
 # Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source8:	ftp://rs.internic.net/domain/named.root
-# Source8-md5:	8c212c0260d708f15f75d3adc71f0149
+# Source8-md5:	a94e29ac677846f3d4d618c50b7d34f1
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
