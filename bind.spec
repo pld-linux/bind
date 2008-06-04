@@ -21,13 +21,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.4.2
-Release:	4
+Version:	9.5.0
+Release:	0.1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	57953d7264139b9506b9d66174125179
+# Source0-md5:	066484717db1d1b1b4092ddcf5d0eb6e
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
@@ -348,10 +348,12 @@ install %{SOURCE8} conf-pld/root.hint
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
+cp -f /usr/share/automake/config.* .
 cd lib/bind
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
+cp -f /usr/share/automake/config.* .
 cd ../..
 %configure \
 	--with-idn \
