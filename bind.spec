@@ -5,6 +5,7 @@
 %bcond_without	ssl		# build without OpenSSL support
 %bcond_without	ipv6		# build without IPv6 support
 %bcond_without	ldap		# build without LDAP support
+%bcond_without	kerberos5	# build without kerneros5 support
 %bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
@@ -22,7 +23,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.5.0
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -55,6 +56,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	idnkit-devel
+%{?with_kerberos5:BuildRequires:	krb5-devel}
 %{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
@@ -356,10 +358,12 @@ cd lib/bind
 cp -f /usr/share/automake/config.* .
 cd ../..
 %configure \
+	CFLAGS="-D_GNU_SOURCE=1" \
 	--with-idn \
 	--with-libtool \
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
+	%{?with_kerberos5:--with-gssapi} \
 	--enable-libbind \
 	%{?with_sql:--with-dlz-postgres=yes} \
 	%{?with_sql:--with-dlz-mysql=yes} \
