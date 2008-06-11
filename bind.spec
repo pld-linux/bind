@@ -520,24 +520,62 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/*.so.*.*
+%attr(755,root,root) %{_libdir}/libbind.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libbind.so.4
+%attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.40
+%attr(755,root,root) %{_libdir}/libdns.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.42
+%attr(755,root,root) %{_libdir}/libisc.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.41
+%attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.40
+%attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.40
+%attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.40
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*.sh
-%attr(755,root,root) %{_libdir}/*.so
-%{_libdir}/*.la
-%{_includedir}/*
-%{_mandir}/man3/*
+%attr(755,root,root) %{_bindir}/isc-config.sh
+%attr(755,root,root) %{_libdir}/libbind.so
+%attr(755,root,root) %{_libdir}/libbind9.so
+%attr(755,root,root) %{_libdir}/libdns.so
+%attr(755,root,root) %{_libdir}/libisc.so
+%attr(755,root,root) %{_libdir}/libisccc.so
+%attr(755,root,root) %{_libdir}/libisccfg.so
+%attr(755,root,root) %{_libdir}/liblwres.so
+%{_libdir}/libbind.la
+%{_libdir}/libbind9.la
+%{_libdir}/libdns.la
+%{_libdir}/libisc.la
+%{_libdir}/libisccc.la
+%{_libdir}/libisccfg.la
+%{_libdir}/liblwres.la
+%{_includedir}/bind
+%{_includedir}/bind9
+%{_includedir}/dns
+%{_includedir}/dst
+%{_includedir}/isc
+%{_includedir}/isccc
+%{_includedir}/isccfg
+%{_includedir}/lwres
+%{_mandir}/man3/lwres*.3*
 
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/*.a
+%{_libdir}/libbind.a
+%{_libdir}/libbind9.a
+%{_libdir}/libdns.a
+%{_libdir}/libisc.a
+%{_libdir}/libisccc.a
+%{_libdir}/libisccfg.a
+%{_libdir}/liblwres.a
 %endif
 
 %if %{with ldap}
 %files -n openldap-schema-bind
 %defattr(644,root,root,755)
-%{_datadir}/openldap/schema/*.schema
+%{_datadir}/openldap/schema/dnszone.schema
 %endif
