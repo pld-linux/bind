@@ -29,19 +29,20 @@ License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	066484717db1d1b1b4092ddcf5d0eb6e
-Source1:	%{name}-conf.tar.gz
-# Source1-md5:	14d2c6befe25e68c713a1deb552668cc
-Source2:	named.init
-Source3:	named.sysconfig
-Source4:	named.logrotate
-Source5:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
-# Source5-md5:	35b1dfaa12615c9802126ee833e0e7f7
-Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source6-md5:	49fe799c6eca54ae227b22d57ebc1145
-Source7:	%{name}-hip.tar.gz
-# Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
-Source8:	ftp://rs.internic.net/domain/named.root
-# Source8-md5:	a94e29ac677846f3d4d618c50b7d34f1
+Source1:	named.init
+Source2:	named.sysconfig
+Source3:	named.logrotate
+Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
+# Source4-md5:	35b1dfaa12615c9802126ee833e0e7f7
+Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
+# Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
+Source6:	%{name}-hip.tar.gz
+# Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
+Source7:	ftp://rs.internic.net/domain/named.root
+# Source7-md5:	a94e29ac677846f3d4d618c50b7d34f1
+Source8:	%{name}-127.0.0.zone
+Source9:	%{name}-localhost.zone
+Source10:	%{name}-named.conf
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -333,7 +334,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1 %{?with_hip:-a7}
+%setup -q %{?with_hip:-a6}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -344,7 +345,6 @@ Schemat BIND dla openldap.
 %patch7 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
-install %{SOURCE8} conf-pld/root.hint
 
 %build
 %{__libtoolize}
@@ -393,18 +393,19 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 
 rm -f doc/rfc/rfc*
 
-bzip2 -dc %{SOURCE5} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 %{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
-install conf-pld/*.zone			$RPM_BUILD_ROOT%{_var}/lib/named/M
-install conf-pld/*.hint			$RPM_BUILD_ROOT%{_var}/lib/named
-install conf-pld/*.conf			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}
 install bin/tests/named.conf		EXAMPLE-CONFIG-named
 install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
-install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
-install %{SOURCE3}			$RPM_BUILD_ROOT/etc/sysconfig/named
-install %{SOURCE4}			$RPM_BUILD_ROOT/etc/logrotate.d/named
+install %{SOURCE1}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
+install %{SOURCE2}			$RPM_BUILD_ROOT/etc/sysconfig/named
+install %{SOURCE3}			$RPM_BUILD_ROOT/etc/logrotate.d/named
+install %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
+install %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
+install %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
+install %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
 
 ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
@@ -413,7 +414,7 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
 %{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
-%{?with_ldap:install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
+%{?with_ldap:install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
 %{?with_hip:install bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
