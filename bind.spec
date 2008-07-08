@@ -21,14 +21,16 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
+%define	ver	9.5.0
+%define	plevel	P1
 Name:		bind
-Version:	9.5.0
-Release:	2
+Version:	%{ver}.%{plevel}
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	066484717db1d1b1b4092ddcf5d0eb6e
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
+# Source0-md5:	a4f9dd6d205d24ec89fa4e44d8188197
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -334,7 +336,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}-%{plevel}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -522,19 +524,19 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind.so.4
+%attr(755,root,root) %ghost %{_libdir}/libbind.so.[0-9]
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.40
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.42
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.41
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.40
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.40
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.40
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.[0-9][0-9]
 
 %files devel
 %defattr(644,root,root,755)
