@@ -20,14 +20,16 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
+%define	ver	9.4.2
+%define	plevel	P2
 Name:		bind
-Version:	9.4.2
+Version:	%{ver}.%{plevel}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	57953d7264139b9506b9d66174125179
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
+# Source0-md5:	74464f8af260ad71a19a3400a1ae00bb
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
@@ -40,7 +42,7 @@ Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source7:	%{name}-hip.tar.gz
 # Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source8:	ftp://rs.internic.net/domain/named.root
-# Source8-md5:	8c212c0260d708f15f75d3adc71f0149
+# Source8-md5:	a94e29ac677846f3d4d618c50b7d34f1
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -49,7 +51,7 @@ Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
 Patch7:		%{name}-chroot-numcpus.patch
-URL:		http://www.isc.org/products/BIND/bind9.html
+URL:		http://www.isc.org/sw/bind/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -57,7 +59,7 @@ BuildRequires:	flex
 BuildRequires:	idnkit-devel
 %{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
-%{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
+%{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_sql:BuildRequires:	postgresql-devel}
@@ -331,7 +333,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1 %{?with_hip:-a7}
+%setup -q -a1 %{?with_hip:-a7} -n %{name}-%{ver}-%{plevel}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -448,7 +450,9 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%triggerpostun -- %{name} < 6:9.4.1
+%triggerpostun -- %{name} < 7:9.4.2-2
+/sbin/chkconfig named reset
+#triggerpostun -- %{name} < 6:9.4.1
 sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
