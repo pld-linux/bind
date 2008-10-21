@@ -393,8 +393,6 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -f doc/rfc/rfc*
-
 bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 %{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
@@ -426,8 +424,10 @@ echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compile
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
 
 # we don't want Makefiles in documentation...
-# FIXME: breaks re-entrant install
-rm -f doc/misc/Makefile*
+rm -rf _doc
+cp -a doc _doc
+rm -f _doc/rfc/rfc*
+rm -f _doc/misc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -469,7 +469,8 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* FAQ doc/misc/* doc/arm/*.html doc/rfc/index %{?with_ldap:doc/*.sdb-ldap} %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
+%doc README EXAMPLE-CONFIG-* FAQ %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
+%doc _doc/misc/* _doc/arm/*.html _doc/rfc/index %{?with_ldap:_doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
