@@ -25,7 +25,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	plevel	P2
 Name:		bind
 Version:	%{ver}.%{plevel}
-Release:	2
+Release:	3
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -422,9 +422,12 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 
+# let rpm generate deps (workaround -m644 used for libs installation)
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
+
 # we don't want Makefiles in documentation...
 # FIXME: breaks re-entrant install
-#rm -f doc/misc/Makefile*
+rm -f doc/misc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
