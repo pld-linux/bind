@@ -1,5 +1,6 @@
 # TODO
 # - schema regstering in openldap-schema-bind
+# - apply http://www.caraytech.com/geodns/
 #
 # Conditional build:
 %bcond_without	ssl		# build without OpenSSL support
