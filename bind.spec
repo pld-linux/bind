@@ -54,7 +54,7 @@ Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
 Patch7:		%{name}-chroot-numcpus.patch
-URL:		http://www.isc.org/sw/bind/
+URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
