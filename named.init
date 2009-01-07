@@ -44,7 +44,7 @@ start() {
 		[ -f /etc/localtime ] && cp -a /etc/localtime $CHROOT_TO_DIR/etc/localtime
 		touch $CHROOT_TO_DIR/named.log && \
 			chown named:named $CHROOT_TO_DIR/named.log
-	 	daemon named -u named -t $CHROOT_TO_DIR \
+	 	daemon --pidfile /var/lib/named/named.pid named -u named -t $CHROOT_TO_DIR \
 			-c /etc/named.conf $NAMED_OPT </dev/null
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
@@ -56,7 +56,7 @@ start() {
 stop() {
 	if [ -f /var/lock/subsys/named ]; then
 		msg_stopping "Named"
-		killproc named
+		killproc --pidfile /var/lib/named/named.pid named
 		rm -f /var/lock/subsys/named >/dev/null 2>&1
 	else
 		msg_not_running "Named"
