@@ -22,16 +22,16 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver	9.5.0
-%define	plevel	P2
+%define	ver	9.6.0
+%define	plevel	P1
 Name:		bind
 Version:	%{ver}.%{plevel}
-Release:	3
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
-# Source0-md5:	16c893f73a394c8cc36d7900cb9bb801
+# Source0-md5:	886b7eae55cfdc8cd8d2ca74a2f99c6e
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -48,12 +48,9 @@ Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
-Patch2:		%{name}-includedir-libbind.patch
-Patch3:		%{name}-link.patch
-Patch4:		%{name}-pmake.patch
-Patch5:		%{name}-sdb-ldap.patch
-Patch6:		%{name}-noinet6.patch
-Patch7:		%{name}-chroot-numcpus.patch
+Patch2:		%{name}-link.patch
+Patch3:		%{name}-pmake.patch
+Patch4:		%{name}-sdb-ldap.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -342,10 +339,7 @@ Schemat BIND dla openldap.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%{?with_ldap:%patch5 -p1}
-%patch6 -p1
-%patch7 -p1
+%{?with_ldap:%patch4 -p1}
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 
@@ -354,12 +348,6 @@ Schemat BIND dla openldap.
 %{__aclocal}
 %{__autoconf}
 cp -f /usr/share/automake/config.* .
-cd lib/bind
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-cp -f /usr/share/automake/config.* .
-cd ../..
 %configure \
 	CFLAGS="-D_GNU_SOURCE=1" \
 	--with-idn \
@@ -367,7 +355,6 @@ cd ../..
 	%{?with_ssl:--with-openssl=%{_prefix}} \
 	%{?with_ipv6:--enable-ipv6} \
 	%{?with_kerberos5:--with-gssapi} \
-	--enable-libbind \
 	%{?with_sql:--with-dlz-postgres=yes} \
 	%{?with_sql:--with-dlz-mysql=yes} \
 	--with-dlz-bdb=no \
@@ -378,7 +365,7 @@ cd ../..
 	--enable-largefile \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
-	--enable-getifaddrs=glibc
+	--enable-getifaddrs
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
@@ -389,7 +376,7 @@ cd ../..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}} \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig} \
-	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run,log}}
+	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/{named,lwresd},log}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -501,6 +488,9 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %attr(660,named,named) %ghost  %{_var}/lib/named/named.log
 %attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
 
+%attr(770,root,named) %dir %{_var}/run/named
+%attr(770,root,named) %dir %{_var}/run/lwresd
+
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/dig
@@ -511,7 +501,7 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/nslookup.1*
-%{_mandir}/man8/nsupdate.8*
+%{_mandir}/man1/nsupdate.1*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
@@ -528,8 +518,6 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbind.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind.so.[0-9]
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9]
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
@@ -546,21 +534,18 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/isc-config.sh
-%attr(755,root,root) %{_libdir}/libbind.so
 %attr(755,root,root) %{_libdir}/libbind9.so
 %attr(755,root,root) %{_libdir}/libdns.so
 %attr(755,root,root) %{_libdir}/libisc.so
 %attr(755,root,root) %{_libdir}/libisccc.so
 %attr(755,root,root) %{_libdir}/libisccfg.so
 %attr(755,root,root) %{_libdir}/liblwres.so
-%{_libdir}/libbind.la
 %{_libdir}/libbind9.la
 %{_libdir}/libdns.la
 %{_libdir}/libisc.la
 %{_libdir}/libisccc.la
 %{_libdir}/libisccfg.la
 %{_libdir}/liblwres.la
-%{_includedir}/bind
 %{_includedir}/bind9
 %{_includedir}/dns
 %{_includedir}/dst
@@ -573,7 +558,6 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libbind.a
 %{_libdir}/libbind9.a
 %{_libdir}/libdns.a
 %{_libdir}/libisc.a
