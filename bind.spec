@@ -20,8 +20,8 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver	9.4.2
-%define	plevel	P2
+%define	ver	9.4.3
+%define	plevel	P1
 Name:		bind
 Version:	%{ver}.%{plevel}
 Release:	1
@@ -29,7 +29,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
-# Source0-md5:	74464f8af260ad71a19a3400a1ae00bb
+# Source0-md5:	3cb525ad4f22315e23f08c8ce1e1d3d3
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
@@ -50,7 +50,6 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
-Patch7:		%{name}-chroot-numcpus.patch
 URL:		http://www.isc.org/sw/bind/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -341,7 +340,6 @@ Schemat BIND dla openldap.
 %patch4 -p1
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
-%patch7 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 install %{SOURCE8} conf-pld/root.hint
@@ -499,7 +497,7 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/nslookup.1*
-%{_mandir}/man8/nsupdate.8*
+%{_mandir}/man1/nsupdate.1*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
