@@ -1,0 +1,2 @@
+- up to 9.6.0-P1 (NSEC3 support, automatic zone resigning, epoll support)
+  [fixes: CVE-2009-0025]
