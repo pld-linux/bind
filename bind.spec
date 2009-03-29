@@ -10,6 +10,8 @@
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
 #
+%define	ver	9.4.3
+%define	plevel	P2
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -20,8 +22,6 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver	9.4.3
-%define	plevel	P2
 Name:		bind
 Version:	%{ver}.%{plevel}
 Release:	2
@@ -56,14 +56,14 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	idnkit-devel
-%{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
+%{?with_hip:BuildRequires:	libxml2-devel}
+%{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-%{?with_sql:BuildRequires:	mysql-devel}
 %{?with_sql:BuildRequires:	postgresql-devel}
-%{?with_sql:BuildRequires:	unixODBC-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -374,8 +374,7 @@ cd ../..
 	--enable-getifaddrs=glibc
 
 %{__make}
-%{?with_hip:cd bind-hip/; %{__make}}
-
+%{?with_hip:cd bind-hip; %{__make}}
 %{?with_tests:%{__make} test}
 
 %install
@@ -486,8 +485,8 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
 %attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
+%attr(660,named,named) %ghost %{_var}/lib/named/named.log
+%attr(660,named,named) %ghost %{_var}/lib/named/named.stats
 
 %files utils
 %defattr(644,root,root,755)
