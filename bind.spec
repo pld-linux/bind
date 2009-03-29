@@ -24,7 +24,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	plevel	P2
 Name:		bind
 Version:	%{ver}.%{plevel}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -367,6 +367,8 @@ cd ../..
 	--with-dlz-odbc=no \
 	--with-dlz-stub=yes \
 	--enable-largefile \
+	--disable-epoll \
+	--disable-devpoll \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
 	--enable-getifaddrs=glibc
