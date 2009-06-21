@@ -22,16 +22,15 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver	9.6.0
-%define	plevel	P1
+%define	ver	9.6.1
 Name:		bind
-Version:	%{ver}.%{plevel}
+Version:	%{ver}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
-# Source0-md5:	886b7eae55cfdc8cd8d2ca74a2f99c6e
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}/%{name}-%{ver}.tar.gz
+# Source0-md5:	516ac74d8eaaef30ad4c99ada8b715cd
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -47,10 +46,9 @@ Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
 Patch0:		%{name}-time.patch
-Patch1:		%{name}-autoconf.patch
-Patch2:		%{name}-link.patch
-Patch3:		%{name}-pmake.patch
-Patch4:		%{name}-sdb-ldap.patch
+Patch1:		%{name}-link.patch
+Patch2:		%{name}-pmake.patch
+Patch3:		%{name}-sdb-ldap.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -334,12 +332,11 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}-%{plevel}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%{?with_ldap:%patch4 -p1}
+%{?with_ldap:%patch3 -p1}
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 
@@ -553,6 +550,7 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %{_includedir}/isccc
 %{_includedir}/isccfg
 %{_includedir}/lwres
+%{_mandir}/man1/isc-config.sh.1*
 %{_mandir}/man3/lwres*.3*
 
 %if %{with static_libs}
