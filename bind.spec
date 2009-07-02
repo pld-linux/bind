@@ -25,7 +25,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	ver	9.6.1
 Name:		bind
 Version:	%{ver}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -55,7 +55,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	idnkit-devel
-%{?with_kerberos5:BuildRequires:	krb5-devel}
+%{?with_kerberos5:BuildRequires:	heimdal-devel}
 %{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
