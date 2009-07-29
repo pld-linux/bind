@@ -11,7 +11,7 @@
 %bcond_with	hip		# build with HIP RR support
 #
 %define	ver	9.4.3
-%define	plevel	P2
+%define	plevel	P3
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -24,12 +24,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}.%{plevel}
-Release:	2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
-# Source0-md5:	91dff2af18475e14863051c93255a59a
+# Source0-md5:	ed357d3d18dcfa97723f91d9219caa8c
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
