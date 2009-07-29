@@ -10,6 +10,8 @@
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
 #
+%define	ver	9.4.3
+%define	plevel	P3
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -21,13 +23,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.4.2
+Version:	%{ver}.%{plevel}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	57953d7264139b9506b9d66174125179
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
+# Source0-md5:	ed357d3d18dcfa97723f91d9219caa8c
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
@@ -40,7 +42,7 @@ Source6:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source7:	%{name}-hip.tar.gz
 # Source7-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source8:	ftp://rs.internic.net/domain/named.root
-# Source8-md5:	8c212c0260d708f15f75d3adc71f0149
+# Source8-md5:	4f3ccd43094cdaa684deaf186d2c028d
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-autoconf.patch
 Patch2:		%{name}-includedir-libbind.patch
@@ -48,21 +50,20 @@ Patch3:		%{name}-link.patch
 Patch4:		%{name}-pmake.patch
 Patch5:		%{name}-sdb-ldap.patch
 Patch6:		%{name}-noinet6.patch
-Patch7:		%{name}-chroot-numcpus.patch
-URL:		http://www.isc.org/products/BIND/bind9.html
+URL:		http://www.isc.org/sw/bind/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	idnkit-devel
-%{?with_hip:BuildRequires:	libxml2-devel}
 BuildRequires:	libtool
-%{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
+%{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
+%{?with_ldap:BuildRequires:	openldap-devel}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	postgresql-devel}
-%{?with_sql:BuildRequires:	unixODBC-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -331,7 +332,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q -a1 %{?with_hip:-a7}
+%setup -q -a1 %{?with_hip:-a7} -n %{name}-%{ver}-%{plevel}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -339,7 +340,6 @@ Schemat BIND dla openldap.
 %patch4 -p1
 %{?with_ldap:%patch5 -p1}
 %patch6 -p1
-%patch7 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 install %{SOURCE8} conf-pld/root.hint
@@ -367,13 +367,14 @@ cd ../..
 	--with-dlz-odbc=no \
 	--with-dlz-stub=yes \
 	--enable-largefile \
+	--disable-epoll \
+	--disable-devpoll \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
 	--enable-getifaddrs=glibc
 
 %{__make}
-%{?with_hip:cd bind-hip/; %{__make}}
-
+%{?with_hip:cd bind-hip; %{__make}}
 %{?with_tests:%{__make} test}
 
 %install
@@ -448,7 +449,9 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%triggerpostun -- %{name} < 6:9.4.1
+%triggerpostun -- %{name} < 7:9.4.2-2
+/sbin/chkconfig named reset
+#triggerpostun -- %{name} < 6:9.4.1
 sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
@@ -482,8 +485,8 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
 %attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
+%attr(660,named,named) %ghost %{_var}/lib/named/named.log
+%attr(660,named,named) %ghost %{_var}/lib/named/named.stats
 
 %files utils
 %defattr(644,root,root,755)
@@ -495,7 +498,7 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/nslookup.1*
-%{_mandir}/man8/nsupdate.8*
+%{_mandir}/man1/nsupdate.1*
 
 %lang(fi) %{_mandir}/fi/man1/host.1*
 
