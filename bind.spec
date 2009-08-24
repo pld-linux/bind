@@ -1,5 +1,4 @@
 # TODO
-# - schema regstering in openldap-schema-bind
 # - apply http://www.caraytech.com/geodns/
 #
 # Conditional build:
@@ -26,7 +25,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	plev	P1
 Name:		bind
 Version:	%{ver}.%{plev}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -83,6 +82,8 @@ Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		schemadir	/usr/share/openldap/schema
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
@@ -323,8 +324,9 @@ BIND.
 Summary:	BIND schema for openldap
 Summary(pl.UTF-8):	Schemat BIND dla openldap
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires(post,postun):	sed >= 4.0
 Requires:	openldap-servers
+Requires:	sed >= 4.0
 
 %description -n openldap-schema-bind
 BIND schema for openldap.
@@ -399,8 +401,11 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
-%{?with_ldap:install -d $RPM_BUILD_ROOT%{_datadir}/openldap/schema}
-%{?with_ldap:install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/openldap/schema/dnszone.schema}
+%if %{with ldap}
+install -d $RPM_BUILD_ROOT%{schemadir}
+install %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
+%endif
+
 %{?with_hip:install bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
@@ -445,6 +450,16 @@ fi
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+
+%post -n openldap-schema-bind
+%openldap_schema_register %{schemadir}/dnszone.schema
+%service -q ldap restart
+
+%postun -n openldap-schema-bind
+if [ "$1" = "0" ]; then
+	%openldap_schema_unregister %{schemadir}/dnszone.schema
+	%service -q ldap restart
+fi
 
 %triggerpostun -- %{name} < 7:9.4.2-2
 /sbin/chkconfig named reset
