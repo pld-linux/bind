@@ -41,7 +41,7 @@ start() {
 	if [ ! -f /var/lock/subsys/named ]; then
 		msg_starting "Named"
 		modprobe -s capability > /dev/null 2>&1
-		[ -f /etc/localtime ] && cp -aL /etc/localtime $CHROOT_TO_DIR/etc/localtime
+		[ -f /etc/localtime ] && cp -puL /etc/localtime $CHROOT_TO_DIR/etc/localtime
 		touch $CHROOT_TO_DIR/named.log && \
 			chown named:named $CHROOT_TO_DIR/named.log
 		daemon --pidfile /var/lib/named/named.pid /usr/sbin/named -u named \
