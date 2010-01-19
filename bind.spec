@@ -22,7 +22,7 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	ver		9.6.1
-%define	plev	P2
+%define	plev	P3
 Name:		bind
 Version:	%{ver}.%{plev}
 Release:	1
@@ -30,7 +30,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plev}/%{name}-%{ver}-%{plev}.tar.gz
-# Source0-md5:	435bc2e26e470d46ddf2acb24abb6ea6
+# Source0-md5:	a0952d589b3051538033387be4c983f9
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
