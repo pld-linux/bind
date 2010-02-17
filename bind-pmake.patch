@@ -37,20 +37,31 @@ diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.i
  	touch timestamp
  
  installdirs:
-diff -ur bind-9.3.0rc3.orig/lib/isc/Makefile.in bind-9.3.0rc3/lib/isc/Makefile.in
---- bind-9.3.0rc3.orig/lib/isc/Makefile.in	2004-07-20 09:01:58.000000000 +0200
-+++ bind-9.3.0rc3/lib/isc/Makefile.in	2004-09-01 10:52:47.772148808 +0200
-@@ -88,11 +88,11 @@
+--- bind-9.7.0/lib/isc/Makefile.in~	2009-12-18 05:09:55.000000000 +0100
++++ bind-9.7.0/lib/isc/Makefile.in	2010-02-17 08:04:13.849211197 +0100
+@@ -94,21 +94,21 @@
  		-DLIBAGE=${LIBAGE} \
  		-c ${srcdir}/version.c
  
--libisc.@SA@: ${OBJS}
-+libisc.@SA@: touchfile ${OBJS}
+-libisc.@SA@: ${OBJS} ${SYMTBLOBJS}
++libisc.@SA@: touchfile ${OBJS} ${SYMTBLOBJS}
+ 	${AR} ${ARFLAGS} $@ ${OBJS} ${SYMTBLOBJS}
+ 	${RANLIB} $@
+ 
+-libisc-nosymtbl.@SA@: ${OBJS}
++libisc-nosymtbl.@SA@: touchfile ${OBJS}
  	${AR} ${ARFLAGS} $@ ${OBJS}
  	${RANLIB} $@
  
--libisc.la: ${OBJS}
-+libisc.la: touchfile ${OBJS}
+-libisc.la: ${OBJS} ${SYMTBLOBJS}
++libisc.la: touchfile ${OBJS} ${SYMTBLOBJS}
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		${OBJS} ${SYMTBLOBJS} ${LIBS}
+ 
+-libisc-nosymtbl.la: ${OBJS}
++libisc-nosymtbl.la: touchfile ${OBJS}
+ 	${LIBTOOL_MODE_LINK} \
+ 		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc-nosymtbl.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \

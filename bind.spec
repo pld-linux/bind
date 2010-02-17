@@ -21,16 +21,15 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver		9.6.1
-%define	plev	P3
+%define	ver		9.7.0
 Name:		bind
-Version:	%{ver}.%{plev}
+Version:	%{ver}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plev}/%{name}-%{ver}-%{plev}.tar.gz
-# Source0-md5:	a0952d589b3051538033387be4c983f9
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}/%{name}-%{ver}.tar.gz
+# Source0-md5:	c245b5d1aa0a4f53d9538faa1efe2c3f
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -335,7 +334,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}-%{plev}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -349,7 +348,7 @@ Schemat BIND dla openldap.
 %{__autoconf}
 cp -f /usr/share/automake/config.* .
 %configure \
-	CFLAGS="-D_GNU_SOURCE=1" \
+	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
 	--with-idn \
 	--with-libtool \
 	%{?with_ssl:--with-openssl=%{_prefix}} \
@@ -394,8 +393,10 @@ install %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
 install %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
 install %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
 install %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
+mv $RPM_BUILD_ROOT/etc/bind.keys        $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
 
 ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
+ln -sf %{_var}/lib/named%{_sysconfdir}/bind.keys $RPM_BUILD_ROOT/etc/bind.keys
 ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
@@ -476,6 +477,7 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bind.keys
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
 %attr(755,root,root) %{_sbindir}/*
