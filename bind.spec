@@ -25,7 +25,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	plev	P1
 Name:		bind
 Version:	%{ver}.%{plev}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
