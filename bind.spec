@@ -481,28 +481,47 @@ sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/et
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bind.keys
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/arpaname
+%attr(755,root,root) %{_sbindir}/ddns-confgen
+%attr(755,root,root) %{_sbindir}/dnssec-*
+%attr(755,root,root) %{_sbindir}/genrandom
+%attr(755,root,root) %{_sbindir}/isc-hmac-fixup
+%attr(755,root,root) %{_sbindir}/lwresd
+%attr(755,root,root) %{_sbindir}/named
+%attr(755,root,root) %{_sbindir}/named-*
+%attr(755,root,root) %{_sbindir}/nsec3hash
+%attr(755,root,root) %{_sbindir}/rndc
+%attr(755,root,root) %{_sbindir}/rndc-confgen
 
-%{_mandir}/man8/dns*
-%{_mandir}/man8/lwres*
-%{_mandir}/man8/named*
-%{_mandir}/man8/rndc*
-%{_mandir}/man5/rndc*
-%{_mandir}/man5/named.conf*
+%{_mandir}/man1/arpaname.1*
+%{_mandir}/man5/named.conf.5*
+%{_mandir}/man5/rndc.conf.5*
+%{_mandir}/man8/ddns-confgen.8*
+%{_mandir}/man8/dnssec-*.8*
+%{_mandir}/man8/genrandom.8*
+%{_mandir}/man8/isc-hmac-fixup.8*
+%{_mandir}/man8/lwresd.8*
+%{_mandir}/man8/named.8*
+%{_mandir}/man8/named-*.8*
+%{_mandir}/man8/nsec3hash.8*
+%{_mandir}/man8/rndc.8*
+%{_mandir}/man8/rndc-confgen.8*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/D
 %attr(750,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
-%attr(750,root,named) %dir %{_var}/lib/named%{_sysconfdir}
+%attr(750,root,named) %dir %{_var}/lib/named/etc
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/bind.keys
+%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/named.conf
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*.zone
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.hint
+%attr(660,named,named) %ghost %{_var}/lib/named/named.log
+%attr(660,named,named) %ghost %{_var}/lib/named/named.stats
 
-%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*
-%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.*
-%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named%{_sysconfdir}/*
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named*
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.log
-%attr(660,named,named) %ghost  %{_var}/lib/named/named.stats
+%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named
+%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named.stats
 
 %attr(770,root,named) %dir %{_var}/run/named
 %attr(770,root,named) %dir %{_var}/run/lwresd
