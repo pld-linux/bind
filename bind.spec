@@ -22,15 +22,15 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	ver		9.7.0
-%define	plev	P1
+%define	plev	P2
 Name:		bind
 Version:	%{ver}.%{plev}
-Release:	2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plev}/%{name}-%{ver}-%{plev}.tar.gz
-# Source0-md5:	78e3e38c6252e41ded1afa1aeb183622
+# Source0-md5:	47fc341901f00c1d815bef12ab4533de
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -41,7 +41,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/named.root
-# Source7-md5:	a94e29ac677846f3d4d618c50b7d34f1
+# Source7-md5:	d8e68f8f1d76960cb2a434e74b8868b4
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
