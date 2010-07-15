@@ -22,14 +22,15 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	ver		9.7.1
+%define	pver		P2
 Name:		bind
-Version:	%{ver}
+Version:	%{ver}.%{pver}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}/%{name}-%{ver}.tar.gz
-# Source0-md5:	712c425e59cb4aa9309bc4716283742f
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{pver}/%{name}-%{ver}-%{pver}.tar.gz
+# Source0-md5:	bd6be63cc910d04da39103d441871596
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -334,7 +335,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}-%{pver}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
