@@ -25,7 +25,7 @@ Summary(zh_CN.UTF-8):	Internet 域名服务器
 %define	pver		P2
 Name:		bind
 Version:	%{ver}.%{pver}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -41,7 +41,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/named.root
-# Source7-md5:	d8e68f8f1d76960cb2a434e74b8868b4
+# Source7-md5:	013336e29e65923682f7bce094bb3e5c
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
