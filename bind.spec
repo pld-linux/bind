@@ -21,16 +21,16 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver		9.7.1
-%define	pver		P2
+%define	ver		9.7.2
+#%%define	pver		%{nil}
 Name:		bind
-Version:	%{ver}.%{pver}
-Release:	2
+Version:	%{ver}%{?pver:.%{pver}}
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{pver}/%{name}-%{ver}-%{pver}.tar.gz
-# Source0-md5:	bd6be63cc910d04da39103d441871596
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{?pver:-%{pver}}/%{name}-%{ver}%{?pver:-%{pver}}.tar.gz
+# Source0-md5:	166832fc0f94d6e4eb2dac8bed3b275f
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -41,7 +41,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/named.root
-# Source7-md5:	013336e29e65923682f7bce094bb3e5c
+# Source7-md5:	d8e68f8f1d76960cb2a434e74b8868b4
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -335,7 +335,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}-%{pver}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{?pver:-%{pver}}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
