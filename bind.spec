@@ -35,7 +35,7 @@ Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}}/%{name}-%{ver}%{pverdir}.tar.gz
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
 # Source0-md5:	166832fc0f94d6e4eb2dac8bed3b275f
 Source1:	named.init
 Source2:	named.sysconfig
