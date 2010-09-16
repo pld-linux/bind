@@ -11,6 +11,14 @@
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
 #
+%define		ver	9.7.2
+%if 0
+%define		pverdot	.P1
+%define		pverdir	-P1
+%else
+%define		pverdot	%{nil}
+%define		pverdir	%{nil}
+%endif
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -21,15 +29,13 @@ Summary(ru.UTF-8):	BIND - cервер системы доменных имен (
 Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
-%define	ver		9.7.2
-#%%define	pver		%{nil}
 Name:		bind
-Version:	%{ver}%{?pver:.%{pver}}
+Version:	%{ver}%{pverdot}
 Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{?pver:-%{pver}}/%{name}-%{ver}%{?pver:-%{pver}}.tar.gz
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}}/%{name}-%{ver}%{pverdir}.tar.gz
 # Source0-md5:	166832fc0f94d6e4eb2dac8bed3b275f
 Source1:	named.init
 Source2:	named.sysconfig
@@ -335,7 +341,7 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{?pver:-%{pver}}
+%setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
