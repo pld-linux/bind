@@ -9,9 +9,9 @@
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
-#
-%define	ver	9.4.3
-%define	plevel	P3
+
+%define		ver		9.4.3
+%define		plevel	P5
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -29,7 +29,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}-%{plevel}/%{name}-%{ver}-%{plevel}.tar.gz
-# Source0-md5:	ed357d3d18dcfa97723f91d9219caa8c
+# Source0-md5:	f14f4b59639068c9a611a9c03b821dde
 Source1:	%{name}-conf.tar.gz
 # Source1-md5:	14d2c6befe25e68c713a1deb552668cc
 Source2:	named.init
