@@ -12,9 +12,9 @@
 %bcond_with	hip		# build with HIP RR support
 #
 %define		ver	9.8.0
-%if 0
-%define		pverdot	.P3
-%define		pverdir	-P3
+%if 1
+%define		pverdot	.P1
+%define		pverdir	-P1
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -36,7 +36,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	e802ac97ca419c2ddfc043509bcb17bc
+# Source0-md5:	d97ecd8f62a4cf4a769742c79cd8f921
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
