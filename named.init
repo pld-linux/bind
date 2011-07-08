@@ -38,29 +38,58 @@ fi
 
 start() {
 	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/named ]; then
-		msg_starting "Named"
-		modprobe -s capability > /dev/null 2>&1
-		[ -f /etc/localtime ] && cp -puL /etc/localtime $CHROOT_TO_DIR/etc/localtime
-		touch $CHROOT_TO_DIR/named.log && \
-			chown named:named $CHROOT_TO_DIR/named.log
-		daemon --pidfile $CHROOT_TO_DIR/named.pid /usr/sbin/named -u named \
-			-t $CHROOT_TO_DIR -c /etc/named.conf $NAMED_OPT </dev/null
-		RETVAL=$?
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
-	else
+	if [ -f /var/lock/subsys/named ]; then
 		msg_already_running "Named"
+		return
 	fi
+
+	msg_starting "Named"
+	modprobe -s capability > /dev/null 2>&1
+	[ -f /etc/localtime ] && cp -puL /etc/localtime $CHROOT_TO_DIR/etc/localtime
+	touch $CHROOT_TO_DIR/named.log && \
+		chown named:named $CHROOT_TO_DIR/named.log
+	daemon --pidfile $CHROOT_TO_DIR/named.pid /usr/sbin/named -u named \
+		-t $CHROOT_TO_DIR -c /etc/named.conf $NAMED_OPT </dev/null
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
 }
 
 stop() {
-	if [ -f /var/lock/subsys/named ]; then
-		msg_stopping "Named"
-		killproc --pidfile $CHROOT_TO_DIR/named.pid named
-		rm -f /var/lock/subsys/named >/dev/null 2>&1
-	else
+	if [ ! -f /var/lock/subsys/named ]; then
 		msg_not_running "Named"
+		return
 	fi
+
+	msg_stopping "Named"
+	killproc --pidfile $CHROOT_TO_DIR/named.pid named
+	rm -f /var/lock/subsys/named >/dev/null 2>&1
+}
+
+reload() {
+	if [ ! -f /var/lock/subsys/named ]; then
+		msg_not_running "Named"
+		RETVAL=7
+		return
+	fi
+
+	if [ -f /etc/rndc.conf ]; then
+		run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
+	else
+		msg_reloading "Named"
+		killproc named -HUP
+		RETVAL=$?
+	fi
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/named ]; then
+		msg_not_running "Named"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
 }
 
 RETVAL=0
@@ -71,6 +100,16 @@ case "$1" in
 	;;
   stop)
 	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  reload|force-reload)
+	reload
 	;;
   status)
 	status named
@@ -83,27 +122,8 @@ case "$1" in
 		fi
 	fi
 	;;
-  reload|force-reload)
-	if [ -f /var/lock/subsys/named ]; then
-		if [ -f /etc/rndc.conf ]; then
-			run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
-		else
-			msg_reloading "Named"
-			killproc named -HUP
-			RETVAL=$?
-		fi
-	else
-		msg_not_running "Named"
-		exit 7
-	fi
-
-	;;
-  restart)
-	stop
-	start
-	;;
   *)
-	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
 	exit 3
 esac
 
