@@ -10,7 +10,16 @@
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
 %bcond_with	hip		# build with HIP RR support
-#
+%if "%{pld_release}" == "ac"
+%bcond_with		epoll		# enable epoll support
+# there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
+%ifarch %{x8664}
+%define		with_epoll	1
+%endif
+%else
+%bcond_without	epoll		# disable epoll support
+%endif
+
 %define		ver	9.8.0
 %if 1
 %define		pverdot	.P4
@@ -68,6 +77,7 @@ BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	postgresql-devel}
+BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
@@ -369,6 +379,7 @@ cp -f /usr/share/automake/config.* .
 	--with-dlz-odbc=no \
 	--with-dlz-stub=yes \
 	--enable-largefile \
+	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
 	--enable-getifaddrs
