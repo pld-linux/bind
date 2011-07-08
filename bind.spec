@@ -60,16 +60,16 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	idnkit-devel
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
-%{?with_hip:BuildRequires:	libxml2-devel}
+BuildRequires:	idnkit-devel
 BuildRequires:	libtool
+%{?with_hip:BuildRequires:	libxml2-devel}
+%{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
-%{?with_sql:BuildRequires:	mysql-devel}
 %{?with_sql:BuildRequires:	postgresql-devel}
-%{?with_sql:BuildRequires:	unixODBC-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -391,15 +391,15 @@ bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 %{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
-install bin/tests/named.conf		EXAMPLE-CONFIG-named
-install bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
-install %{SOURCE1}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
-install %{SOURCE2}			$RPM_BUILD_ROOT/etc/sysconfig/named
-install %{SOURCE3}			$RPM_BUILD_ROOT/etc/logrotate.d/named
-install %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
-install %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
-install %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
-install %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
+cp -p bin/tests/named.conf		EXAMPLE-CONFIG-named
+cp -p bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
+install -p %{SOURCE1}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
+cp -p %{SOURCE2}			$RPM_BUILD_ROOT/etc/sysconfig/named
+cp -p %{SOURCE3}			$RPM_BUILD_ROOT/etc/logrotate.d/named
+cp -p %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
+cp -p %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
+cp -p %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
+cp -p %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
 mv $RPM_BUILD_ROOT/etc/bind.keys        $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
 
 ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
@@ -411,10 +411,10 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
 %if %{with ldap}
 install -d $RPM_BUILD_ROOT%{schemadir}
-install %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
 %endif
 
-%{?with_hip:install bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
+%{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
 rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
@@ -435,7 +435,7 @@ rm -rf $RPM_BUILD_ROOT
 if [ -f %{_sysconfdir}/named.boot ]; then
 	cp -f %{_sysconfdir}/named.boot /etc/named.boot.2conf
 	mv -f %{_sysconfdir}/named.boot /etc/named.rpmsave
-	echo "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave." 1>&2
+	echo >&2 "Warning: %{_sysconfdir}/named.boot saved as /etc/named.rpmsave."
 fi
 %groupadd -g 58 named
 %useradd -u 58 -g 58 -d /tmp -s /bin/false -c "BIND user" named
@@ -471,10 +471,9 @@ fi
 
 %triggerpostun -- %{name} < 7:9.4.2-2
 /sbin/chkconfig named reset
-#triggerpostun -- %{name} < 6:9.4.1
-sed -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
-sed -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
-sed -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
+%{__sed} -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
+%{__sed} -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
+%{__sed} -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 
 %files
 %defattr(644,root,root,755)
