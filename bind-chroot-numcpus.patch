@@ -1,0 +1,49 @@
+diff -urN bind-9.4.1.org/bin/named/main.c bind-9.4.1/bin/named/main.c
+--- bind-9.4.1.org/bin/named/main.c	2007-06-01 19:44:51.223203000 +0200
++++ bind-9.4.1/bin/named/main.c	2007-06-01 20:08:19.703753086 +0200
+@@ -464,9 +464,7 @@
+ 	}
+ }
+ 
+-static isc_result_t
+-create_managers(void) {
+-	isc_result_t result;
++static void fill_ns_g_cpus() {
+ #ifdef ISC_PLATFORM_USETHREADS
+ 	unsigned int cpus_detected;
+ #endif
+@@ -475,13 +473,20 @@
+ 	cpus_detected = isc_os_ncpus();
+ 	if (ns_g_cpus == 0)
+ 		ns_g_cpus = cpus_detected;
+-	isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL, NS_LOGMODULE_SERVER,
+-		      ISC_LOG_INFO, "found %u CPU%s, using %u worker thread%s",
+-		      cpus_detected, cpus_detected == 1 ? "" : "s",
+-		      ns_g_cpus, ns_g_cpus == 1 ? "" : "s");
+ #else
+ 	ns_g_cpus = 1;
+ #endif
++}
++
++static isc_result_t
++create_managers(void) {
++	isc_result_t result;
++
++#ifdef ISC_PLATFORM_USETHREADS
++	isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL, NS_LOGMODULE_SERVER,
++		      ISC_LOG_INFO, "using %u worker thread%s",
++		      ns_g_cpus, ns_g_cpus == 1 ? "" : "s");
++#endif
+ 	result = isc_taskmgr_create(ns_g_mctx, ns_g_cpus, 0, &ns_g_taskmgr);
+ 	if (result != ISC_R_SUCCESS) {
+ 		UNEXPECTED_ERROR(__FILE__, __LINE__,
+@@ -581,6 +586,9 @@
+ 		isc_mem_free(ns_g_mctx, instance);
+ #endif /* HAVE_LIBSCF */
+ 
++	/* Fill in ns_g_cpus date before chroot happens */
++	fill_ns_g_cpus();
++
+ #ifdef PATH_RANDOMDEV
+ 	/*
+ 	 * Initialize system's random device as fallback entropy source

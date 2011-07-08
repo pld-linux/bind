@@ -1,0 +1,130 @@
+#!/bin/sh
+#
+# named		This shell script takes care of starting and stopping
+#		named (BIND DNS server).
+#
+# chkconfig:	345 11 89
+#
+# description:	named (BIND) is a Domain Name Server (DNS) \
+#		that is used to resolve host names to IP addresses.
+
+CHROOT_TO_DIR="/var/lib/named"
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration
+. /etc/sysconfig/network
+
+NAMED_OPT=""
+
+# Try get config..
+[ -f /etc/sysconfig/named ] && . /etc/sysconfig/named
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down "Named"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+# Sanity check
+[ -e /etc/named.conf ] || exit 0
+
+[ -n "$NUM_CPUS" ] && NAMED_OPT="$NAMED_OPT -n $NUM_CPUS"
+
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/named ]; then
+		msg_already_running "Named"
+		return
+	fi
+
+	msg_starting "Named"
+	modprobe -s capability > /dev/null 2>&1
+	[ -f /etc/localtime ] && cp -puL /etc/localtime $CHROOT_TO_DIR/etc/localtime
+	touch $CHROOT_TO_DIR/named.log && \
+		chown named:named $CHROOT_TO_DIR/named.log
+	daemon --pidfile $CHROOT_TO_DIR/named.pid /usr/sbin/named -u named \
+		-t $CHROOT_TO_DIR -c /etc/named.conf $NAMED_OPT </dev/null
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/named
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/named ]; then
+		msg_not_running "Named"
+		return
+	fi
+
+	msg_stopping "Named"
+	killproc --pidfile $CHROOT_TO_DIR/named.pid named
+	rm -f /var/lock/subsys/named >/dev/null 2>&1
+}
+
+reload() {
+	if [ ! -f /var/lock/subsys/named ]; then
+		msg_not_running "Named"
+		RETVAL=7
+		return
+	fi
+
+	if [ -f /etc/rndc.conf ]; then
+		run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
+	else
+		msg_reloading "Named"
+		killproc named -HUP
+		RETVAL=$?
+	fi
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/named ]; then
+		msg_not_running "Named"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  reload|force-reload)
+	reload
+	;;
+  status)
+	status named
+	RETVAL=$?
+	if [ -f /etc/rndc.conf ]; then
+		/usr/sbin/rndc status
+		RET=$?
+		if [ $RET -ne 0 ]; then
+			RETVAL=$RET
+		fi
+	fi
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
