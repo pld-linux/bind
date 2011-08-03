@@ -1,0 +1,58 @@
+--- bind-9.8.0-P4/configure.in~	2011-08-03 11:46:24.326770259 +0200
++++ bind-9.8.0-P4/configure.in	2011-08-03 11:49:53.240770212 +0200
+@@ -587,7 +587,7 @@
+ 				fi
+ 				;;
+ 			*)
+-				DNS_OPENSSL_LIBS="-L$use_openssl/lib -lcrypto"
++				DNS_OPENSSL_LIBS="-lcrypto"
+ 				;;
+ 			esac
+ 		fi
+@@ -882,7 +882,7 @@
+ 		    then
+ 			    LIBS="$TRY_LIBS"
+ 		    else
+-			    LIBS="-L$use_gssapi/lib $TRY_LIBS"
++			    LIBS="$TRY_LIBS"
+ 		    fi
+ 		    AC_MSG_CHECKING(linking as $TRY_LIBS)
+ 		    AC_TRY_LINK( , [gss_acquire_cred();krb5_init_context()],
+@@ -1596,7 +1596,7 @@
+ 	*)
+ 		if test -f $kame_path/lib/libinet6.a; then
+ 			AC_MSG_RESULT($kame_path/lib/libinet6.a)
+-			LIBS="-L$kame_path/lib -linet6 $LIBS"
++			LIBS="-linet6 $LIBS"
+ 		else
+ 			AC_MSG_ERROR([$kame_path/lib/libinet6.a not found.
+ 
+@@ -2989,16 +2989,16 @@
+ case "$use_libiconv" in
+ yes)
+ 	if test X$prefix = XNONE ; then
+-		iconvlib="-L/usr/local/lib -R/usr/local/lib -liconv"
++		iconvlib="-liconv"
+ 	else
+-		iconvlib="-L$prefix/lib -R$prefix/lib -liconv"
++		iconvlib="-liconv"
+ 	fi
+ 	;;
+ no)
+ 	iconvlib=
+ 	;;
+ *)
+-	iconvlib="-L$use_libiconv/lib -R$use_libiconv/lib -liconv"
++	iconvlib="-liconv"
+ 	;;
+ esac
+ 
+@@ -3028,7 +3028,7 @@
+ 	if test "$idnlib" != no; then
+ 		IDNLIBS="$idnlib $iconvlib"
+ 	else
+-		IDNLIBS="-L$idn_path/lib -lidnkit $iconvlib"
++		IDNLIBS="-lidnkit $iconvlib"
+ 	fi
+ fi
+ AC_SUBST(IDNLIBS)

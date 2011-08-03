@@ -64,6 +64,7 @@ Patch0:		%{name}-time.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
+Patch4:		%{name}-ac-libs.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -356,6 +357,7 @@ Schemat BIND dla openldap.
 %patch1 -p1
 %patch2 -p1
 %{?with_ldap:%patch3 -p1}
+%patch4 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
 
