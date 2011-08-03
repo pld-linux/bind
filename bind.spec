@@ -40,7 +40,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	3
+Release:	3.1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -368,7 +368,7 @@ cp -f /usr/share/automake/config.* .
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
 	--with-idn \
 	--with-libtool \
-	%{?with_ssl:--with-openssl=%{_prefix}} \
+	%{?with_ssl:--with-openssl} \
 	%{?with_ipv6:--enable-ipv6} \
 	%{?with_kerberos5:--with-gssapi} \
 	%{?with_sql:--with-dlz-postgres=yes} \
