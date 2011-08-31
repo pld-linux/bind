@@ -1,0 +1,322 @@
+These patches add the ability to send and receive DNS messages with
+edns-client-subnet options to BIND's dig utility.
+
+Example:
+
+wilmer@fiona:~/src/bind-ecs$ bin/dig/dig @ns1.google.com www.google.com +client=130.89.89.130
+
+; <<>> DiG 9.7.1-P2 <<>> @ns1.google.com www.google.com +client=130.89.89.130
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+; CLIENT-SUBNET: 130.89.89.130/32/21
+;; QUESTION SECTION:
+;www.google.com.                        IN      A
+
+;; ANSWER SECTION:
+www.google.com.         604800  IN      CNAME   www.l.google.com.
+www.l.google.com.       300     IN      A       74.125.79.104
+www.l.google.com.       300     IN      A       74.125.79.99
+www.l.google.com.       300     IN      A       74.125.79.147
+
+Copyright 2010 Google Inc.
+Author: Wilmer van der Gaast <wilmer@google.com>
+
+
+diff -uNr bin/dig/dig.c bin/dig/dig.c
+--- bin/dig/dig.c	2010-05-13 01:42:26.000000000 +0100
++++ bin/dig/dig.c	2011-02-16 15:58:31.000000000 +0000
+@@ -188,6 +188,7 @@
+ "                 +bufsize=###        (Set EDNS0 Max UDP packet size)\n"
+ "                 +ndots=###          (Set NDOTS value)\n"
+ "                 +edns=###           (Set EDNS version)\n"
++"                 +client=addr        (Set edns-client-subnet option)\n"
+ "                 +[no]search         (Set whether to use searchlist)\n"
+ "                 +[no]showsearch     (Search with intermediate results)\n"
+ "                 +[no]defname        (Ditto)\n"
+@@ -804,8 +805,25 @@
+ 			}
+ 			break;
+ 		case 'l': /* cl */
+-			FULLCHECK("cl");
+-			noclass = ISC_TF(!state);
++			switch (cmd[2]) {
++			case 'i':/* client */
++				FULLCHECK("client");
++				if (value == NULL)
++					goto need_value;
++				if (state && lookup->edns == -1)
++					lookup->edns = 0;
++				if (parse_netprefix(&lookup->ecs_addr,
++				                    &lookup->ecs_len,
++				                    value) != ISC_R_SUCCESS)
++					fatal("Couldn't parse client");
++				break;
++			case '\0':
++				FULLCHECK("cl");
++				noclass = ISC_TF(!state);
++				break;
++			default:
++				goto invalid_option;
++			}
+ 			break;
+ 		case 'm': /* cmd */
+ 			FULLCHECK("cmd");
+diff -uNr bin/dig/dighost.c bin/dig/dighost.c
+--- bin/dig/dighost.c	2010-12-09 01:05:27.000000000 +0000
++++ bin/dig/dighost.c	2011-02-16 15:58:31.000000000 +0000
+@@ -96,6 +96,9 @@
+ 
+ #include <dig/dig.h>
+ 
++/* parse_netprefix */
++#include <netdb.h>
++
+ #if ! defined(NS_INADDRSZ)
+ #define NS_INADDRSZ	 4
+ #endif
+@@ -789,6 +792,8 @@
+ 	looknew->new_search = ISC_FALSE;
+ 	looknew->done_as_is = ISC_FALSE;
+ 	looknew->need_search = ISC_FALSE;
++	looknew->ecs_addr = NULL;
++	looknew->ecs_len = 0;
+ 	ISC_LINK_INIT(looknew, link);
+ 	ISC_LIST_INIT(looknew->q);
+ 	ISC_LIST_INIT(looknew->my_server_list);
+@@ -805,6 +810,7 @@
+ dig_lookup_t *
+ clone_lookup(dig_lookup_t *lookold, isc_boolean_t servers) {
+ 	dig_lookup_t *looknew;
++	size_t len;
+ 
+ 	debug("clone_lookup()");
+ 
+@@ -865,6 +871,19 @@
+ 	looknew->need_search = lookold->need_search;
+ 	looknew->done_as_is = lookold->done_as_is;
+ 
++	if (lookold->ecs_addr) {
++		if (lookold->ecs_addr->sa_family == AF_INET)
++			len = sizeof(struct sockaddr_in);
++		else if (lookold->ecs_addr->sa_family == AF_INET6)
++			len = sizeof(struct sockaddr_in6);
++		else
++			INSIST(0);
++
++		looknew->ecs_addr = isc_mem_allocate(mctx, len);
++		memcpy(looknew->ecs_addr, lookold->ecs_addr, len);
++		looknew->ecs_len = lookold->ecs_len;
++	}
++
+ 	if (servers)
+ 		clone_server_list(lookold->my_server_list,
+ 				  &looknew->my_server_list);
+@@ -974,6 +993,48 @@
+ 	return (tmp);
+ }
+ 
++isc_result_t
++parse_netprefix(struct sockaddr **sa, isc_uint32_t *netmask,
++                const char *value) {
++	struct addrinfo *res, hints;
++	char *addr, *slash;
++	isc_uint32_t result;
++	
++	addr = isc_mem_strdup(mctx, value);
++	if ((slash = strchr(addr, '/'))) {
++		*slash = '\0';
++		result = isc_parse_uint32(netmask, slash + 1, 10);
++		if (result != ISC_R_SUCCESS) {
++			isc_mem_free(mctx, addr);
++			printf("invalid %s '%s': %s\n", "prefix length",
++			       value, isc_result_totext(result));
++			return (result);
++		}
++	} else {
++		*netmask = 128;
++	}
++	
++	memset(&hints, 0, sizeof(hints));
++	hints.ai_flags = AI_NUMERICHOST;
++	if ((result = getaddrinfo(addr, NULL, &hints, &res)) != 0) {
++		isc_mem_free(mctx, addr);
++		printf("getaddrinfo() error: %s\n", gai_strerror(result));
++		return ISC_R_FAILURE;
++	}
++	isc_mem_free(mctx, addr);
++	
++	*sa = isc_mem_allocate(mctx, res->ai_addrlen);
++	memcpy(*sa, res->ai_addr, res->ai_addrlen);
++	
++	if (res->ai_family == AF_INET && *netmask > 32)
++		*netmask = 32;
++	else if (res->ai_family == AF_INET6 && *netmask > 128)
++		*netmask = 128;
++
++	freeaddrinfo(res);
++	return (ISC_R_SUCCESS);
++}
++
+ 
+ /*
+  * Parse HMAC algorithm specification
+@@ -1361,12 +1422,15 @@
+  */
+ static void
+ add_opt(dns_message_t *msg, isc_uint16_t udpsize, isc_uint16_t edns,
+-	isc_boolean_t dnssec, isc_boolean_t nsid)
++	isc_boolean_t dnssec, isc_boolean_t nsid,
++	struct sockaddr *ecs_addr, isc_uint32_t ecs_len)
+ {
+ 	dns_rdataset_t *rdataset = NULL;
+ 	dns_rdatalist_t *rdatalist = NULL;
+ 	dns_rdata_t *rdata = NULL;
+ 	isc_result_t result;
++	unsigned char data[64];
++	isc_buffer_t buf;
+ 
+ 	debug("add_opt()");
+ 	result = dns_message_gettemprdataset(msg, &rdataset);
+@@ -1384,20 +1448,37 @@
+ 	rdatalist->ttl = edns << 16;
+ 	if (dnssec)
+ 		rdatalist->ttl |= DNS_MESSAGEEXTFLAG_DO;
+-	if (nsid) {
+-		isc_buffer_t *b = NULL;
+ 
+-		result = isc_buffer_allocate(mctx, &b, 4);
+-		check_result(result, "isc_buffer_allocate");
+-		isc_buffer_putuint16(b, DNS_OPT_NSID);
+-		isc_buffer_putuint16(b, 0);
+-		rdata->data = isc_buffer_base(b);
+-		rdata->length = isc_buffer_usedlength(b);
+-		dns_message_takebuffer(msg, &b);
+-	} else {
+-		rdata->data = NULL;
+-		rdata->length = 0;
++	isc_buffer_init(&buf, data, sizeof(data));
++	if (nsid) {
++		isc_buffer_putuint16(&buf, DNS_OPT_NSID);
++		isc_buffer_putuint16(&buf, 0);
+ 	}
++	if (ecs_addr) {
++		size_t addrl = (ecs_len + 7) / 8;
++		
++		isc_buffer_putuint16(&buf, DNS_OPT_CLIENT_SUBNET);
++		isc_buffer_putuint16(&buf, 4 + addrl);
++		if (ecs_addr->sa_family == AF_INET) {
++			struct sockaddr_in *ad = (struct sockaddr_in *) ecs_addr;
++			isc_buffer_putuint16(&buf, 1);
++			isc_buffer_putuint8(&buf, ecs_len);
++			isc_buffer_putuint8(&buf, 0);
++			isc_buffer_putmem(&buf, (isc_uint8_t*) &ad->sin_addr, addrl);
++		}
++		else /* if (ecs_addr->sa_family == AF_INET6) */ {
++			struct sockaddr_in6 *ad = (struct sockaddr_in6 *) ecs_addr;
++			isc_buffer_putuint16(&buf, 2);
++			isc_buffer_putuint8(&buf, ecs_len);
++			isc_buffer_putuint8(&buf, 0);
++			isc_buffer_putmem(&buf, (isc_uint8_t*) &ad->sin6_addr, addrl);
++		}
++	}
++	if ((rdata->length = isc_buffer_usedlength(&buf)) > 0)
++		rdata->data = data;
++	else
++		rdata->data = NULL;
++
+ 	ISC_LIST_INIT(rdatalist->rdata);
+ 	ISC_LIST_APPEND(rdatalist->rdata, rdata, link);
+ 	dns_rdatalist_tordataset(rdatalist, rdataset);
+@@ -1546,6 +1627,9 @@
+ 	if (lookup->tsigctx != NULL)
+ 		dst_context_destroy(&lookup->tsigctx);
+ 
++	if (lookup->ecs_addr != NULL)
++		isc_mem_free(mctx, lookup->ecs_addr);
++
+ 	isc_mem_free(mctx, lookup);
+ }
+ 
+@@ -2210,7 +2294,8 @@
+ 		if (lookup->edns < 0)
+ 			lookup->edns = 0;
+ 		add_opt(lookup->sendmsg, lookup->udpsize,
+-			lookup->edns, lookup->dnssec, lookup->nsid);
++			lookup->edns, lookup->dnssec, lookup->nsid,
++			lookup->ecs_addr, lookup->ecs_len);
+ 	}
+ 
+ 	result = dns_message_rendersection(lookup->sendmsg,
+diff -uNr bin/dig/include/dig/dig.h bin/dig/include/dig/dig.h
+--- bin/dig/include/dig/dig.h	2009-09-29 16:06:06.000000000 +0100
++++ bin/dig/include/dig/dig.h	2011-02-16 15:58:31.000000000 +0000
+@@ -183,6 +183,8 @@
+ 	isc_buffer_t *querysig;
+ 	isc_uint32_t msgcounter;
+ 	dns_fixedname_t fdomain;
++	struct sockaddr *ecs_addr; /*% edns-client-subnet */
++	isc_uint32_t ecs_len;
+ };
+ 
+ /*% The dig_query structure */
+@@ -330,6 +332,10 @@
+ parse_uint(isc_uint32_t *uip, const char *value, isc_uint32_t max,
+ 	   const char *desc);
+ 
++isc_result_t
++parse_netprefix(struct sockaddr **sa, isc_uint32_t *netmask,
++                const char *value);
++
+ void
+ parse_hmac(const char *hmacstr);
+ 
+diff -uNr lib/dns/include/dns/message.h lib/dns/include/dns/message.h
+--- lib/dns/include/dns/message.h	2009-10-26 23:47:35.000000000 +0000
++++ lib/dns/include/dns/message.h	2011-02-16 15:58:31.000000000 +0000
+@@ -105,6 +105,7 @@
+ 
+ /*%< EDNS0 extended OPT codes */
+ #define DNS_OPT_NSID		0x0003		/*%< NSID opt code */
++#define DNS_OPT_CLIENT_SUBNET	0x50fa		/*%< client subnet opt code */
+ 
+ #define DNS_MESSAGE_REPLYPRESERVE	(DNS_MESSAGEFLAG_RD|DNS_MESSAGEFLAG_CD)
+ #define DNS_MESSAGEEXTFLAG_REPLYPRESERVE (DNS_MESSAGEEXTFLAG_DO)
+diff -uNr lib/dns/message.c lib/dns/message.c
+--- lib/dns/message.c	2010-06-03 06:27:59.000000000 +0100
++++ lib/dns/message.c	2011-02-16 15:58:31.000000000 +0000
+@@ -3236,6 +3236,35 @@
+ 
+ 			if (optcode == DNS_OPT_NSID) {
+ 				ADD_STRING(target, "; NSID");
++			} else if (optcode == DNS_OPT_CLIENT_SUBNET) {
++				int i;
++				char addr[16], addr_text[64];
++				isc_uint16_t family;
++				isc_uint8_t addrlen, addrbytes, scopelen;
++				
++				family = isc_buffer_getuint16(&optbuf);
++				addrlen = isc_buffer_getuint8(&optbuf);
++				scopelen = isc_buffer_getuint8(&optbuf);
++				addrbytes = (addrlen + 7) / 8;
++				memset(addr, 0, sizeof(addr));
++				for (i = 0; i < addrbytes; i ++)
++					addr[i] = isc_buffer_getuint8(&optbuf);
++				
++				ADD_STRING(target, "; CLIENT-SUBNET: ");
++				if (family == 1)
++					inet_ntop(AF_INET, addr, addr_text, sizeof(addr_text));
++				else if (family == 2)
++					inet_ntop(AF_INET6, addr, addr_text, sizeof(addr_text));
++				else
++					snprintf(addr_text, sizeof(addr_text),
++					         "Unsupported(family=%d)", family);
++
++				ADD_STRING(target, addr_text);
++				sprintf(addr_text, "/%d/%d", addrlen, scopelen);
++				ADD_STRING(target, addr_text);
++
++				/* Disable the dumb byte representation below. */
++				optlen = 0;
+ 			} else {
+ 				ADD_STRING(target, "; OPT=");
+ 				sprintf(buf, "%u", optcode);
