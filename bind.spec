@@ -9,6 +9,7 @@
 %bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
+%bcond_with edns_cli		# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
 %if "%{pld_release}" == "ac"
 %bcond_with		epoll		# enable epoll support
@@ -40,7 +41,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	4
+Release:	5
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -65,6 +66,7 @@ Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
+Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -360,6 +362,7 @@ Schemat BIND dla openldap.
 %patch4 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 
+%{?with_edns_cli:%patch5 -p0}
 
 %build
 %{__libtoolize}
