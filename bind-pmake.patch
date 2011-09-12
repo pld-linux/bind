@@ -5,8 +5,8 @@ diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
  ### Makefile may define:
  ###	TARGETS
  
--all: subdirs ${TARGETS}
-+all: touchfile ${TARGETS}
+-all: subdirs ${TARGETS} testdirs
++all: touchfile ${TARGETS} testdirs
  
 +touchfile: subdirs
 +	touch touchfile

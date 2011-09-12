@@ -61,3 +61,20 @@ diff -Nur bind-9.3.2.orig/lib/lwres/Makefile.in bind-9.3.2.link/lib/lwres/Makefi
  
  SUBDIRS =	include man unix
  TARGETS =	timestamp
+--- bind-9.8.1/contrib/dlz/drivers/sdlz_helper.c~	2010-05-14 08:29:37.000000000 +0200
++++ bind-9.8.1/contrib/dlz/drivers/sdlz_helper.c	2011-09-12 17:59:23.245356577 +0200
+@@ -50,8 +50,6 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-#ifdef DLZ
+-
+ #include <config.h>
+ 
+ #include <dns/log.h>
+@@ -527,5 +525,3 @@
+ 
+ 	return isc_mem_strdup(mctx, value);
+ }
+-
+-#endif
