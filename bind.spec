@@ -68,7 +68,7 @@ Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
@@ -78,7 +78,7 @@ BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
 %{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.268
