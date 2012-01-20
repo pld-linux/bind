@@ -41,7 +41,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -100,6 +100,7 @@ Provides:	user(named)
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	kernel < 2.2.18
+Conflicts:  logrotate < 3.8.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		schemadir	/usr/share/openldap/schema
