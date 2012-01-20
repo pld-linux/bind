@@ -1,4 +1,5 @@
 /var/lib/named/named.log {
+    su named named
     create 640 named named
     postrotate
             /bin/killall -HUP named
