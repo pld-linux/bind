@@ -1,0 +1,2 @@
+d /var/run/lwresd 0770 root named -
+d /var/run/named 0770 root named -
