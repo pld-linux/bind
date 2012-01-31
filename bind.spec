@@ -61,6 +61,7 @@ Source7:	ftp://rs.internic.net/domain/root.zone
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
+Source11:	%{name}.tmpfiles
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
@@ -399,7 +400,8 @@ cp -f /usr/share/automake/config.* .
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}} \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig} \
-	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/{named,lwresd},log}}
+	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/{named,lwresd},log}} \
+	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -425,6 +427,8 @@ ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
+
+install %{SOURCE11} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
 
 %if %{with ldap}
 install -d $RPM_BUILD_ROOT%{schemadir}
@@ -529,6 +533,8 @@ fi
 %{_mandir}/man8/rndc.8*
 %{_mandir}/man8/rndc-confgen.8*
 %lang(ja) %{_mandir}/ja/man8/named*
+
+/usr/lib/tmpfiles.d/%{name}.conf
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/D
