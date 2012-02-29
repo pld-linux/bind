@@ -21,8 +21,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.8.1
-%if 1
+%define		ver	9.9.0
+%if 0
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -41,12 +41,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	5
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	afa41f8203d50bedad65071f9b6f96d7
+# Source0-md5:	9281d0b04f711d28153ba1ab04a54026
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -446,7 +446,6 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
 # we don't want Makefiles in documentation...
 rm -rf _doc
 cp -a doc _doc
-rm -f _doc/rfc/rfc*
 rm -f _doc/misc/Makefile*
 
 %clean
@@ -499,7 +498,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* FAQ %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
-%doc _doc/misc/* _doc/arm/*.html _doc/rfc/index %{?with_ldap:_doc/*.sdb-ldap}
+%doc _doc/misc/* _doc/arm/*.html %{?with_ldap:_doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named

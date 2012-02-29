@@ -61,20 +61,15 @@ diff -Nur bind-9.3.2.orig/lib/lwres/Makefile.in bind-9.3.2.link/lib/lwres/Makefi
  
  SUBDIRS =	include man unix
  TARGETS =	timestamp
---- bind-9.8.1/contrib/dlz/drivers/sdlz_helper.c~	2010-05-14 08:29:37.000000000 +0200
-+++ bind-9.8.1/contrib/dlz/drivers/sdlz_helper.c	2011-09-12 17:59:23.245356577 +0200
-@@ -50,8 +50,6 @@
-  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-  */
+
+--- bind-9.9.0/bin/tests/system/dlzexternal/Makefile.in~	2011-11-16 01:42:07.000000000 +0100
++++ bind-9.9.0/bin/tests/system/dlzexternal/Makefile.in	2012-02-29 19:25:59.507505391 +0100
+@@ -49,7 +49,7 @@
+ 		-o $@ ${DLOPENOBJS} ${LIBS}
  
--#ifdef DLZ
--
- #include <config.h>
+ driver.@SO@: ${SO_OBJS}
+-	${LIBTOOL_MODE_LINK} @SO_LD@ -o $@ driver.@O@
++	@SO_LD@ -o $@ .libs/driver.o
  
- #include <dns/log.h>
-@@ -527,5 +525,3 @@
- 
- 	return isc_mem_strdup(mctx, value);
- }
--
--#endif
+ clean distclean::
+ 	rm -f ${TARGETS}
