@@ -1,18 +1,17 @@
-diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
---- bind-9.3.0rc3.orig/make/rules.in	2004-03-15 02:02:44.000000000 +0100
-+++ bind-9.3.0rc3/make/rules.in	2004-09-01 10:51:31.568733488 +0200
-@@ -49,8 +49,10 @@
+--- bind-9.8.3-P2/make/rules.in~	2012-07-02 20:17:07.000000000 +0300
++++ bind-9.8.3-P2/make/rules.in	2012-08-15 01:21:37.593995357 +0300
+@@ -50,7 +50,10 @@
  ### Makefile may define:
  ###	TARGETS
  
--all: subdirs ${TARGETS}
+-all: subdirs ${TARGETS} testdirs
 +all: touchfile ${TARGETS}
- 
-+touchfile: subdirs
++ 
++touchfile: subdirs testdirs
 +	touch touchfile
+ 
  ###
  ### Subdirectories
- ###
 diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.in
 --- bind-9.3.0rc3.orig/lib/dns/Makefile.in	2004-07-20 09:01:57.000000000 +0200
 +++ bind-9.3.0rc3/lib/dns/Makefile.in	2004-09-01 10:54:21.089962344 +0200
