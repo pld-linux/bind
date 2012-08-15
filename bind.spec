@@ -438,6 +438,7 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
 # we don't want Makefiles in documentation...
 rm -rf _doc
 cp -a doc _doc
+rm -f _doc/rfc/rfc*
 rm -f _doc/misc/Makefile*
 
 %clean
@@ -490,7 +491,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* FAQ %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
-%doc _doc/misc/* _doc/arm/*.html _doc/rfc/index %{?with_ldap:_doc/*.sdb-ldap}
+%doc _doc/misc/* _doc/arm/*.html %{?with_ldap:_doc/*.sdb-ldap}
 
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
