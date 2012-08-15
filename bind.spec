@@ -78,7 +78,7 @@ BuildRequires:	libtool
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpm >= 4.4.9-56
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.583
 %{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -100,6 +100,8 @@ Conflicts:	kernel < 2.2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		schemadir	/usr/share/openldap/schema
+# undefined sym: krb5_get_default_realm
+%define		skip_post_check_so	libdns.so.81.6.1
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
