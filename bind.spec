@@ -438,7 +438,6 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
 # we don't want Makefiles in documentation...
 rm -rf _doc
 cp -a doc _doc
-rm -f _doc/rfc/rfc*
 rm -f _doc/misc/Makefile*
 
 %clean
