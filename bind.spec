@@ -91,12 +91,12 @@ Requires(pre):	fileutils
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
 Requires:	rc-scripts >= 0.2.0
+Requires:	uname(release) >= 2.2.18
 Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
 Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
-Conflicts:	kernel < 2.2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		schemadir	/usr/share/openldap/schema
