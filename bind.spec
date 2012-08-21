@@ -68,6 +68,7 @@ Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
+Patch6:         nsupdate_segfault.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
@@ -363,6 +364,7 @@ Schemat BIND dla openldap.
 %{?with_ldap:%patch3 -p1}
 %patch4 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
+%patch6 -p0
 
 %{?with_edns_cli:%patch5 -p0}
 
