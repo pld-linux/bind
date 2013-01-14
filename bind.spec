@@ -22,7 +22,7 @@
 %endif
 
 %define		ver	9.9.2
-%if 0
+%if 1
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -46,7 +46,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	3b37d8de1bb15d3e887ce9ee8e07cd71
+# Source0-md5:	44b9d1feb11de09811160775f94c2554
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -57,7 +57,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	57ad1cee4e934de51884602ad9c61be2
+# Source7-md5:	6241cd7c70f855345a68ed0697097ba5
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
