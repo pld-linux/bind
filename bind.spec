@@ -9,10 +9,10 @@
 %bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
 %bcond_without	tests		# perform tests
-%bcond_with edns_cli		# build with the ability to use edns-client-subnet in dig
+%bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
 %if "%{pld_release}" == "ac"
-%bcond_with		epoll		# enable epoll support
+%bcond_with	epoll		# enable epoll support
 # there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
 %ifarch %{x8664}
 %define		with_epoll	1
@@ -82,6 +82,7 @@ BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
 %{?with_sql:BuildRequires:	postgresql-devel}
+BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_sql:BuildRequires:	unixODBC-devel}
