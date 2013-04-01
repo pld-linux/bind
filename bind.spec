@@ -20,10 +20,10 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.8.3
+%define		ver	9.8.4
 %if 1
-%define		pverdot	.P3
-%define		pverdir	-P3
+%define		pverdot	.P2
+%define		pverdir	-P2
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -40,12 +40,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	86f72cf1a99c4d7d1978c201a92fb3f3
+# Source0-md5:	73ea53c5e289ae7d5730a43f2a73c923
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
