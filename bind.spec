@@ -62,6 +62,7 @@ Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
 Source11:	%{name}.tmpfiles
+Source12:	named.service
 Patch0:		%{name}-time.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
@@ -431,6 +432,7 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
+install %{SOURCE12} $RPM_BUILD_ROOT%{systemdunitdir}/named.service
 install %{SOURCE11} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
 
 %if %{with ldap}

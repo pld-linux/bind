@@ -1,0 +1,21 @@
+[Unit]
+Description=Berkeley Internet Name Domain (DNS)
+Wants=nss-lookup.target
+Before=nss-lookup.target
+After=network.target
+
+[Service]
+Type=forking
+PrivateTmp=true
+Environment=CHROOT_TO_DIR=/var/lib/named
+EnvironmentFile=-/etc/sysconfig/named
+ExecStartPre=touch $CHROOT_TO_DIR/named.log
+ExecStartPre=chown named:named $CHROOT_TO_DIR/named.log
+ExecStartPre=/usr/sbin/named-checkconf -z /etc/named.conf
+ExecStart=/usr/sbin/named -u named -t $CHROOT_TO_DIR -c /etc/named.conf $NAMED_OPT
+ExecStop=/bin/sh -c '[ -f /etc/rndc.conf ] && /usr/sbin/rndc stop || /bin/kill -TERM $MAINPID'
+ExecReload=/bin/sh -c '[ -f /etc/rndc.conf ] && /usr/sbin/rndc reload || /bin/kill -HUP $MAINPID'
+PIDFile=$CHROOT_TO_DIR/named.pid
+
+[Install]
+WantedBy=multi-user.target
