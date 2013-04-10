@@ -41,7 +41,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -85,7 +85,7 @@ BuildRequires:	libtool
 %{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.647
 %{?with_sql:BuildRequires:	unixODBC-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -98,6 +98,7 @@ Requires(pre):	fileutils
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
 Requires:	rc-scripts >= 0.2.0
+Requires:	systemd-units >= 38
 Requires:	uname(release) >= 2.2.18
 Provides:	group(named)
 Provides:	nameserver
@@ -405,7 +406,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}} \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig} \
 	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/{named,lwresd},log}} \
-	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
+	$RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -433,7 +434,7 @@ ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
 install %{SOURCE12} $RPM_BUILD_ROOT%{systemdunitdir}/named.service
-install %{SOURCE11} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
+install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
 
 %if %{with ldap}
 install -d $RPM_BUILD_ROOT%{schemadir}
@@ -468,18 +469,21 @@ fi
 %post
 /sbin/chkconfig --add named
 %service named restart
+%systemd_post named.service
 
 %preun
 if [ "$1" = "0" ]; then
 	%service named stop
 	/sbin/chkconfig --del named
 fi
+%systemd_preun named.service
 
 %postun
 if [ "$1" = "0" ]; then
 	%userremove named
 	%groupremove named
 fi
+%systemd_reload
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
@@ -500,11 +504,15 @@ fi
 %{__sed} -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 %{__sed} -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
 
+%triggerpostun -- %{name} < 7:9.9.2.P2-2
+%systemd_trigger named.service
+
 %files
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* FAQ %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
 %doc _doc/misc/* _doc/arm/*.html %{?with_ldap:_doc/*.sdb-ldap}
 
+%{systemdunitdir}/named.service
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
@@ -538,7 +546,7 @@ fi
 %{_mandir}/man8/rndc-confgen.8*
 %lang(ja) %{_mandir}/ja/man8/named*
 
-/usr/lib/tmpfiles.d/%{name}.conf
+%{systemdtmpfilesdir}/%{name}.conf
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/D
