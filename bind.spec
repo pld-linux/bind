@@ -21,8 +21,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.9.2
-%if 1
+%define		ver	9.9.3
+%if 0
 %define		pverdot	.P2
 %define		pverdir	-P2
 %else
@@ -41,12 +41,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	2be7763c99b7e7b42ac3a18a267ce1aa
+# Source0-md5:	7baa8359f0773e04f63d7e694db1909c
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -57,7 +57,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	6241cd7c70f855345a68ed0697097ba5
+# Source7-md5:	2b06fa74e9415aaf02269160d95fa01a
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -394,7 +394,8 @@ cp -f /usr/share/automake/config.* .
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	%{!?with_static_libs:--enable-static=no} \
 	--enable-threads \
-	--enable-getifaddrs
+	--enable-getifaddrs \
+	--enable-newstats
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}

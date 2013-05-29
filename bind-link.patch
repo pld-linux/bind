@@ -62,14 +62,4 @@ diff -Nur bind-9.3.2.orig/lib/lwres/Makefile.in bind-9.3.2.link/lib/lwres/Makefi
  SUBDIRS =	include man unix
  TARGETS =	timestamp
 
---- bind-9.9.0/bin/tests/system/dlzexternal/Makefile.in~	2011-11-16 01:42:07.000000000 +0100
-+++ bind-9.9.0/bin/tests/system/dlzexternal/Makefile.in	2012-02-29 19:25:59.507505391 +0100
-@@ -49,7 +49,7 @@
- 		-o $@ ${DLOPENOBJS} ${LIBS}
- 
- driver.@SO@: ${SO_OBJS}
--	${LIBTOOL_MODE_LINK} @SO_LD@ -o $@ driver.@O@
-+	@SO_LD@ -o $@ .libs/driver.o
- 
- clean distclean::
- 	rm -f ${TARGETS}
+
