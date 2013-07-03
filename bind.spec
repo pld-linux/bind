@@ -352,6 +352,9 @@ Group:		Development/Libraries
 Requires(post,postun):	sed >= 4.0
 Requires:	openldap-servers
 Requires:	sed >= 4.0
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description -n openldap-schema-bind
 BIND schema for openldap.
