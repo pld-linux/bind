@@ -23,8 +23,8 @@
 
 %define		ver	9.9.3
 %if 1
-%define		pverdot	.P1
-%define		pverdir	-P1
+%define		pverdot	.P2
+%define		pverdir	-P2
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -46,7 +46,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	cf9cd9238d7bc15f1b4a5a5fff90f0d4
+# Source0-md5:	943f6de6bfdfd821aa444242c02c1322
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
