@@ -572,17 +572,17 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.80
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.88
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.84
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.80
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.82
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.80
 
 %files devel
 %defattr(644,root,root,755)
