@@ -20,7 +20,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.8.4
+%define		ver	9.8.5
 %if 1
 %define		pverdot	.P2
 %define		pverdir	-P2
@@ -45,7 +45,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	73ea53c5e289ae7d5730a43f2a73c923
+# Source0-md5:	e168c691d35ae0d40fd0c21aa695b181
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -574,7 +574,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.80
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.88
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.122
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisc.so.84
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
