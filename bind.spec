@@ -11,6 +11,8 @@
 %bcond_without	tests		# perform tests
 %bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
+%bcond_with	geoip		# build with GeoIP patch, https://code.google.com/p/bind-geoip/
+
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
 # there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
@@ -69,7 +71,9 @@ Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
-Patch6:         nsupdate_segfault.patch
+Patch6:		nsupdate_segfault.patch
+# https://code.google.com/p/bind-geoip/
+Patch7:		%{name}-geoip.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
@@ -370,9 +374,9 @@ Schemat BIND dla openldap.
 %{?with_ldap:%patch3 -p1}
 %patch4 -p1
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
-%patch6 -p0
-
 %{?with_edns_cli:%patch5 -p0}
+%patch6 -p0
+%{?with_geoip:%patch7 -p0}
 
 %build
 %{__libtoolize}
@@ -417,8 +421,9 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+rm $RPM_BUILD_ROOT%{_mandir}/README.named-non-english-man-pages
 mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
-%{__perl} -pi -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
+%{__sed} -i -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
 cp -p bin/tests/named.conf		EXAMPLE-CONFIG-named
 cp -p bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
