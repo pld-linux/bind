@@ -281,8 +281,8 @@
  		${DLZDRIVER_SRCS} ${DBDRIVER_SRCS}
  
  MANPAGES =	named.8 lwresd.8 named.conf.5
---- bin/named/server.c.orig	2012-09-26 17:35:19.000000000 -0700
-+++ bin/named/server.c	2012-10-09 17:38:10.000000000 -0700
+--- bin/named/server.c	2013-09-05 08:09:08.000000000 +0300
++++ bin/named/server.c	2013-10-25 15:34:56.010749111 +0300
 @@ -52,6 +52,9 @@
  #include <isc/timer.h>
  #include <isc/util.h>
@@ -293,8 +293,8 @@
  
  #include <isccfg/namedconf.h>
  
-@@ -5297,6 +5300,21 @@
- 	return (ISC_R_SUCCESS);
+@@ -4859,6 +4862,21 @@
+ 	return (n);
  }
  
 +#ifdef HAVE_GEOIP
@@ -313,12 +313,12 @@
 +#endif /* HAVE_GEOIP */
 +
  static isc_result_t
- load_zones(ns_server_t *server) {
- 	isc_result_t result;
-@@ -5443,6 +5461,11 @@
+ load_configuration(const char *filename, ns_server_t *server,
+ 		   isc_boolean_t first_time)
+@@ -5983,6 +6001,11 @@
  	isc_hash_init();
  
- 	CHECKFATAL(load_zones(server), "loading zones");
+ 	CHECKFATAL(load_zones(server, ISC_TRUE), "loading zones");
 +
 +#ifdef HAVE_GEOIP
 +	/* Load GeoIP DBs */
@@ -327,7 +327,7 @@
  }
  
  void
-@@ -5890,6 +5913,20 @@
+@@ -6430,6 +6453,20 @@
  			      "reloading zones failed: %s",
  			      isc_result_totext(result));
  
