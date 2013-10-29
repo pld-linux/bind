@@ -395,6 +395,7 @@ cp -f /usr/share/automake/config.* .
 	--with-dlz-bdb=no \
 	--with-dlz-filesystem=yes \
 	%{?with_ldap:--with-dlz-ldap=yes} \
+	%{?with_geoip:--with-geoip=yes} \
 	--with-dlz-odbc=no \
 	--with-dlz-stub=yes \
 	--enable-largefile \
