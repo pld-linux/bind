@@ -11,7 +11,7 @@
 %bcond_without	tests		# perform tests
 %bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
-%bcond_with	geoip		# build with GeoIP patch, https://code.google.com/p/bind-geoip/
+%bcond_without	geoip		# build with GeoIP patch, https://code.google.com/p/bind-geoip/
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -43,7 +43,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	3
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
