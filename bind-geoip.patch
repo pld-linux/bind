@@ -1,11 +1,3 @@
---- version.orig	2012-09-26 17:35:19.000000000 -0700
-+++ version	2012-10-09 17:38:10.000000000 -0700
-@@ -7,4 +7,4 @@
- MINORVER=9
- PATCHVER=2
- RELEASETYPE=
--RELEASEVER=
-+RELEASEVER=-geoip-1.3
 --- bin/named/geoip.c.orig	2012-10-09 17:38:10.000000000 -0700
 +++ bin/named/geoip.c	2012-10-09 17:38:10.000000000 -0700
 @@ -0,0 +1,254 @@
