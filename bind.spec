@@ -23,10 +23,10 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.9.4
-%if 1
-%define		pverdot	.P2
-%define		pverdir	-P2
+%define		ver	9.9.5
+%if 0
+%define		pverdot	.P1
+%define		pverdir	-P1
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -43,12 +43,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	3
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	aa8e351e3e28d148e1717f8a0361d191
+# Source0-md5:	e676c65cad5234617ee22f48e328c24e
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -59,7 +59,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	8c9beafb9d1190597533cef1d0561278
+# Source7-md5:	786351581196d337ac8680c4c931f0e4
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -619,6 +619,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/bind9-config
 %attr(755,root,root) %{_bindir}/isc-config.sh
 %attr(755,root,root) %{_libdir}/libbind9.so
 %attr(755,root,root) %{_libdir}/libdns.so
@@ -639,6 +640,7 @@ fi
 %{_includedir}/isccc
 %{_includedir}/isccfg
 %{_includedir}/lwres
+%{_mandir}/man1/bind9-config.1*
 %{_mandir}/man1/isc-config.sh.1*
 %{_mandir}/man3/lwres*.3*
 
