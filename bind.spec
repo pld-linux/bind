@@ -11,7 +11,7 @@
 %bcond_without	tests		# perform tests
 %bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
-%bcond_without	geoip		# build with GeoIP patch, https://code.google.com/p/bind-geoip/
+%bcond_without	geoip		# build with GeoIP support
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -23,7 +23,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.9.5
+%define		ver	9.10.0
 %if 0
 %define		pverdot	.P1
 %define		pverdir	-P1
@@ -48,7 +48,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	e676c65cad5234617ee22f48e328c24e
+# Source0-md5:	53e9311d006a5b615d400478965189b8
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -59,7 +59,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	786351581196d337ac8680c4c931f0e4
+# Source7-md5:	89219533d421ba20135992c395f8469d
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -72,8 +72,6 @@ Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 Patch6:		nsupdate_segfault.patch
-# https://code.google.com/p/bind-geoip/
-Patch7:		%{name}-geoip.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
@@ -376,7 +374,6 @@ Schemat BIND dla openldap.
 %{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
 %patch6 -p0
-%{?with_geoip:%patch7 -p0}
 
 %build
 %{__libtoolize}
@@ -401,6 +398,7 @@ cp -f /usr/share/automake/config.* .
 	--enable-largefile \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	%{!?with_static_libs:--enable-static=no} \
+	--enable-sit \
 	--enable-threads \
 	--enable-getifaddrs \
 	--enable-newstats \
@@ -541,6 +539,7 @@ fi
 %attr(755,root,root) %{_sbindir}/nsec3hash
 %attr(755,root,root) %{_sbindir}/rndc
 %attr(755,root,root) %{_sbindir}/rndc-confgen
+%attr(755,root,root) %{_sbindir}/tsig-keygen
 
 %{_mandir}/man1/arpaname.1*
 %{_mandir}/man5/named.conf.5*
@@ -555,6 +554,7 @@ fi
 %{_mandir}/man8/nsec3hash.8*
 %{_mandir}/man8/rndc.8*
 %{_mandir}/man8/rndc-confgen.8*
+%{_mandir}/man8/tsig-keygen.8*
 %lang(ja) %{_mandir}/ja/man8/named*
 
 %{systemdtmpfilesdir}/%{name}.conf
@@ -579,11 +579,13 @@ fi
 
 %files utils
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/delv
 %attr(755,root,root) %{_bindir}/dig
 %attr(755,root,root) %{_bindir}/host
 %attr(755,root,root) %{_bindir}/nslookup
 %attr(755,root,root) %{_bindir}/nsupdate
 %{?with_hip:%attr(755,root,root) %{_bindir}/hi2dns}
+%{_mandir}/man1/delv.1*
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
 %{_mandir}/man1/nslookup.1*
@@ -605,17 +607,19 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9][0-9]
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libdns.so.[0-9][0-9][0-9]
+%attr(755,root,root) %{_libdir}/libirs.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.[0-9][0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.[0-9][0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.[0-9][0-9][0-9]
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.[0-9][0-9][0-9]
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.[0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.[0-9][0-9][0-9]
 
 %files devel
 %defattr(644,root,root,755)
@@ -623,12 +627,14 @@ fi
 %attr(755,root,root) %{_bindir}/isc-config.sh
 %attr(755,root,root) %{_libdir}/libbind9.so
 %attr(755,root,root) %{_libdir}/libdns.so
+%attr(755,root,root) %{_libdir}/libirs.so
 %attr(755,root,root) %{_libdir}/libisc.so
 %attr(755,root,root) %{_libdir}/libisccc.so
 %attr(755,root,root) %{_libdir}/libisccfg.so
 %attr(755,root,root) %{_libdir}/liblwres.so
 %{_libdir}/libbind9.la
 %{_libdir}/libdns.la
+%{_libdir}/libirs.la
 %{_libdir}/libisc.la
 %{_libdir}/libisccc.la
 %{_libdir}/libisccfg.la
@@ -636,10 +642,13 @@ fi
 %{_includedir}/bind9
 %{_includedir}/dns
 %{_includedir}/dst
+%{_includedir}/irs
 %{_includedir}/isc
 %{_includedir}/isccc
 %{_includedir}/isccfg
 %{_includedir}/lwres
+%{_includedir}/pk11
+%{_includedir}/pkcs11
 %{_mandir}/man1/bind9-config.1*
 %{_mandir}/man1/isc-config.sh.1*
 %{_mandir}/man3/lwres*.3*
@@ -649,6 +658,7 @@ fi
 %defattr(644,root,root,755)
 %{_libdir}/libbind9.a
 %{_libdir}/libdns.a
+%{_libdir}/libirs.a
 %{_libdir}/libisc.a
 %{_libdir}/libisccc.a
 %{_libdir}/libisccfg.a

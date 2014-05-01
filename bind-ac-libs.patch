@@ -1,14 +1,5 @@
 --- bind-9.8.0-P4/configure.in~	2011-08-03 11:46:24.326770259 +0200
 +++ bind-9.8.0-P4/configure.in	2011-08-03 11:49:53.240770212 +0200
-@@ -587,7 +587,7 @@
- 				fi
- 				;;
- 			*)
--				DNS_OPENSSL_LIBS="-L$use_openssl/lib -lcrypto"
-+				DNS_OPENSSL_LIBS="-lcrypto"
- 				;;
- 			esac
- 		fi
 @@ -882,7 +882,7 @@
  		    then
  			    LIBS="$TRY_LIBS"
@@ -18,6 +9,15 @@
  		    fi
  		    AC_MSG_CHECKING(linking as $TRY_LIBS)
  		    AC_TRY_LINK( , [gss_acquire_cred();krb5_init_context()],
+@@ -1420,7 +1420,7 @@
+ 				fi
+ 				;;
+ 			*)
+-				DST_OPENSSL_LIBS="-L$use_openssl/lib -lcrypto"
++				DST_OPENSSL_LIBS="-lcrypto"
+ 				;;
+ 			esac
+ 		fi
 @@ -1596,7 +1596,7 @@
  	*)
  		if test -f $kame_path/lib/libinet6.a; then
