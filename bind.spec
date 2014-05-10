@@ -452,7 +452,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
 
 %{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
-rm -f $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 
 # let rpm generate deps (workaround -m644 used for libs installation)
@@ -461,7 +461,7 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
 # we don't want Makefiles in documentation...
 rm -rf _doc
 cp -a doc _doc
-rm -f _doc/misc/Makefile*
+%{__rm} _doc/misc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -542,6 +542,7 @@ fi
 %attr(755,root,root) %{_sbindir}/tsig-keygen
 
 %{_mandir}/man1/arpaname.1*
+%{_mandir}/man1/named-rrchecker.1*
 %{_mandir}/man5/named.conf.5*
 %{_mandir}/man5/rndc.conf.5*
 %{_mandir}/man8/ddns-confgen.8*
@@ -607,19 +608,19 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.140
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.142
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.141
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.142
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.140
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.140
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.[0-9][0-9][0-9]
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.140
 
 %files devel
 %defattr(644,root,root,755)
