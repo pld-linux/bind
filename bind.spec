@@ -562,7 +562,7 @@ fi
 
 %attr(770,root,named) %dir %{_var}/lib/named
 %attr(770,root,named) %dir %{_var}/lib/named/D
-%attr(750,root,named) %dir %{_var}/lib/named/M
+%attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
 %attr(750,root,named) %dir %{_var}/lib/named/etc
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/bind.keys
