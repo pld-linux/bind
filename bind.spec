@@ -23,8 +23,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.10.0
-%if 1
+%define		ver	9.10.1
+%if 0
 %define		pverdot	.P2
 %define		pverdir	-P2
 %else
@@ -48,7 +48,7 @@ Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	85f5bbd655f7fbb946fe128c5adcc9ca
+# Source0-md5:	82a69faf01b569568d9233f2666e744d
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -610,7 +610,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.140
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.142
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.146
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.141
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
@@ -620,7 +620,7 @@ fi
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.140
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.140
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.141
 
 %files devel
 %defattr(644,root,root,755)
