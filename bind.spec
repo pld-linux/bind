@@ -43,7 +43,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -79,6 +79,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	idnkit-devel
+BuildRequires:	libseccomp-devel
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
@@ -402,7 +403,8 @@ cp -f /usr/share/automake/config.* .
 	--enable-threads \
 	--enable-getifaddrs \
 	--enable-newstats \
-	--enable-full-report
+	--enable-full-report \
+	--enable-seccomp
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
