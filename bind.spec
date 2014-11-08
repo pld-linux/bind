@@ -12,6 +12,7 @@
 %bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
 %bcond_with	hip		# build with HIP RR support
 %bcond_without	geoip		# build with GeoIP support
+%bcond_with	seccomp		# seccomp
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -43,7 +44,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	3
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -79,7 +80,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	idnkit-devel
-BuildRequires:	libseccomp-devel
+%{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
@@ -402,9 +403,8 @@ cp -f /usr/share/automake/config.* .
 	--enable-sit \
 	--enable-threads \
 	--enable-getifaddrs \
-	--enable-newstats \
 	--enable-full-report \
-	--enable-seccomp
+	%{__enable_disable seccomp}
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
