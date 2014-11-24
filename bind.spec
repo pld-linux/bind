@@ -13,6 +13,7 @@
 %bcond_with	hip		# build with HIP RR support
 %bcond_without	geoip		# build with GeoIP support
 %bcond_with	seccomp		# seccomp
+%bcond_with	sit		# SIT (Source Identity Token)
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -44,7 +45,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	3
+Release:	4
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
@@ -400,7 +401,7 @@ cp -f /usr/share/automake/config.* .
 	--enable-largefile \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	%{!?with_static_libs:--enable-static=no} \
-	--enable-sit \
+	%{__enable_disable sit} \
 	--enable-threads \
 	--enable-getifaddrs \
 	--enable-full-report \
