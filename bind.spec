@@ -13,7 +13,6 @@
 %bcond_with	hip		# build with HIP RR support
 %bcond_without	geoip		# build with GeoIP support
 %bcond_with	seccomp		# seccomp
-%bcond_with	sit		# SIT (Source Identity Token)
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -25,8 +24,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.10.4
-%if 1
+%define		ver	9.11.0b3
+%if 0
 %define		pverdot	.P2
 %define		pverdir	-P2
 %else
@@ -45,12 +44,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	0.1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	50163d229020c48929c84bec5b0068d7
+# Source0-md5:	7a9bdcb0bd832a0e9a633b951f5af664
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -88,6 +87,8 @@ BuildRequires:	libtool
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
 %{?with_sql:BuildRequires:	postgresql-devel}
+BuildRequires:	python3-devel
+BuildRequires:	python3-ply
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
@@ -367,6 +368,14 @@ BIND schema for openldap.
 %description -n openldap-schema-bind -l pl.UTF-8
 Schemat BIND dla openldap.
 
+%package -n python3-isc
+Summary:        Python BIND module
+Group:          Libraries/Python
+Requires:       python3-modules
+
+%description -n python3-isc
+Python BIND module.
+
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
 %patch0 -p1
@@ -401,11 +410,11 @@ cp -f /usr/share/automake/config.* .
 	--enable-largefile \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	%{!?with_static_libs:--enable-static=no} \
-	%{__enable_disable sit} \
 	--enable-threads \
 	--enable-getifaddrs \
 	--enable-full-report \
-	%{__enable_disable seccomp}
+	%{__enable_disable seccomp} \
+	--with-python=%{__python3}
 
 %{__make}
 %{?with_hip:cd bind-hip/; %{__make}}
@@ -531,7 +540,6 @@ fi
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bind.keys
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 
-%attr(755,root,root) %{_sbindir}/arpaname
 %attr(755,root,root) %{_sbindir}/ddns-confgen
 %attr(755,root,root) %{_sbindir}/dnssec-*
 %attr(755,root,root) %{_sbindir}/genrandom
@@ -544,8 +552,6 @@ fi
 %attr(755,root,root) %{_sbindir}/rndc-confgen
 %attr(755,root,root) %{_sbindir}/tsig-keygen
 
-%{_mandir}/man1/arpaname.1*
-%{_mandir}/man1/named-rrchecker.1*
 %{_mandir}/man5/named.conf.5*
 %{_mandir}/man5/rndc.conf.5*
 %{_mandir}/man8/ddns-confgen.8*
@@ -583,15 +589,21 @@ fi
 
 %files utils
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/arpaname
 %attr(755,root,root) %{_bindir}/delv
 %attr(755,root,root) %{_bindir}/dig
 %attr(755,root,root) %{_bindir}/host
+%attr(755,root,root) %{_bindir}/named-rrchecker
+%attr(755,root,root) %{_bindir}/mdig
 %attr(755,root,root) %{_bindir}/nslookup
 %attr(755,root,root) %{_bindir}/nsupdate
 %{?with_hip:%attr(755,root,root) %{_bindir}/hi2dns}
+%{_mandir}/man1/arpaname.1*
 %{_mandir}/man1/delv.1*
 %{_mandir}/man1/dig.1*
 %{_mandir}/man1/host.1*
+%{_mandir}/man1/mdig.1*
+%{_mandir}/man1/named-rrchecker.1*
 %{_mandir}/man1/nslookup.1*
 %{_mandir}/man1/nsupdate.1*
 
@@ -611,19 +623,19 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.140
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.160
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libdns.so.165
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.141
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.160
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisc.so.160
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.140
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.160
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.140
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.160
 %attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.141
+%attr(755,root,root) %ghost %{_libdir}/liblwres.so.160
 
 %files devel
 %defattr(644,root,root,755)
@@ -674,3 +686,8 @@ fi
 %defattr(644,root,root,755)
 %{_datadir}/openldap/schema/dnszone.schema
 %endif
+
+%files -n python3-isc
+%defattr(644,root,root,755)
+%{py3_sitedir}/isc
+%{py3_sitedir}/isc-*-py*.egg-info
