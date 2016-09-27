@@ -27,8 +27,8 @@
 
 %define		ver	9.10.4
 %if 1
-%define		pverdot	.P2
-%define		pverdir	-P2
+%define		pverdot	.P3
+%define		pverdir	-P3
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -45,12 +45,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	50163d229020c48929c84bec5b0068d7
+# Source0-md5:	2ce7b49516d3df1490bf2263f474b2d6
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -61,7 +61,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	83be6717681dcf7c74cfb7831553592f
+# Source7-md5:	1bd7869dc83edd2c8efbc97511ec7d7d
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
