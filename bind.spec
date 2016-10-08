@@ -78,6 +78,7 @@ BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
+%{?with_geoip:BuildRequires:	GeoIP-devel}
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	idnkit-devel
 %{?with_seccomp:BuildRequires:	libseccomp-devel}
