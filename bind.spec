@@ -103,6 +103,8 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(pre):	fileutils
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+# for dnssec-{checkds,coverage,keymgr}
+Requires:	python3-isc = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
@@ -370,12 +372,17 @@ BIND schema for openldap.
 Schemat BIND dla openldap.
 
 %package -n python3-isc
-Summary:        Python BIND module
+Summary:        Python 3 ISC module - functions to support BIND utilities
+Summary(pl.UTF-8):	Moduł Pythona 3 ISC - funkcje wspomagające narzędzia BIND-a
 Group:          Libraries/Python
 Requires:       python3-modules
 
 %description -n python3-isc
-Python BIND module.
+Python 3 ISC module containing functions to support BIND utilities.
+
+%description -n python3-isc -l pl.UTF-8
+Moduł Pythona 3 ISC, zawierający funkcje wspomagające narzędzia
+BIND-a.
 
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
@@ -433,8 +440,8 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
-rm $RPM_BUILD_ROOT%{_mandir}/README.named-non-english-man-pages
-mv $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/README.named-non-english-man-pages
+%{__mv} $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 %{__sed} -i -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
 cp -p bin/tests/named.conf		EXAMPLE-CONFIG-named
@@ -446,7 +453,7 @@ cp -p %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
 cp -p %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
 cp -p %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
 cp -p %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
-mv $RPM_BUILD_ROOT/etc/bind.keys        $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
+%{__mv} $RPM_BUILD_ROOT/etc/bind.keys   $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
 
 ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
 ln -sf %{_var}/lib/named%{_sysconfdir}/bind.keys $RPM_BUILD_ROOT/etc/bind.keys
