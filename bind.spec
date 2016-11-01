@@ -25,7 +25,7 @@
 %endif
 
 %define		ver	9.11.0
-%if 0
+%if 1
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	b12f386e35f3193e6255ed8c03230539
+# Source0-md5:	4ec15dcf90ad77e923a05d7386348080
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
