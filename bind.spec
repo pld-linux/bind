@@ -24,8 +24,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.11.1
-%if 1
+%define		ver	9.11.2
+%if 0
 %define		pverdot	.P3
 %define		pverdir	-P3
 %else
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	86536512f247750255c4fd63ffa6e96f
+# Source0-md5:	efca7e5a63a07efba264da9be2fbb57f
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -60,7 +60,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	4a954989ce4d5a012b3a8a09722378c2
+# Source7-md5:	4a20043b9b7209c0da14665318b6dcdc
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -538,7 +538,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* FAQ %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
+%doc README EXAMPLE-CONFIG-* %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
 %doc _doc/misc/* _doc/arm/*.html %{?with_ldap:_doc/*.sdb-ldap}
 
 %{systemdunitdir}/named.service
@@ -633,7 +633,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.160
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.168
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.169
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.160
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*

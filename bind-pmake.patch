@@ -16,7 +16,7 @@ diff -ur bind-9.3.0rc3.orig/make/rules.in bind-9.3.0rc3/make/rules.in
 diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.in
 --- bind-9.3.0rc3.orig/lib/dns/Makefile.in	2004-07-20 09:01:57.000000000 +0200
 +++ bind-9.3.0rc3/lib/dns/Makefile.in	2004-09-01 10:54:21.089962344 +0200
-@@ -101,17 +101,17 @@
+@@ -135,11 +135,11 @@ version.@O@: version.c
  		-DLIBAGE=${LIBAGE} \
  		-c ${srcdir}/version.c
  
@@ -30,13 +30,6 @@ diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.i
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libdns.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
- 		${OBJS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ ${LIBS}
- 
--timestamp: libdns.@A@
-+timestamp: include libdns.@A@
- 	touch timestamp
- 
- installdirs:
 --- bind-9.7.0/lib/isc/Makefile.in~	2009-12-18 05:09:55.000000000 +0100
 +++ bind-9.7.0/lib/isc/Makefile.in	2010-02-17 08:04:13.849211197 +0100
 @@ -94,21 +94,21 @@
