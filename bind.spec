@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_without	ssl		# build without OpenSSL support
 %bcond_without	ipv6		# build without IPv6 support
-%bcond_without	ldap		# build without LDAP support
+%bcond_with	ldap		# build without LDAP support
 %bcond_without	kerberos5	# build without kerneros5 support
 %bcond_without	sql		# build without SQL support
 %bcond_without	static_libs	# build without static libraries
@@ -24,8 +24,8 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.11.2
-%if 1
+%define		ver	9.12.0
+%if 0
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	8877d7bf09abc0d186717e560c29ccfb
+# Source0-md5:	8679dd7a45920cea3761c5586d84244b
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -60,7 +60,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	3e0780d9b405eb4518bcab01b7678c83
+# Source7-md5:	d9c25f612d508e79f9cc5bcaccc53e56
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -433,7 +433,7 @@ cp -f /usr/share/automake/config.* .
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}} \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d,sysconfig} \
-	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/{named,lwresd},log}} \
+	$RPM_BUILD_ROOT{%{_mandir}/man{1,3,5,8},%{_var}/{lib/named/{M,D,S,dev,etc},run/named,log}} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
@@ -551,8 +551,6 @@ fi
 %attr(755,root,root) %{_sbindir}/ddns-confgen
 %attr(755,root,root) %{_sbindir}/dnssec-*
 %attr(755,root,root) %{_sbindir}/genrandom
-%attr(755,root,root) %{_sbindir}/isc-hmac-fixup
-%attr(755,root,root) %{_sbindir}/lwresd
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-*
 %attr(755,root,root) %{_sbindir}/nsec3hash
@@ -565,8 +563,6 @@ fi
 %{_mandir}/man8/ddns-confgen.8*
 %{_mandir}/man8/dnssec-*.8*
 %{_mandir}/man8/genrandom.8*
-%{_mandir}/man8/isc-hmac-fixup.8*
-%{_mandir}/man8/lwresd.8*
 %{_mandir}/man8/named.8*
 %{_mandir}/man8/named-*.8*
 %{_mandir}/man8/nsec3hash.8*
@@ -581,6 +577,8 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named/D
 %attr(770,root,named) %dir %{_var}/lib/named/M
 %attr(770,root,named) %dir %{_var}/lib/named/S
+%attr(770,root,named) %dir %{_var}/lib/named/dev
+%dev(c,1,9) %attr(644,root,root) %{_var}/lib/named/dev/urandom
 %attr(750,root,named) %dir %{_var}/lib/named/etc
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/bind.keys
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/named.conf
@@ -593,7 +591,6 @@ fi
 %attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named.stats
 
 %attr(770,root,named) %dir %{_var}/run/named
-%attr(770,root,named) %dir %{_var}/run/lwresd
 
 %files utils
 %defattr(644,root,root,755)
@@ -631,19 +628,19 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.160
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1200
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.169
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1201
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.160
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.1200
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.166
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1200
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.160
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1200
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.160
-%attr(755,root,root) %{_libdir}/liblwres.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblwres.so.160
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1200
+%attr(755,root,root) %{_libdir}/libns.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1202
 
 %files devel
 %defattr(644,root,root,755)
@@ -655,14 +652,14 @@ fi
 %attr(755,root,root) %{_libdir}/libisc.so
 %attr(755,root,root) %{_libdir}/libisccc.so
 %attr(755,root,root) %{_libdir}/libisccfg.so
-%attr(755,root,root) %{_libdir}/liblwres.so
+%attr(755,root,root) %{_libdir}/libns.so
 %{_libdir}/libbind9.la
 %{_libdir}/libdns.la
 %{_libdir}/libirs.la
 %{_libdir}/libisc.la
 %{_libdir}/libisccc.la
 %{_libdir}/libisccfg.la
-%{_libdir}/liblwres.la
+%{_libdir}/libns.la
 %{_includedir}/bind9
 %{_includedir}/dns
 %{_includedir}/dst
@@ -670,12 +667,11 @@ fi
 %{_includedir}/isc
 %{_includedir}/isccc
 %{_includedir}/isccfg
-%{_includedir}/lwres
+%{_includedir}/ns
 %{_includedir}/pk11
 %{_includedir}/pkcs11
 %{_mandir}/man1/bind9-config.1*
 %{_mandir}/man1/isc-config.sh.1*
-%{_mandir}/man3/lwres*.3*
 
 %if %{with static_libs}
 %files static
@@ -686,7 +682,7 @@ fi
 %{_libdir}/libisc.a
 %{_libdir}/libisccc.a
 %{_libdir}/libisccfg.a
-%{_libdir}/liblwres.a
+%{_libdir}/libns.a
 %endif
 
 %if %{with ldap}
