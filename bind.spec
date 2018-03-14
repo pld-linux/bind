@@ -24,7 +24,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.12.0
+%define		ver	9.12.1
 %if 0
 %define		pverdot	.P1
 %define		pverdir	-P1
@@ -44,12 +44,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	4
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	8679dd7a45920cea3761c5586d84244b
+# Source0-md5:	ec20f2d6aff50651296fad962d19ccfa
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -60,7 +60,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	f41bb1c130257be93ea60b5ab00c3d9d
+# Source7-md5:	e01f13480b3a85246f74d12fd7df6537
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -630,7 +630,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1200
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1201
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1203
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1200
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
@@ -640,7 +640,7 @@ fi
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1200
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1202
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1203
 
 %files devel
 %defattr(644,root,root,755)
