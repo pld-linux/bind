@@ -2,17 +2,19 @@
 # - apply http://www.caraytech.com/geodns/
 #
 # Conditional build:
-%bcond_without	ssl		# build without OpenSSL support
-%bcond_without	ipv6		# build without IPv6 support
-%bcond_with	ldap		# build without LDAP support
-%bcond_without	kerberos5	# build without kerneros5 support
-%bcond_without	sql		# build without SQL support
-%bcond_without	static_libs	# build without static libraries
+%bcond_without	geoip		# GeoIP support
+%bcond_without	ipv6		# IPv6 support
+%bcond_without	kerberos5	# GSS-API support
+%bcond_without	ssl		# OpenSSL support
+%bcond_with	ldap		# LDAP DLZ support
+%bcond_with	odbc		# ODBC DLZ support
+%bcond_without	sql		# SQL (MySQL+PostgreSQL) DLZ support
+%bcond_without	lmdb		# LMDB storage support for addzone zones
+%bcond_without	static_libs	# static libraries
 %bcond_without	tests		# perform tests
-%bcond_with	edns_cli	# build with the ability to use edns-client-subnet in dig
-%bcond_with	hip		# build with HIP RR support
-%bcond_without	geoip		# build with GeoIP support
-%bcond_with	seccomp		# seccomp
+%bcond_with	edns_cli	# ability to use edns-client-subnet in dig
+%bcond_with	hip		# HIP RR support
+%bcond_with	seccomp		# libseccomp system call filtering
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -81,9 +83,11 @@ BuildRequires:	flex
 %{?with_geoip:BuildRequires:	GeoIP-devel}
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	idnkit-devel
+BuildRequires:	json-c-devel
 %{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
+%{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
@@ -93,7 +97,8 @@ BuildRequires:	python3-ply
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
-%{?with_sql:BuildRequires:	unixODBC-devel}
+%{?with_odbc:BuildRequires:	unixODBC-devel}
+BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -391,7 +396,7 @@ BIND-a.
 %patch2 -p1
 %{?with_ldap:%patch3 -p1}
 %patch4 -p1
-%{?with_hip:mv bind-hip/hip_55.[ch] lib/dns/rdata/generic}
+%{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
 %patch6 -p0
 
@@ -402,30 +407,32 @@ BIND-a.
 cp -f /usr/share/automake/config.* .
 %configure \
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
+	%{!?with_epoll:--disable-epoll --disable-devpoll} \
+	--enable-full-report \
+	--enable-getifaddrs \
+	%{?with_ipv6:--enable-ipv6} \
+	--enable-largefile \
+	%{__enable_disable seccomp} \
+	%{!?with_static_libs:--disable-static} \
+	--enable-threads \
+	%{?with_kerberos5:--with-gssapi} \
 	--with-idn \
 	--with-libtool \
 	%{?with_ssl:--with-openssl} \
-	%{?with_ipv6:--enable-ipv6} \
-	%{?with_kerberos5:--with-gssapi} \
-	%{?with_sql:--with-dlz-postgres=yes} \
-	%{?with_sql:--with-dlz-mysql=yes} \
-	--with-dlz-bdb=no \
-	--with-dlz-filesystem=yes \
-	%{?with_ldap:--with-dlz-ldap=yes} \
-	%{?with_geoip:--with-geoip=yes} \
-	--with-dlz-odbc=no \
-	--with-dlz-stub=yes \
-	--enable-largefile \
-	%{!?with_epoll:--disable-epoll --disable-devpoll} \
-	%{!?with_static_libs:--enable-static=no} \
-	--enable-threads \
-	--enable-getifaddrs \
-	--enable-full-report \
-	%{__enable_disable seccomp} \
+	%{?with_sql:--with-dlz-postgres} \
+	%{?with_sql:--with-dlz-mysql} \
+	--without-dlz-bdb \
+	--with-dlz-filesystem \
+	%{?with_ldap:--with-dlz-ldap} \
+	--with-dlz-odbc%{!?with_odbc:=no} \
+	--with-dlz-stub \
+	%{?with_geoip:--with-geoip} \
+	--with-lmdb%{!?with_lmdb:=no} \
 	--with-python=%{__python3}
 
 %{__make}
-%{?with_hip:cd bind-hip/; %{__make}}
+
+%{?with_hip:%{__make} -C bind-hip}
 
 %{?with_tests:%{__make} test-force}
 
