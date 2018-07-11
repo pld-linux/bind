@@ -82,8 +82,8 @@ BuildRequires:	bison
 BuildRequires:	flex
 %{?with_geoip:BuildRequires:	GeoIP-devel}
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
-BuildRequires:	idnkit-devel
 BuildRequires:	json-c-devel
+BuildRequires:	libidn2-devel
 %{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
@@ -416,7 +416,7 @@ cp -f /usr/share/automake/config.* .
 	%{!?with_static_libs:--disable-static} \
 	--enable-threads \
 	%{?with_kerberos5:--with-gssapi} \
-	--with-idn \
+	--with-libidn2 \
 	--with-libtool \
 	%{?with_ssl:--with-openssl} \
 	%{?with_sql:--with-dlz-postgres} \
