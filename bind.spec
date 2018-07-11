@@ -26,10 +26,10 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.12.1
-%if 1
-%define		pverdot	.P2
-%define		pverdir	-P2
+%define		ver	9.12.2
+%if 0
+%define		pverdot	.P1
+%define		pverdir	-P1
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	7fbefc12bd0cf891546ee9d8bc18f7b0
+# Source0-md5:	37c0e31138976cfddd48fe6e2fa3e329
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -62,7 +62,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	d1377ba28666891f9bea92556e764a4d
+# Source7-md5:	b443462901a0d16778019f12608d3234
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -452,7 +452,6 @@ bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 %{__sed} -i -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
 cp -p bin/tests/named.conf		EXAMPLE-CONFIG-named
-cp -p bin/tests/ndc.conf		EXAMPLE-CONFIG-ndc
 install -p %{SOURCE1}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
 cp -p %{SOURCE2}			$RPM_BUILD_ROOT/etc/sysconfig/named
 cp -p %{SOURCE3}			$RPM_BUILD_ROOT/etc/logrotate.d/named
@@ -637,7 +636,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1200
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1203
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1205
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1200
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
