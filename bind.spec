@@ -61,8 +61,8 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 # Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
-Source7:	ftp://rs.internic.net/domain/root.zone
-# Source7-md5:	b443462901a0d16778019f12608d3234
+Source7:	https://www.internic.net/domain/named.root
+# Source7-md5:	d090610a892c2e476d93042dc70dc393
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
