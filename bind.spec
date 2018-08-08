@@ -27,7 +27,7 @@
 %endif
 
 %define		ver	9.12.2
-%if 0
+%if 1
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -46,12 +46,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	37c0e31138976cfddd48fe6e2fa3e329
+# Source0-md5:	cadf03eb10a6bfcbca6c0873e4f6ea89
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
