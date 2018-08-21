@@ -11,7 +11,8 @@
 %bcond_without	sql		# SQL (MySQL+PostgreSQL) DLZ support
 %bcond_without	lmdb		# LMDB storage support for addzone zones
 %bcond_without	static_libs	# static libraries
-%bcond_without	tests		# perform tests
+%bcond_with	system_tests	# system tests (require root to configure localhost IPs)
+%bcond_without	tests		# unit tests
 %bcond_with	edns_cli	# ability to use edns-client-subnet in dig
 %bcond_with	hip		# HIP RR support
 %bcond_with	seccomp		# libseccomp system call filtering
@@ -434,7 +435,13 @@ cp -f /usr/share/automake/config.* .
 
 %{?with_hip:%{__make} -C bind-hip}
 
-%{?with_tests:%{__make} test-force}
+%if %{with tests}
+%if %{with system_tests}
+%{__make} test-force
+%else
+sh unit/unittest.sh
+%endif
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
