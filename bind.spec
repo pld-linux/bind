@@ -27,10 +27,10 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.12.2
-%if 1
-%define		pverdot	.P2
-%define		pverdir	-P2
+%define		ver	9.12.3
+%if 0
+%define		pverdot	.P1
+%define		pverdir	-P1
 %else
 %define		pverdot	%{nil}
 %define		pverdir	%{nil}
@@ -47,12 +47,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	022fd0b03f34b359e9b79c67b1a887a8
+# Source0-md5:	f8117bf828c56159bc2cdb7d5da55133
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -641,19 +641,19 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1200
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1201
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1205
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1207
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.1200
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.1201
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1200
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1204
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1200
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1201
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1200
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1203
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1203
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1205
 
 %files devel
 %defattr(644,root,root,755)
