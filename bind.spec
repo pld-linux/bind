@@ -28,7 +28,7 @@
 %endif
 
 %define		ver	9.12.3
-%if 0
+%if 1
 %define		pverdot	.P1
 %define		pverdir	-P1
 %else
@@ -52,7 +52,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	f8117bf828c56159bc2cdb7d5da55133
+# Source0-md5:	6a73280ad5ad0dfeab611de04aefd35e
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	602f28581292bf5e50c8137c955173e6
+# Source7-md5:	a2d36ae713cf5e8ea59641b320b6ec5d
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
