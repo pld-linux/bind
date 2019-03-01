@@ -1,5 +1,5 @@
---- bind-9.8.0-P4/configure.in~	2011-08-03 11:46:24.326770259 +0200
-+++ bind-9.8.0-P4/configure.in	2011-08-03 11:49:53.240770212 +0200
+--- bind-9.8.0-P4/configure.ac~	2011-08-03 11:46:24.326770259 +0200
++++ bind-9.8.0-P4/configure.ac	2011-08-03 11:49:53.240770212 +0200
 @@ -1076,7 +1076,7 @@ case "$use_gssapi" in
  		    then
  			    LIBS="$TRY_LIBS $ISC_OPENSSL_LIBS"

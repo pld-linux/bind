@@ -1,6 +1,6 @@
-diff -Nur bind-9.3.2.orig/configure.in bind-9.3.2.link/configure.in
---- bind-9.3.2.orig/configure.in	2006-08-05 01:45:48.000000000 +0200
-+++ bind-9.3.2.link/configure.in	2006-08-05 01:45:55.000000000 +0200
+diff -Nur bind-9.3.2.orig/configure.ac bind-9.3.2.link/configure.ac
+--- bind-9.3.2.orig/configure.ac	2006-08-05 01:45:48.000000000 +0200
++++ bind-9.3.2.link/configure.ac	2006-08-05 01:45:55.000000000 +0200
 @@ -1171,8 +1171,8 @@
  	*-linux*)
  		;;
