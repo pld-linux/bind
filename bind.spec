@@ -12,7 +12,7 @@
 %bcond_without	lmdb		# LMDB storage support for addzone zones
 %bcond_without	static_libs	# static libraries
 %bcond_with	system_tests	# system tests (require root to configure localhost IPs)
-%bcond_without	tests		# unit tests
+%bcond_with	tests		# unit tests
 %bcond_with	edns_cli	# ability to use edns-client-subnet in dig
 %bcond_with	hip		# HIP RR support
 %bcond_with	seccomp		# libseccomp system call filtering
@@ -27,7 +27,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.12.4
+%define		ver	9.14.0
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -47,12 +47,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	5
+Release:	0.1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	38c26af0725c4a5cf0e87c83b0544965
+# Source0-md5:	11d14ca17919bbdd558663dcc69ca1fb
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -85,6 +85,8 @@ BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	json-c-devel
 BuildRequires:	libidn2-devel
+# note, there is no kyua in PLD yet (work in progress)
+%{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 %{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
@@ -563,7 +565,6 @@ fi
 
 %attr(755,root,root) %{_sbindir}/ddns-confgen
 %attr(755,root,root) %{_sbindir}/dnssec-*
-%attr(755,root,root) %{_sbindir}/genrandom
 %attr(755,root,root) %{_sbindir}/named
 %attr(755,root,root) %{_sbindir}/named-*
 %attr(755,root,root) %{_sbindir}/nsec3hash
@@ -575,7 +576,6 @@ fi
 %{_mandir}/man5/rndc.conf.5*
 %{_mandir}/man8/ddns-confgen.8*
 %{_mandir}/man8/dnssec-*.8*
-%{_mandir}/man8/genrandom.8*
 %{_mandir}/man8/named.8*
 %{_mandir}/man8/named-*.8*
 %{_mandir}/man8/nsec3hash.8*
@@ -641,19 +641,21 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1201
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1302
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1208
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1306
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.1201
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.1301
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1204
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1306
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1201
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1302
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1203
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1302
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1206
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1304
+%attr(755,root,root) %ghost %{_libdir}/named/filter-aaaa.so
+%{_mandir}/man8/filter-aaaa.8*
 
 %files devel
 %defattr(644,root,root,755)
