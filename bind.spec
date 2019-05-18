@@ -27,7 +27,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.14.1
+%define		ver	9.14.2
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -52,7 +52,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	59ea48bfeb50d5f4df315c5bf7df029e
+# Source0-md5:	5293355175c995210e6af6c1a5a41a66
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -643,17 +643,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1302
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1307
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1308
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1301
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1306
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1308
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1302
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1302
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1305
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1306
 %attr(755,root,root) %ghost %{_libdir}/named/filter-aaaa.so
 %{_mandir}/man8/filter-aaaa.8*
 
