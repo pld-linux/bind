@@ -47,7 +47,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
@@ -605,6 +605,10 @@ fi
 
 %attr(770,root,named) %dir %{_var}/run/named
 
+%dir %{_libdir}/named
+%attr(755,root,root) %{_libdir}/named/filter-aaaa.so
+%{_mandir}/man8/filter-aaaa.8*
+
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/arpaname
@@ -654,8 +658,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1302
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libns.so.1306
-%attr(755,root,root) %ghost %{_libdir}/named/filter-aaaa.so
-%{_mandir}/man8/filter-aaaa.8*
 
 %files devel
 %defattr(644,root,root,755)
