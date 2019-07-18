@@ -27,7 +27,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.14.2
+%define		ver	9.14.4
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -52,7 +52,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	5293355175c995210e6af6c1a5a41a66
+# Source0-md5:	3b39246f972ac66a6b7d05e9a4076248
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	60cbad328adbff5e9313fef5cd9a8d1d
+# Source7-md5:	117d70879c5521529aaf0df24e010afb
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -647,7 +647,7 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1302
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1308
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1309
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1301
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
