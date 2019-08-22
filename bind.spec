@@ -15,7 +15,6 @@
 %bcond_with	tests		# unit tests
 %bcond_with	edns_cli	# ability to use edns-client-subnet in dig
 %bcond_with	hip		# HIP RR support
-%bcond_with	seccomp		# libseccomp system call filtering
 
 %if "%{pld_release}" == "ac"
 %bcond_with	epoll		# enable epoll support
@@ -81,16 +80,15 @@ BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-%{?with_geoip:BuildRequires:	GeoIP-devel}
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	json-c-devel
 BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
 %{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
-%{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libtool
 %{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_lmdb:BuildRequires:	lmdb-devel}
+%{?with_geoip:BuildRequires:	libmaxminddb-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
@@ -412,12 +410,8 @@ cp -f /usr/share/automake/config.* .
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
-	--enable-getifaddrs \
-	%{?with_ipv6:--enable-ipv6} \
 	--enable-largefile \
-	%{__enable_disable seccomp} \
 	%{!?with_static_libs:--disable-static} \
-	--enable-threads \
 	%{?with_kerberos5:--with-gssapi} \
 	--with-libidn2 \
 	--with-libtool \
@@ -429,7 +423,7 @@ cp -f /usr/share/automake/config.* .
 	%{?with_ldap:--with-dlz-ldap} \
 	--with-dlz-odbc%{!?with_odbc:=no} \
 	--with-dlz-stub \
-	%{?with_geoip:--with-geoip} \
+	%{?with_geoip:--with-geoip2} \
 	--with-lmdb%{!?with_lmdb:=no} \
 	--with-python=%{__python3}
 
