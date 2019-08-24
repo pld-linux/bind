@@ -3,7 +3,6 @@
 #
 # Conditional build:
 %bcond_without	geoip		# GeoIP support
-%bcond_without	ipv6		# IPv6 support
 %bcond_without	kerberos5	# GSS-API support
 %bcond_without	ssl		# OpenSSL support
 %bcond_with	ldap		# LDAP DLZ support
