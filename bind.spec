@@ -25,7 +25,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.14.6
+%define		ver	9.14.7
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -50,7 +50,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	6f1fcdfcaecaaff13260b0045c83f113
+# Source0-md5:	6c79ffd0b60e3524d3cadc579e58341b
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -61,7 +61,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	badd90b451d84322ed1341df4844f6b3
+# Source7-md5:	24f4f0e55fae5e70db49e5e933ce3a4a
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
