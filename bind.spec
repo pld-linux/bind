@@ -25,7 +25,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.14.8
+%define		ver	9.14.9
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -45,12 +45,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	779a04954839ed349a1c35d8b8552089
+# Source0-md5:	6a36a93930a11d58c1580765e56dd726
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -61,7 +61,7 @@ Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	23ec4e704cdaa1dcaaa6f66bc2c0563f
+# Source7-md5:	1e4e7c3e1ce2c5442eed998046edf548
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
