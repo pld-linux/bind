@@ -25,7 +25,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.14.10
+%define		ver	9.16.0
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -49,19 +49,19 @@ Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.gz
-# Source0-md5:	c4b4e48ae6dc87da4cae333665c0b4e3
+Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
+# Source0-md5:	f973848bf32797c5f546de7d92a6fd07
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
 Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source4-md5:	35b1dfaa12615c9802126ee833e0e7f7
 Source5:	http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt
-# Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
+# Source5-md5:	026f3ddad50e5a8832bce39bb49bed2f
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	1e4e7c3e1ce2c5442eed998046edf548
+# Source7-md5:	7cee6519fca7a4a6e771633560e55d53
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -85,6 +85,7 @@ BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
 %{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 BuildRequires:	libtool
+BuildRequires:	libuv-devel >= 1.0.0
 %{?with_hip:BuildRequires:	libxml2-devel}
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_geoip:BuildRequires:	libmaxminddb-devel}
@@ -422,7 +423,7 @@ cp -f /usr/share/automake/config.* .
 	%{?with_ldap:--with-dlz-ldap} \
 	--with-dlz-odbc%{!?with_odbc:=no} \
 	--with-dlz-stub \
-	%{?with_geoip:--with-geoip2} \
+	%{?with_geoip:--with-maxminddb} \
 	--with-lmdb%{!?with_lmdb:=no} \
 	--with-python=%{__python3}
 
@@ -638,24 +639,22 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1302
+%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1312
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1600
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.1301
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.1600
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1310
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1600
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1302
+%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1302
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1600
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1307
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1600
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/bind9-config
-%attr(755,root,root) %{_bindir}/isc-config.sh
 %attr(755,root,root) %{_libdir}/libbind9.so
 %attr(755,root,root) %{_libdir}/libdns.so
 %attr(755,root,root) %{_libdir}/libirs.so
@@ -680,8 +679,6 @@ fi
 %{_includedir}/ns
 %{_includedir}/pk11
 %{_includedir}/pkcs11
-%{_mandir}/man1/bind9-config.1*
-%{_mandir}/man1/isc-config.sh.1*
 
 %if %{with static_libs}
 %files static
