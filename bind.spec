@@ -2,6 +2,7 @@
 # - apply http://www.caraytech.com/geodns/
 #
 # Conditional build:
+%bcond_with	dnstap		# dnstap replication support
 %bcond_without	geoip		# GeoIP support
 %bcond_without	kerberos5	# GSS-API support
 %bcond_without	ssl		# OpenSSL support
@@ -76,31 +77,39 @@ Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 Patch6:		nsupdate_segfault.patch
 URL:		https://www.isc.org/software/bind
-BuildRequires:	autoconf >= 2.59
+BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	bison
+%{?with_tests:BuildRequires:	cmocka-devel >= 1.0.0}
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
-BuildRequires:	json-c-devel
+BuildRequires:	json-c-devel >= 0.11
+BuildRequires:	libcap-devel
 BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
 %{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 BuildRequires:	libtool
 BuildRequires:	libuv-devel >= 1.0.0
-%{?with_hip:BuildRequires:	libxml2-devel}
+# any version for hi2dns (if with_hip), 2.6.0 for XML stats
+BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_geoip:BuildRequires:	libmaxminddb-devel}
 %{?with_sql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.8d}
+%{?with_ssl:BuildRequires:	openssl-devel >= 1.0.0}
+BuildRequires:	pkgconfig
 %{?with_sql:BuildRequires:	postgresql-devel}
-BuildRequires:	python3-devel
+BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	python3-ply
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
+%if %{with dnstap}
+BuildRequires:	fstrm-devel
+BuildRequires:	protobuf-c-devel
+%endif
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -280,6 +289,9 @@ Summary(ru.UTF-8):	Библиотеки, необходимые для bind
 Summary(uk.UTF-8):	Бібліотеки, необхідні для bind
 Summary(zh_CN.UTF-8):	Internet 域名服务器开发库
 Group:		Libraries
+Requires:	json-c >= 0.11
+Requires:	libuv >= 1.0.0
+Requires:	libxml2 >= 1:2.6.0
 
 %description libs
 The bind-libs package contains all libraries required for running BIND
@@ -409,6 +421,7 @@ BIND-a.
 cp -f /usr/share/automake/config.* .
 %configure \
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
+	%{?with_dnstap:--enable-dnstap} \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
 	--enable-largefile \
