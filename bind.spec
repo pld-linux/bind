@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.0
+%define		ver	9.16.1
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	f973848bf32797c5f546de7d92a6fd07
+# Source0-md5:	2c7f119c71a839f937fcc2788eaa2ecd
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -59,7 +59,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 # Source4-md5:	35b1dfaa12615c9802126ee833e0e7f7
 # formerly http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt (dead URL now)
 Source5:	dnszone-schema.txt
-# Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
+# Source5-md5:	026f3ddad50e5a8832bce39bb49bed2f
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
@@ -69,13 +69,12 @@ Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
 Source11:	%{name}.tmpfiles
 Source12:	named.service
-Patch0:		%{name}-time.patch
+
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
-Patch6:		nsupdate_segfault.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -405,14 +404,13 @@ BIND-a.
 
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
-%patch0 -p1
+
 %patch1 -p1
 %patch2 -p1
 %{?with_ldap:%patch3 -p1}
 %patch4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
-%patch6 -p0
 
 %build
 %{__libtoolize}
@@ -655,17 +653,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1600
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1601
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1600
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1600
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1601
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1600
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1600
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1601
 
 %files devel
 %defattr(644,root,root,755)
