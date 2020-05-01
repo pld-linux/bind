@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.1
+%define		ver	9.16.2
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -46,12 +46,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	2c7f119c71a839f937fcc2788eaa2ecd
+# Source0-md5:	2f65f53ad0eab3701138332282b9b526
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -653,17 +653,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1601
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1602
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1600
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1601
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1602
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1600
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1601
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1602
 
 %files devel
 %defattr(644,root,root,755)
