@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.2
+%define		ver	9.16.3
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	2f65f53ad0eab3701138332282b9b526
+# Source0-md5:	2b207d5699d7acb0a2e997b7cd53d9c2
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -59,11 +59,11 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 # Source4-md5:	35b1dfaa12615c9802126ee833e0e7f7
 # formerly http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt (dead URL now)
 Source5:	dnszone-schema.txt
-# Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
+# Source5-md5:	026f3ddad50e5a8832bce39bb49bed2f
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	7cee6519fca7a4a6e771633560e55d53
+# Source7-md5:	ef14b29649fd3976c6f8e5812b263480
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -88,7 +88,7 @@ BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
 %{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 BuildRequires:	libtool
-BuildRequires:	libuv-devel >= 1.0.0
+BuildRequires:	libuv-devel >= 1.37.0
 # any version for hi2dns (if with_hip), 2.6.0 for XML stats
 BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
@@ -289,7 +289,7 @@ Summary(uk.UTF-8):	Бібліотеки, необхідні для bind
 Summary(zh_CN.UTF-8):	Internet 域名服务器开发库
 Group:		Libraries
 Requires:	json-c >= 0.11
-Requires:	libuv >= 1.0.0
+Requires:	libuv >= 1.37.0
 Requires:	libxml2 >= 1:2.6.0
 
 %description libs
@@ -653,17 +653,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1602
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1603
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.1600
+%attr(755,root,root) %ghost %{_libdir}/libirs.so.1601
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1602
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1603
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1600
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1602
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1603
 
 %files devel
 %defattr(644,root,root,755)
