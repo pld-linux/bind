@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.3
+%define		ver	9.16.5
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	2b207d5699d7acb0a2e997b7cd53d9c2
+# Source0-md5:	5ef3e773f671886a40148c4dd01d017a
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	ef14b29649fd3976c6f8e5812b263480
+# Source7-md5:	8f82307a61e69022dc953cba0ae9373c
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -440,6 +440,7 @@ cp -f /usr/share/automake/config.* .
 	--with-python=%{__python3}
 
 %{__make}
+%{__make} -C doc/arm html
 
 %{?with_hip:%{__make} -C bind-hip}
 
@@ -492,9 +493,6 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
 %endif
 
 %{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
-
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
-echo ".so man8/named-checkzone.8" > $RPM_BUILD_ROOT%{_mandir}/man8/named-compilezone.8
 
 # let rpm generate deps (workaround -m644 used for libs installation)
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
@@ -560,7 +558,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README EXAMPLE-CONFIG-* %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
-%doc _doc/misc/* _doc/arm/*.html %{?with_ldap:_doc/*.sdb-ldap}
+%doc _doc/misc/* _doc/arm/_build/html/*.html %{?with_ldap:_doc/*.sdb-ldap}
 
 %{systemdunitdir}/named.service
 %attr(754,root,root) /etc/rc.d/init.d/named
@@ -653,17 +651,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1603
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1605
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1601
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1603
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1605
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1600
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1603
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1604
 
 %files devel
 %defattr(644,root,root,755)
