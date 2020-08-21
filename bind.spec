@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.5
+%define		ver	9.16.6
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	5ef3e773f671886a40148c4dd01d017a
+# Source0-md5:	cabc42e533cf730282c34b496f6e4fd5
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	8f82307a61e69022dc953cba0ae9373c
+# Source7-md5:	33cd02640a06b643c4a7ae40dac7da89
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -655,7 +655,7 @@ fi
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1601
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1605
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1606
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
