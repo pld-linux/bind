@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.10
+%define		ver	9.16.11
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	32463c0fe91abaf4894eee09a97f1ce6
+# Source0-md5:	58cbc23121e43ec934d644c4f412ceea
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	11491d115459392a41f847207ec30214
+# Source7-md5:	d83d7308d4bdadc3d82ec9d73ef8df36
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -546,12 +546,6 @@ if [ "$1" = "0" ]; then
 	%service -q ldap restart
 fi
 
-%triggerpostun -- %{name} < 7:9.4.2-2
-/sbin/chkconfig named reset
-%{__sed} -i -e 's#^\([ \t]*category[ \t]\+cname[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
-%{__sed} -i -e 's#^\([ \t]*category[ \t]\+response-checks[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
-%{__sed} -i -e 's#^\([ \t]*category[ \t]\+load[ \t]\+.*\)$#// \1#g' /var/lib/named/etc/named.conf
-
 %triggerpostun -- %{name} < 7:9.9.2.P2-2
 %systemd_trigger named.service
 
@@ -651,17 +645,17 @@ fi
 %attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
 %attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1610
+%attr(755,root,root) %ghost %{_libdir}/libdns.so.1611
 %attr(755,root,root) %{_libdir}/libirs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libirs.so.1601
 %attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1608
+%attr(755,root,root) %ghost %{_libdir}/libisc.so.1609
 %attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
 %attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1602
+%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1603
 %attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1606
+%attr(755,root,root) %ghost %{_libdir}/libns.so.1607
 
 %files devel
 %defattr(644,root,root,755)
