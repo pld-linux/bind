@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.11
+%define		ver	9.16.12
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -51,7 +51,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	58cbc23121e43ec934d644c4f412ceea
+# Source0-md5:	61c545db393628152e5b2c957e8bf712
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	d83d7308d4bdadc3d82ec9d73ef8df36
+# Source7-md5:	9681e4e9cb586670a51bf49ed4bf403a
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -494,9 +494,6 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
 
 %{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
-# let rpm generate deps (workaround -m644 used for libs installation)
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*.*
-
 # we don't want Makefiles in documentation...
 rm -rf _doc
 cp -a doc _doc
@@ -642,20 +639,13 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbind9.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbind9.so.1600
-%attr(755,root,root) %{_libdir}/libdns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdns.so.1611
-%attr(755,root,root) %{_libdir}/libirs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libirs.so.1601
-%attr(755,root,root) %{_libdir}/libisc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisc.so.1609
-%attr(755,root,root) %{_libdir}/libisccc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccc.so.1600
-%attr(755,root,root) %{_libdir}/libisccfg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libisccfg.so.1603
-%attr(755,root,root) %{_libdir}/libns.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libns.so.1607
+%attr(755,root,root) %ghost %{_libdir}/libbind9-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libdns-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libirs-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libisc-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libisccc-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libisccfg-%{version}.so
+%attr(755,root,root) %ghost %{_libdir}/libns-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)

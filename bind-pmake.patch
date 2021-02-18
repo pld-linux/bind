@@ -30,10 +30,10 @@ diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.i
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libdns.la -rpath ${libdir} \
  		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
---- bind-9.7.0/lib/isc/Makefile.in~	2009-12-18 05:09:55.000000000 +0100
-+++ bind-9.7.0/lib/isc/Makefile.in	2010-02-17 08:04:13.849211197 +0100
-@@ -94,21 +94,21 @@
- 		-DLIBAGE=${LIBAGE} \
+--- bind-9.16.12/lib/isc/Makefile.in~	2021-02-04 12:35:16.000000000 +0100
++++ bind-9.16.12/lib/isc/Makefile.in	2021-02-17 22:03:34.729090432 +0100
+@@ -97,21 +97,21 @@ version.@O@: version.c
+ 		-DVERSION=\"${VERSION}\" \
  		-c ${srcdir}/version.c
  
 -libisc.@SA@: ${OBJS} ${SYMTBLOBJS}
@@ -50,11 +50,12 @@ diff -ur bind-9.3.0rc3.orig/lib/dns/Makefile.in bind-9.3.0rc3/lib/dns/Makefile.i
 +libisc.la: touchfile ${OBJS} ${SYMTBLOBJS}
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc.la -rpath ${libdir} \
- 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		-release "${VERSION}" \
  		${OBJS} ${SYMTBLOBJS} ${LIBS}
  
 -libisc-nosymtbl.la: ${OBJS}
 +libisc-nosymtbl.la: touchfile ${OBJS}
  	${LIBTOOL_MODE_LINK} \
  		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc-nosymtbl.la -rpath ${libdir} \
- 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		-release "${VERSION}" \
+
