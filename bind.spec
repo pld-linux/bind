@@ -46,7 +46,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
@@ -639,13 +639,13 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %ghost %{_libdir}/libbind9-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libdns-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libirs-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libisc-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libisccc-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libisccfg-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libns-%{version}.so
+%attr(755,root,root) %{_libdir}/libbind9-%{version}.so
+%attr(755,root,root) %{_libdir}/libdns-%{version}.so
+%attr(755,root,root) %{_libdir}/libirs-%{version}.so
+%attr(755,root,root) %{_libdir}/libisc-%{version}.so
+%attr(755,root,root) %{_libdir}/libisccc-%{version}.so
+%attr(755,root,root) %{_libdir}/libisccfg-%{version}.so
+%attr(755,root,root) %{_libdir}/libns-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)
