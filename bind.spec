@@ -477,10 +477,10 @@ cp -p %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
 cp -p %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
 %{__mv} $RPM_BUILD_ROOT/etc/bind.keys   $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
 
-ln -sf %{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
-ln -sf %{_var}/lib/named%{_sysconfdir}/bind.keys $RPM_BUILD_ROOT/etc/bind.keys
-ln -sf %{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
-ln -sf %{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
+ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
+ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/bind.keys $RPM_BUILD_ROOT/etc/bind.keys
+ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
+ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
 touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
@@ -554,9 +554,9 @@ fi
 %{systemdunitdir}/named.service
 %attr(754,root,root) /etc/rc.d/init.d/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
-%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/named.conf
-%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bind.keys
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
+%{_sysconfdir}/named.conf
+%{_sysconfdir}/bind.keys
 
 %attr(755,root,root) %{_sbindir}/ddns-confgen
 %attr(755,root,root) %{_sbindir}/dnssec-*
@@ -595,8 +595,8 @@ fi
 %attr(660,named,named) %ghost %{_var}/lib/named/named.log
 %attr(660,named,named) %ghost %{_var}/lib/named/named.stats
 
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named
-%attr(660,named,named) %config(noreplace,missingok) %verify(not md5 mtime size) %{_var}/log/named.stats
+%config(noreplace,missingok) %{_var}/log/named
+%config(noreplace,missingok) %{_var}/log/named.stats
 
 %attr(770,root,named) %dir %{_var}/run/named
 
