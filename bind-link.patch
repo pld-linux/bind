@@ -35,18 +35,18 @@ diff -Nur bind-9.3.2.orig/lib/isccfg/Makefile.in bind-9.3.2.link/lib/isccfg/Make
 +LIBS =		@LIBS@ ../isc/libisc.la ../dns/libdns.la
  
  SUBDIRS =	include
- 
+ TESTDIRS =	@UNITTESTS@
 --- bind-9.10.0/lib/irs/Makefile.in~	2014-04-28 21:18:53.000000000 +0200
 +++ bind-9.10.0/lib/irs/Makefile.in	2014-05-01 10:13:55.831613124 +0200
 @@ -42,7 +42,7 @@
- 		gai_strerror.c getaddrinfo.c getnameinfo.c \
- 		resconf.c
+ 
+ ISCCFGDEPLIBS =	../../lib/isccfg/libisccfg.@A@
  
 -LIBS =		@LIBS@
 +LIBS =		@LIBS@ ../isccfg/libisccfg.la ../isc/libisc.la ../dns/libdns.la
  
- SUBDIRS =	include
- TARGETS =	timestamp
+ # Alphabetically
+ OBJS =		context.@O@ \
 --- bind-9.12.0/lib/ns/Makefile.in~	2018-01-17 07:56:09.000000000 +0100
 +++ bind-9.12.0/lib/ns/Makefile.in	2018-01-24 08:29:54.886677552 +0100
 @@ -37,7 +37,7 @@ DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_
@@ -57,4 +57,4 @@ diff -Nur bind-9.3.2.orig/lib/isccfg/Makefile.in bind-9.3.2.link/lib/isccfg/Make
 +LIBS =		@LIBS@ ../dns/libdns.la
  
  # Alphabetically
- OBJS =		client.@O@ interfacemgr.@O@ lib.@O@ \
+ OBJS =		client.@O@ hooks.@O@ interfacemgr.@O@ lib.@O@ \
