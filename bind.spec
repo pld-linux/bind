@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.13
+%define		ver	9.16.15
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -46,12 +46,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	3
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	d9ae4f2f3c0e2d8f7a50e1bc0097f54c
+# Source0-md5:	6c6e5bb21763161bc68665b8729b3630
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	8520b0c421e2d114b0fe683146843c61
+# Source7-md5:	3479d7910b5feea4f153d349b36fca2b
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -416,7 +416,8 @@ BIND-a.
 %{__autoconf}
 cp -f /usr/share/automake/config.* .
 %configure \
-	CFLAGS="-D_GNU_SOURCE=1 %{rpmcppflags}" \
+	CFLAGS="-D_GNU_SOURCE=1 %{rpmcflags} %{rpmcppflags}" \
+	LDFLAGS="%{rpmldflags}" \
 	%{?with_dnstap:--enable-dnstap} \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
