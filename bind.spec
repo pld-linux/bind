@@ -100,9 +100,11 @@ BuildRequires:	pkgconfig
 %{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	python3-ply
+BuildRequires:	python3-sphinx_rtd_theme
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
+BuildRequires:	sphinx-pdg
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
 %if %{with dnstap}
