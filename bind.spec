@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.20
+%define		ver	9.16.21
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -46,12 +46,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	8025b8f8463b3b9d9c902bab27f185a2
+# Source0-md5:	55da4659c614aa80e3fb57c900bb70e1
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -75,8 +75,6 @@ Patch2:		%{name}-pmake.patch
 Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
-Patch6:		https://downloads.isc.org/isc/bind9/9.16.20/patches/bind-9.16.20-map-format-fix.patch
-# Patch6-md5:	12b7b120dd7335325825ccc4ab86bc54
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -413,7 +411,6 @@ BIND-a.
 %patch4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
-%patch6 -p1
 
 %build
 %{__libtoolize}
