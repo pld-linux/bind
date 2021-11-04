@@ -46,7 +46,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
@@ -439,7 +439,8 @@ cp -f /usr/share/automake/config.* .
 	--with-dlz-stub \
 	%{?with_geoip:--with-maxminddb} \
 	--with-lmdb%{!?with_lmdb:=no} \
-	--with-python=%{__python3}
+	--with-python=%{__python3} \
+	--with-tuning
 
 %{__make}
 %{__make} -C doc/arm html
