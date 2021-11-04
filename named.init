@@ -36,6 +36,39 @@ fi
 
 [ -n "$NUM_CPUS" ] && NAMED_OPT="$NAMED_OPT -n $NUM_CPUS"
 
+# configtest itself
+configtest() {
+	/usr/sbin/named-checkconf -j -t $CHROOT_TO_DIR 2>&1
+	return $?
+}
+
+checkconfig() {
+	local details=${1:-0}
+
+	if [ $details -eq 1 ]; then
+		# run config test and display report (status action)
+		show "Checking %s configuration" "Named"; busy
+		local out
+		out=`configtest 2>&1`
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && ok || fail
+		[ "$out" ] && echo >&2 "$out"
+	else
+		# run config test and abort with nice message if failed
+		# (for actions checking status before action).
+		show "Checking %s configuration" "Named"; busy
+		configtest >/dev/null 2>&1
+		RETVAL=$?
+		if [ $RETVAL -eq 0 ]; then
+			ok
+		else
+			fail
+			nls 'Configuration test failed. See details with %s "checkconfig"' $0
+			exit $RETVAL
+		fi
+	fi
+}
+
 start() {
 	# Check if the service is already running?
 	if [ -f /var/lock/subsys/named ]; then
@@ -43,6 +76,7 @@ start() {
 		return
 	fi
 
+	[ "$1" -eq 0 ] || checkconfig
 	msg_starting "Named"
 	modprobe -s capability > /dev/null 2>&1
 	[ -f /etc/localtime ] && cp -puL /etc/localtime $CHROOT_TO_DIR/etc/localtime
@@ -72,6 +106,7 @@ reload() {
 		return
 	fi
 
+	checkconfig
 	if [ -f /etc/rndc.conf ]; then
 		run_cmd "$(nls 'Reloading %s service' 'Named')" /usr/sbin/rndc reload
 	else
@@ -88,6 +123,7 @@ condrestart() {
 		return
 	fi
 
+	checkconfig
 	stop
 	start
 }
@@ -102,6 +138,7 @@ case "$1" in
 	stop
 	;;
   restart)
+	checkconfig
 	stop
 	start
 	;;
@@ -110,6 +147,9 @@ case "$1" in
 	;;
   reload|force-reload)
 	reload
+	;;
+  checkconfig|configtest)
+	checkconfig 1
 	;;
   status)
 	status named
@@ -123,7 +163,7 @@ case "$1" in
 	fi
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|configtest|status}"
 	exit 3
 esac
 
