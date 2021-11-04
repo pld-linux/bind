@@ -26,7 +26,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.21
+%define		ver	9.16.22
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -46,12 +46,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	55da4659c614aa80e3fb57c900bb70e1
+# Source0-md5:	6a45478b33c04c830d4263635d8cd137
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -63,7 +63,7 @@ Source5:	dnszone-schema.txt
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	076cfeb40394314adf28b7be79e6ecb1
+# Source7-md5:	3f5bdad0960fa1db701747c8e1169503
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -428,6 +428,7 @@ cp -f /usr/share/automake/config.* .
 	%{?with_kerberos5:--with-gssapi} \
 	--with-libidn2 \
 	--with-libtool \
+	--with-libxml2 \
 	%{?with_ssl:--with-openssl} \
 	%{?with_sql:--with-dlz-postgres} \
 	%{?with_sql:--with-dlz-mysql} \
