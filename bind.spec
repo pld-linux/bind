@@ -83,6 +83,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	json-c-devel >= 0.11
+BuildRequires:	libatomic-devel
 BuildRequires:	libcap-devel
 BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
