@@ -6,11 +6,8 @@
 %bcond_without	geoip		# GeoIP support
 %bcond_without	kerberos5	# GSS-API support
 %bcond_without	ssl		# OpenSSL support
-%bcond_with	ldap		# LDAP DLZ support
-%bcond_with	odbc		# ODBC DLZ support
-%bcond_without	sql		# SQL (MySQL+PostgreSQL) DLZ support
 %bcond_without	lmdb		# LMDB storage support for addzone zones
-%bcond_without	static_libs	# static libraries
+%bcond_with	static_libs	# static libraries
 %bcond_with	system_tests	# system tests (require root to configure localhost IPs)
 %bcond_with	tests		# unit tests
 %bcond_with	edns_cli	# ability to use edns-client-subnet in dig
@@ -26,7 +23,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.16.25
+%define		ver	9.18.0
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -46,12 +43,12 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	2
+Release:	0.1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	361a54fc5ebeb3a1af77abec08b33661
+# Source0-md5:	0e6fe85e3f2d252f5cec9cb98e82bc15
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -72,7 +69,6 @@ Source12:	named.service
 
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-pmake.patch
-Patch3:		%{name}-sdb-ldap.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
@@ -94,19 +90,14 @@ BuildRequires:	libuv-devel >= 1.37.0
 BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_geoip:BuildRequires:	libmaxminddb-devel}
-%{?with_sql:BuildRequires:	mysql-devel}
-%{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 1.0.0}
 BuildRequires:	pkgconfig
-%{?with_sql:BuildRequires:	postgresql-devel}
 BuildRequires:	python3-devel >= 1:3.2
-BuildRequires:	python3-ply
 BuildRequires:	python3-sphinx_rtd_theme
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	sphinx-pdg
-%{?with_odbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
 %if %{with dnstap}
 BuildRequires:	fstrm-devel
@@ -121,8 +112,6 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(pre):	fileutils
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-# for dnssec-{checkds,coverage,keymgr}
-Requires:	python3-isc = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
@@ -134,8 +123,6 @@ Obsoletes:	caching-nameserver
 Conflicts:	%{name}-chroot
 Conflicts:	logrotate < 3.8.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		schemadir	/usr/share/openldap/schema
 
 %description
 BIND (Berkeley Internet Name Domain) is an implementation of the DNS
@@ -375,41 +362,12 @@ Bibliotecas estáticas para desenvolvimento DNS.
 Статичні бібліотеки, необхідні для розробки програм з використанням
 BIND.
 
-%package -n openldap-schema-bind
-Summary:	BIND schema for openldap
-Summary(pl.UTF-8):	Schemat BIND dla openldap
-Group:		Development/Libraries
-Requires(post,postun):	sed >= 4.0
-Requires:	openldap-servers
-Requires:	sed >= 4.0
-BuildArch:	noarch
-
-%description -n openldap-schema-bind
-BIND schema for openldap.
-
-%description -n openldap-schema-bind -l pl.UTF-8
-Schemat BIND dla openldap.
-
-%package -n python3-isc
-Summary:        Python 3 ISC module - functions to support BIND utilities
-Summary(pl.UTF-8):	Moduł Pythona 3 ISC - funkcje wspomagające narzędzia BIND-a
-Group:          Libraries/Python
-Requires:       python3-modules
-
-%description -n python3-isc
-Python 3 ISC module containing functions to support BIND utilities.
-
-%description -n python3-isc -l pl.UTF-8
-Moduł Pythona 3 ISC, zawierający funkcje wspomagające narzędzia
-BIND-a.
-
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
 
-%patch1 -p1
-%patch2 -p1
-%{?with_ldap:%patch3 -p1}
-%patch4 -p1
+#%patch1 -p1
+#%patch2 -p1
+#%patch4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
 
@@ -417,7 +375,7 @@ BIND-a.
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
-cp -f /usr/share/automake/config.* .
+%{__automake}
 %configure \
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
@@ -425,23 +383,15 @@ cp -f /usr/share/automake/config.* .
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
 	--enable-largefile \
-	%{!?with_static_libs:--disable-static} \
+	%{?with_static_libs:--enable-static} \
 	%{?with_kerberos5:--with-gssapi} \
 	--with-libidn2 \
-	--with-libtool \
 	--with-libxml2 \
 	%{?with_ssl:--with-openssl} \
-	%{?with_sql:--with-dlz-postgres} \
-	%{?with_sql:--with-dlz-mysql} \
-	--without-dlz-bdb \
-	--with-dlz-filesystem \
-	%{?with_ldap:--with-dlz-ldap} \
-	--with-dlz-odbc%{!?with_odbc:=no} \
-	--with-dlz-stub \
 	%{?with_geoip:--with-maxminddb} \
 	--with-lmdb%{!?with_lmdb:=no} \
-	--with-python=%{__python3} \
-	--with-tuning
+	--with-tuning \
+	--disable-silent-rules
 
 %{__make}
 %{__make} -C doc/arm html
@@ -471,7 +421,6 @@ bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 %{__mv} $RPM_BUILD_ROOT%{_mandir}/ja/man8/nslookup.8 $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 %{__sed} -i -e 's/NSLOOKUP 8/NSLOOKUP 1/' $RPM_BUILD_ROOT%{_mandir}/ja/man1/nslookup.1
 
-cp -p bin/tests/named.conf		EXAMPLE-CONFIG-named
 install -p %{SOURCE1}			$RPM_BUILD_ROOT/etc/rc.d/init.d/named
 cp -p %{SOURCE2}			$RPM_BUILD_ROOT/etc/sysconfig/named
 cp -p %{SOURCE3}			$RPM_BUILD_ROOT/etc/logrotate.d/named
@@ -490,11 +439,6 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 
 install %{SOURCE12} $RPM_BUILD_ROOT%{systemdunitdir}/named.service
 install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
-
-%if %{with ldap}
-install -d $RPM_BUILD_ROOT%{schemadir}
-cp -p %{SOURCE5} $RPM_BUILD_ROOT%{schemadir}/dnszone.schema
-%endif
 
 %{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
 
@@ -537,23 +481,13 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%post -n openldap-schema-bind
-%openldap_schema_register %{schemadir}/dnszone.schema
-%service -q ldap restart
-
-%postun -n openldap-schema-bind
-if [ "$1" = "0" ]; then
-	%openldap_schema_unregister %{schemadir}/dnszone.schema
-	%service -q ldap restart
-fi
-
 %triggerpostun -- %{name} < 7:9.9.2.P2-2
 %systemd_trigger named.service
 
 %files
 %defattr(644,root,root,755)
-%doc README EXAMPLE-CONFIG-* %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
-%doc _doc/misc/* _doc/arm/_build/html/*.html %{?with_ldap:_doc/*.sdb-ldap}
+%doc README.md %{?with_hip:bind-hip/COPYRIGHT-HIP-RR}
+%doc _doc/misc/* _doc/arm/_build/html/*.html
 
 %{systemdunitdir}/named.service
 %attr(754,root,root) /etc/rc.d/init.d/named
@@ -562,22 +496,22 @@ fi
 %{_sysconfdir}/named.conf
 %{_sysconfdir}/bind.keys
 
+%attr(755,root,root) %{_bindir}/dnssec-*
+%attr(755,root,root) %{_bindir}/named-*
+%attr(755,root,root) %{_bindir}/nsec3hash
 %attr(755,root,root) %{_sbindir}/ddns-confgen
-%attr(755,root,root) %{_sbindir}/dnssec-*
 %attr(755,root,root) %{_sbindir}/named
-%attr(755,root,root) %{_sbindir}/named-*
-%attr(755,root,root) %{_sbindir}/nsec3hash
 %attr(755,root,root) %{_sbindir}/rndc
 %attr(755,root,root) %{_sbindir}/rndc-confgen
 %attr(755,root,root) %{_sbindir}/tsig-keygen
 
+%{_mandir}/man1/dnssec-*.1*
+%{_mandir}/man1/named-*.1*
+%{_mandir}/man1/nsec3hash.1*
 %{_mandir}/man5/named.conf.5*
 %{_mandir}/man5/rndc.conf.5*
 %{_mandir}/man8/ddns-confgen.8*
-%{_mandir}/man8/dnssec-*.8*
 %{_mandir}/man8/named.8*
-%{_mandir}/man8/named-*.8*
-%{_mandir}/man8/nsec3hash.8*
 %{_mandir}/man8/rndc.8*
 %{_mandir}/man8/rndc-confgen.8*
 %{_mandir}/man8/tsig-keygen.8*
@@ -604,8 +538,10 @@ fi
 
 %attr(770,root,named) %dir %{_var}/run/named
 
-%dir %{_libdir}/named
-%attr(755,root,root) %{_libdir}/named/filter-aaaa.so
+%dir %{_libdir}/bind
+%attr(755,root,root) %{_libdir}/bind/filter-a.so
+%attr(755,root,root) %{_libdir}/bind/filter-aaaa.so
+%{_mandir}/man8/filter-a.8*
 %{_mandir}/man8/filter-aaaa.8*
 
 %files utils
@@ -675,8 +611,6 @@ fi
 %{_includedir}/isccc
 %{_includedir}/isccfg
 %{_includedir}/ns
-%{_includedir}/pk11
-%{_includedir}/pkcs11
 
 %if %{with static_libs}
 %files static
@@ -695,8 +629,3 @@ fi
 %defattr(644,root,root,755)
 %{_datadir}/openldap/schema/dnszone.schema
 %endif
-
-%files -n python3-isc
-%defattr(644,root,root,755)
-%{py3_sitedir}/isc
-%{py3_sitedir}/isc-*-py*.egg-info
