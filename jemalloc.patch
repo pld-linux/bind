@@ -1,0 +1,10 @@
+--- bind-9.18.0/lib/isc/mem.c~	2022-01-24 09:28:57.000000000 +0100
++++ bind-9.18.0/lib/isc/mem.c	2022-01-27 15:01:27.389870903 +0100
+@@ -48,6 +48,7 @@
+ #if defined(HAVE_MALLOC_NP_H)
+ #include <malloc_np.h>
+ #elif defined(HAVE_JEMALLOC)
++#define JEMALLOC_MANGLE 1
+ #include <jemalloc/jemalloc.h>
+ 
+ #if JEMALLOC_VERSION_MAJOR < 4

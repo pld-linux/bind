@@ -43,7 +43,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	1
+Release:	2
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
@@ -67,6 +67,7 @@ Source10:	%{name}-named.conf
 Source11:	%{name}.tmpfiles
 Source12:	named.service
 
+Patch3:		jemalloc.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
@@ -76,6 +77,7 @@ BuildRequires:	bison
 %{?with_tests:BuildRequires:	cmocka-devel >= 1.0.0}
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
+BuildRequires:	jemalloc-devel
 BuildRequires:	json-c-devel >= 0.11
 BuildRequires:	libatomic-devel
 BuildRequires:	libcap-devel
@@ -363,6 +365,7 @@ BIND.
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
 
+%patch3 -p1
 %patch4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
@@ -381,6 +384,7 @@ BIND.
 	--enable-largefile \
 	%{?with_static_libs:--enable-static} \
 	%{?with_kerberos5:--with-gssapi} \
+	--with-jemalloc=yes \
 	--with-libidn2 \
 	--with-libxml2 \
 	%{?with_ssl:--with-openssl} \
