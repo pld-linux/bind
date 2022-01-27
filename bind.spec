@@ -43,7 +43,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	%{ver}%{pverdot}
-Release:	0.1
+Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
@@ -67,8 +67,6 @@ Source10:	%{name}-named.conf
 Source11:	%{name}.tmpfiles
 Source12:	named.service
 
-Patch1:		%{name}-link.patch
-Patch2:		%{name}-pmake.patch
 Patch4:		%{name}-ac-libs.patch
 Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
@@ -365,9 +363,7 @@ BIND.
 %prep
 %setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
 
-#%patch1 -p1
-#%patch2 -p1
-#%patch4 -p1
+%patch4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
 %{?with_edns_cli:%patch5 -p0}
 

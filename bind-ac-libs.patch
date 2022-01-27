@@ -1,11 +1,20 @@
---- bind-9.8.0-P4/configure.ac~	2011-08-03 11:46:24.326770259 +0200
-+++ bind-9.8.0-P4/configure.ac	2011-08-03 11:49:53.240770212 +0200
-@@ -1076,7 +1076,7 @@ case "$use_gssapi" in
- 		    then
- 			    LIBS="$TRY_LIBS $ISC_OPENSSL_LIBS"
- 		    else
--			    LIBS="-L$use_gssapi/lib $TRY_LIBS $ISC_OPENSSL_LIBS"
-+			    LIBS="$TRY_LIBS $ISC_OPENSSL_LIBS"
- 		    fi
- 		    AC_MSG_CHECKING(linking as $TRY_LIBS)
- 		    AC_TRY_LINK([
+--- bind-9.18.0/configure.ac~	2022-01-24 21:06:11.000000000 +0100
++++ bind-9.18.0/configure.ac	2022-01-27 13:36:04.136536700 +0100
+@@ -474,7 +474,7 @@ AS_IF([test "$enable_geoip" = "yes"],
+ 	       [ # default
+ 		   AX_SAVE_FLAGS([maxminddb])
+ 		   MAXMINDDB_CFLAGS="-I$with_maxminddb/include"
+-		   MAXMINDDB_LIBS="-L$with_maxminddb/lib"
++		   MAXMINDDB_LIBS=""
+ 		   CFLAGS="$CFLAGS $MAXMINDDB_CFLAGS"
+ 		   LIBS="$LIBS $MAXMINDDB_LIBS"
+ 		   AC_SEARCH_LIBS([MMDB_open], [maxminddb],
+@@ -1295,7 +1295,7 @@ AS_CASE([$with_libidn2],
+ 	[no],	[],
+ 	[*],	[AX_SAVE_FLAGS([libidn2])
+ 		 LIBIDN2_CFLAGS="-I$with_libidn2/include"
+-		 LIBIDN2_LIBS="-L$with_libidn2/lib"
++		 LIBIDN2_LIBS=""
+ 		 CFLAGS="$CFLAGS $LIBIDN2_CFLAGS"
+ 		 LIBS="$LIBS $LIBIDN2_LIBS"
+ 		 AC_CHECK_HEADERS([idn2.h],

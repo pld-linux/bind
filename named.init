@@ -38,7 +38,7 @@ fi
 
 # configtest itself
 configtest() {
-	/usr/sbin/named-checkconf -j -t $CHROOT_TO_DIR 2>&1
+	/usr/bin/named-checkconf -j -t $CHROOT_TO_DIR 2>&1
 	return $?
 }
 
