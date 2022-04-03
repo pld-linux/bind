@@ -201,6 +201,20 @@ BIND (Berkeley Internet Name Domain) є реалізацією протокол�
 Конфігураційні файли, ща настроюють BIND на роботу в режимі простого
 кешируючого серверу, включені в пакет caching-nameserver.
 
+%package plugins
+Summary:	Plugins for Bind DNS name server
+Summary(pl.UTF-8):	Wtyczki dla serwera nazw DNS Bind
+Group:		Networking/Utilities
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description plugins
+Plugins for extending of query processing functionality of Bind DNS name
+server.
+
+%description plugins -l pl.UTF-8
+Wtyczki rozszerzające funkcjonalność przetwarzania zapytań przez serwer
+nazw DNS Bind.
+
 %package utils
 Summary:	DNS utils - host, dig, dnsquery, nslookup
 Summary(de.UTF-8):	DNS-Utils - Host, Dig, Dnsquery, Nslookup
@@ -538,6 +552,8 @@ fi
 
 %attr(770,root,named) %dir %{_var}/run/named
 
+%files plugins
+%defattr(644,root,root,755)
 %dir %{_libdir}/bind
 %attr(755,root,root) %{_libdir}/bind/filter-a.so
 %attr(755,root,root) %{_libdir}/bind/filter-aaaa.so
