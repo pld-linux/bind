@@ -54,9 +54,6 @@ Source2:	named.sysconfig
 Source3:	named.logrotate
 Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-man-pages.tar.bz2
 # Source4-md5:	35b1dfaa12615c9802126ee833e0e7f7
-# formerly http://www.venaas.no/ldap/bind-sdb/dnszone-schema.txt (dead URL now)
-Source5:	dnszone-schema.txt
-# Source5-md5:	49fe799c6eca54ae227b22d57ebc1145
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
@@ -638,10 +635,4 @@ fi
 %{_libdir}/libisccc.a
 %{_libdir}/libisccfg.a
 %{_libdir}/libns.a
-%endif
-
-%if %{with ldap}
-%files -n openldap-schema-bind
-%defattr(644,root,root,755)
-%{_datadir}/openldap/schema/dnszone.schema
 %endif
