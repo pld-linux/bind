@@ -7,6 +7,7 @@
 %bcond_without	kerberos5	# GSS-API support
 %bcond_without	ssl		# OpenSSL support
 %bcond_without	lmdb		# LMDB storage support for addzone zones
+%bcond_without	doh		# DNS over HTTPS support
 %bcond_with	static_libs	# static libraries
 %bcond_with	system_tests	# system tests (require root to configure localhost IPs)
 %bcond_with	tests		# unit tests
@@ -87,6 +88,7 @@ BuildRequires:	libuv-devel >= 1.37.0
 BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_geoip:BuildRequires:	libmaxminddb-devel}
+%{?with_doh:BuildRequires:	nghttp2-devel >= 1.6.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 1.0.0}
 BuildRequires:	pkgconfig
 BuildRequires:	python3-devel >= 1:3.2
@@ -292,6 +294,7 @@ Group:		Libraries
 Requires:	json-c >= 0.11
 Requires:	libuv >= 1.37.0
 Requires:	libxml2 >= 1:2.6.0
+%{?with_doh:Requires:	nghttp2-libs >= 1.6.0}
 
 %description libs
 The bind-libs package contains all libraries required for running BIND
@@ -390,6 +393,7 @@ BIND.
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	%{?with_dnstap:--enable-dnstap} \
+	%{!?with_doh:--disable-doh} \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
 	--enable-largefile \
