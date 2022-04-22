@@ -121,7 +121,9 @@ Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
 Obsoletes:	caching-nameserver
-Conflicts:	%{name}-chroot
+Obsoletes:	openldap-schema-bind < 7:9.18.0
+Obsoletes:	python3-isc < 7:9.18.0
+Conflicts:	bind-chroot
 Conflicts:	logrotate < 3.8.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -432,6 +434,8 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_bindir},%{_sbindir},%{_includedir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/bind/filter-*.la
 
 bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/README.named-non-english-man-pages
