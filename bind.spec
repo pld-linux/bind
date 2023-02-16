@@ -24,7 +24,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.18.11
+%define		ver	9.18.12
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	e1bc87814c67644e06be7d0ff5d9a45a
+# Source0-md5:	101a5d919a8d7da1ae98f36e36d1dc9f
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -58,7 +58,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	81478ad4b1ef1a548fb1f5a9bfaff614
+# Source7-md5:	4c4297a3c3f7b3187cce3928df046be3
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf

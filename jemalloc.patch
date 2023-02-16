@@ -1,7 +1,7 @@
---- bind-9.18.0/lib/isc/mem.c~	2022-01-24 09:28:57.000000000 +0100
-+++ bind-9.18.0/lib/isc/mem.c	2022-01-27 15:01:27.389870903 +0100
+--- bind-9.18.12/lib/isc/mem.c~	2023-02-03 12:25:47.000000000 +0100
++++ bind-9.18.12/lib/isc/mem.c	2023-02-16 11:51:17.269729505 +0100
 @@ -48,6 +48,7 @@
- #if defined(HAVE_MALLOC_NP_H)
+ #if defined(HAVE_MALLOC_NP_H) && !defined(__DragonFly__)
  #include <malloc_np.h>
  #elif defined(HAVE_JEMALLOC)
 +#define JEMALLOC_MANGLE 1
