@@ -24,7 +24,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.18.12
+%define		ver	9.18.13
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	101a5d919a8d7da1ae98f36e36d1dc9f
+# Source0-md5:	de1f9687b5bccdb868593e12c04cc985
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -58,7 +58,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	4c4297a3c3f7b3187cce3928df046be3
+# Source7-md5:	edf277cfa8dbb79a067c4a0ccc338292
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -83,7 +83,7 @@ BuildRequires:	libidn2-devel
 # note, there is no kyua in PLD yet (work in progress)
 %{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 BuildRequires:	libtool
-BuildRequires:	libuv-devel >= 1.37.0
+BuildRequires:	libuv-devel >= 1.40.0
 # any version for hi2dns (if with_hip), 2.6.0 for XML stats
 BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
@@ -296,7 +296,7 @@ Summary(uk.UTF-8):	Бібліотеки, необхідні для bind
 Summary(zh_CN.UTF-8):	Internet 域名服务器开发库
 Group:		Libraries
 Requires:	json-c >= 0.11
-Requires:	libuv >= 1.37.0
+Requires:	libuv >= 1.40.0
 Requires:	libxml2 >= 1:2.6.0
 %{?with_doh:Requires:	nghttp2-libs >= 1.6.0}
 
