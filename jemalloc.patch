@@ -9,3 +9,14 @@
  #define JEMALLOC_API_SUPPORTED 1
  
 
+--- bind-9.18.28/lib/isc/include/isc/mem.h~	2024-07-08 17:20:32.000000000 +0200
++++ bind-9.18.28/lib/isc/include/isc/mem.h	2024-07-23 22:40:27.816664863 +0200
+@@ -189,7 +189,7 @@ extern unsigned int isc_mem_defaultflags
+  * see https://github.com/jemalloc/jemalloc/issues/2566
+  * for more information.
+  */
+-#if HAVE_JEMALLOC
++#if HAVE_JEMALLOC && 0
+ 
+ /*
+  * cmocka.h has confliction definitions with the jemalloc header but we only
