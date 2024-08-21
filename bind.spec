@@ -24,7 +24,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.18.29
+%define		ver	9.20.1
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	d12bdabe6d6047f0a38e9482ca3fba31
+# Source0-md5:	5f4ed919c1d4bed9298759ed43c77dda
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -72,7 +72,7 @@ URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	bison
-%{?with_tests:BuildRequires:	cmocka-devel >= 1.0.0}
+%{?with_tests:BuildRequires:	cmocka-devel >= 1.1.3}
 BuildRequires:	flex
 %{?with_kerberos5:BuildRequires:	heimdal-devel}
 BuildRequires:	jemalloc-devel
@@ -91,13 +91,14 @@ BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_doh:BuildRequires:	nghttp2-devel >= 1.6.0}
 %{?with_ssl:BuildRequires:	openssl-devel >= 1.0.0}
 BuildRequires:	pkgconfig
-BuildRequires:	python3-devel >= 1:3.2
+BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-sphinx_rtd_theme
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	sphinx-pdg
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	userspace-rcu-devel >= 0.13.0
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 %if %{with dnstap}
@@ -397,6 +398,7 @@ BIND.
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	%{?with_dnstap:--enable-dnstap} \
+	--enable-dnsrps \
 	%{!?with_doh:--disable-doh} \
 	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
@@ -409,7 +411,6 @@ BIND.
 	%{?with_ssl:--with-openssl} \
 	%{?with_geoip:--with-maxminddb} \
 	--with-lmdb%{!?with_lmdb:=no} \
-	--with-tuning \
 	--disable-silent-rules
 
 %{__make}
@@ -449,10 +450,8 @@ cp -p %{SOURCE7}			$RPM_BUILD_ROOT%{_var}/lib/named/root.hint
 cp -p %{SOURCE8}			$RPM_BUILD_ROOT%{_var}/lib/named/M/127.0.0.zone
 cp -p %{SOURCE9}			$RPM_BUILD_ROOT%{_var}/lib/named/M/localhost.zone
 cp -p %{SOURCE10}			$RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf
-%{__mv} $RPM_BUILD_ROOT/etc/bind.keys   $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/
 
 ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/named.conf $RPM_BUILD_ROOT/etc/named.conf
-ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named%{_sysconfdir}/bind.keys $RPM_BUILD_ROOT/etc/bind.keys
 ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named/named.log	$RPM_BUILD_ROOT%{_var}/log/named
 ln -sf --relative $RPM_BUILD_ROOT%{_var}/lib/named/named.stats	$RPM_BUILD_ROOT%{_var}/log/named.stats
 
@@ -515,7 +514,6 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/named
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/named
 %{_sysconfdir}/named.conf
-%{_sysconfdir}/bind.keys
 
 %attr(755,root,root) %{_bindir}/dnssec-*
 %attr(755,root,root) %{_bindir}/named-*
@@ -547,7 +545,6 @@ fi
 %attr(770,root,named) %dir %{_var}/lib/named/dev
 %dev(c,1,9) %attr(644,root,root) %{_var}/lib/named/dev/urandom
 %attr(750,root,named) %dir %{_var}/lib/named/etc
-%attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/bind.keys
 %attr(640,root,named) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/etc/named.conf
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/M/*.zone
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/named/root.hint
@@ -602,9 +599,7 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbind9-%{version}.so
 %attr(755,root,root) %{_libdir}/libdns-%{version}.so
-%attr(755,root,root) %{_libdir}/libirs-%{version}.so
 %attr(755,root,root) %{_libdir}/libisc-%{version}.so
 %attr(755,root,root) %{_libdir}/libisccc-%{version}.so
 %attr(755,root,root) %{_libdir}/libisccfg-%{version}.so
@@ -612,21 +607,16 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbind9.so
 %attr(755,root,root) %{_libdir}/libdns.so
-%attr(755,root,root) %{_libdir}/libirs.so
 %attr(755,root,root) %{_libdir}/libisc.so
 %attr(755,root,root) %{_libdir}/libisccc.so
 %attr(755,root,root) %{_libdir}/libisccfg.so
 %attr(755,root,root) %{_libdir}/libns.so
-%{_libdir}/libbind9.la
 %{_libdir}/libdns.la
-%{_libdir}/libirs.la
 %{_libdir}/libisc.la
 %{_libdir}/libisccc.la
 %{_libdir}/libisccfg.la
 %{_libdir}/libns.la
-%{_includedir}/bind9
 %{_includedir}/dns
 %{_includedir}/dst
 %{_includedir}/irs
@@ -638,9 +628,7 @@ fi
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libbind9.a
 %{_libdir}/libdns.a
-%{_libdir}/libirs.a
 %{_libdir}/libisc.a
 %{_libdir}/libisccc.a
 %{_libdir}/libisccfg.a
