@@ -24,7 +24,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.20.1
+%define		ver	9.20.2
 %if 0
 %define		pverdot	.P0
 %define		pverdir	-P0
@@ -49,7 +49,7 @@ Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	5f4ed919c1d4bed9298759ed43c77dda
+# Source0-md5:	f524316a2293ab0e935ae9cdfb69ae79
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
