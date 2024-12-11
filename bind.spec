@@ -24,14 +24,6 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 
-%define		ver	9.20.3
-%if 0
-%define		pverdot	.P0
-%define		pverdir	-P0
-%else
-%define		pverdot	%{nil}
-%define		pverdir	%{nil}
-%endif
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
 Summary(es.UTF-8):	BIND - Servidor de nombres DNS
@@ -43,13 +35,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	%{ver}%{pverdot}
+Version:	9.20.4
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
-Source0:	ftp://ftp.isc.org/isc/bind9/%{ver}%{pverdir}/%{name}-%{ver}%{pverdir}.tar.xz
-# Source0-md5:	fcff9fa65e50340507be195c46035410
+Source0:	ftp://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
+# Source0-md5:	e74c7511d089e19f9d1ccdb4a985beb2
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -58,7 +50,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	e0ea82dcc5ae1845b116b47db352000e
+# Source7-md5:	1ec45dc5f15438e20f6a999046c7805b
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -382,7 +374,7 @@ Bibliotecas estáticas para desenvolvimento DNS.
 BIND.
 
 %prep
-%setup -q %{?with_hip:-a6} -n %{name}-%{ver}%{pverdir}
+%setup -q %{?with_hip:-a6}
 
 %patch3 -p1
 %patch4 -p1
