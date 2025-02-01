@@ -376,10 +376,10 @@ BIND.
 %prep
 %setup -q %{?with_hip:-a6}
 
-%patch3 -p1
-%patch4 -p1
+%patch -P3 -p1
+%patch -P4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
-%{?with_edns_cli:%patch5 -p0}
+%{?with_edns_cli:%patch -P5 -p0}
 
 %build
 %{__libtoolize}
