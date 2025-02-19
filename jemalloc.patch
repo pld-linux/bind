@@ -1,3 +1,13 @@
+--- bind-9.20.6/bin/named/server.c~	2025-02-19 21:13:08.858299994 +0000
++++ bind-9.20.6/bin/named/server.c	2025-02-19 21:12:37.321911350 +0000
+@@ -147,6 +147,7 @@
+ #include <malloc_np.h>
+ #define JEMALLOC_API_SUPPORTED 1
+ #elif defined(HAVE_JEMALLOC)
++#define JEMALLOC_MANGLE 1
+ #include <jemalloc/jemalloc.h>
+ #define JEMALLOC_API_SUPPORTED 1
+ #endif
 --- bind-9.20.1/lib/isc/mem.c~	2024-08-13 17:25:55.000000000 +0200
 +++ bind-9.20.1/lib/isc/mem.c	2024-08-21 15:21:51.356574025 +0200
 @@ -48,6 +48,7 @@
