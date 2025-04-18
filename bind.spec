@@ -35,13 +35,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.20.7
+Version:	9.20.8
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	https://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	4cb1352e9c828c3968fe5bd594f3b454
+# Source0-md5:	85c410e3438a6a1b07eb887a20614a57
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
