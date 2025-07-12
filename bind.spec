@@ -36,7 +36,7 @@ Summary(uk.UTF-8):	BIND - cервер системи доменних імен (
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
 Version:	9.20.10
-Release:	1
+Release:	2
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
