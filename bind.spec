@@ -35,13 +35,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.20.16
+Version:	9.20.17
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	https://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	ee791197ed69c5f826c36669b460dfb2
+# Source0-md5:	7afde56827643e0400893e11d5b9912c
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -50,7 +50,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	3574d9fa3b6f4b7c4de1211e92c198d1
+# Source7-md5:	05d35a4dd1622910f75d820f71877bef
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
