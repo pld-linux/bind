@@ -11,7 +11,6 @@
 %bcond_with	static_libs	# static libraries
 %bcond_with	system_tests	# system tests (require root to configure localhost IPs)
 %bcond_with	tests		# unit tests
-%bcond_with	edns_cli	# ability to use edns-client-subnet in dig
 %bcond_with	hip		# HIP RR support
 
 %if "%{pld_release}" == "ac"
@@ -35,13 +34,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.20.24
+Version:	9.20.26
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	https://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	ba08036610502ea8abe849edd3655cdb
+# Source0-md5:	5068ac935059607d485625f80c233568
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -50,7 +49,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	db10032187979ffd546e8592aa56981f
+# Source7-md5:	e42e086bf0d6a4246fb9e691a755ed2d
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -59,7 +58,6 @@ Source12:	named.service
 
 Patch3:		jemalloc.patch
 Patch4:		%{name}-ac-libs.patch
-Patch5:		%{name}-edns-client-subnet.patch
 URL:		https://www.isc.org/software/bind
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -379,7 +377,6 @@ BIND.
 %patch -P3 -p1
 %patch -P4 -p1
 %{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
-%{?with_edns_cli:%patch -P5 -p0}
 
 %build
 %{__libtoolize}
