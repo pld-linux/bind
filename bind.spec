@@ -5,23 +5,12 @@
 %bcond_with	dnstap		# dnstap replication support
 %bcond_without	geoip		# GeoIP support
 %bcond_without	kerberos5	# GSS-API support
-%bcond_without	ssl		# OpenSSL support
 %bcond_without	lmdb		# LMDB storage support for addzone zones
 %bcond_without	doh		# DNS over HTTPS support
 %bcond_with	static_libs	# static libraries
 %bcond_with	system_tests	# system tests (require root to configure localhost IPs)
 %bcond_with	tests		# unit tests
 %bcond_with	hip		# HIP RR support
-
-%if "%{pld_release}" == "ac"
-%bcond_with	epoll		# enable epoll support
-# there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
-%ifarch %{x8664}
-%define		with_epoll	1
-%endif
-%else
-%bcond_without	epoll		# disable epoll support
-%endif
 
 Summary:	BIND - DNS name server
 Summary(de.UTF-8):	BIND - DNS-Namenserver
@@ -34,13 +23,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.20.27
+Version:	9.20.29
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	https://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	0a05c630261429e9da8b012314507b05
+# Source0-md5:	b5b5051561311d3aebdcdb8b46d07675
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -49,7 +38,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	e8be331a08e93e7bb05aa8da0426a7de
+# Source7-md5:	d838c53bc4d2afc02caefe5dee4b1b2e
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -79,7 +68,7 @@ BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 %{?with_geoip:BuildRequires:	libmaxminddb-devel}
 %{?with_doh:BuildRequires:	nghttp2-devel >= 1.6.0}
-%{?with_ssl:BuildRequires:	openssl-devel >= 1.0.0}
+BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-sphinx_rtd_theme
@@ -111,7 +100,6 @@ Requires:	uname(release) >= 2.2.18
 Provides:	group(named)
 Provides:	nameserver
 Provides:	user(named)
-Obsoletes:	caching-nameserver
 Obsoletes:	openldap-schema-bind < 7:9.18.0
 Obsoletes:	python3-isc < 7:9.18.0
 Conflicts:	bind-chroot
@@ -126,13 +114,9 @@ which resolves host names to IP addresses, and a resolver library
 server allows clients to name resources or objects and share the
 information with other network machines. The named DNS server can be
 used on workstations as a caching name server, but is generally only
-needed on one machine for an entire network. Note that the
-configuration files for making BIND act as a simple caching nameserver
-are included in the caching-nameserver package.
+needed on one machine for an entire network.
 
-Install the bind package if you need a DNS server for your network. If
-you want bind to act a caching name server, you will also need to
-install the caching-nameserver package.
+Install the bind package if you need a DNS server for your network.
 
 %description -l de.UTF-8
 Enthält den Namen-Server, der zum Umwandeln von Host-Namen in
@@ -174,9 +158,6 @@ DNS (Domain Name System). BIND включает DNS сервер (named) и
 одной машине в локальной сети и используется остальными машинами (этим
 достигается намного более эффективное кеширование).
 
-Конфигурационные файлы, настраивающие BIND на работу в режиме простого
-кеширующего сервера, включены в пакет caching-nameserver.
-
 %description -l tr.UTF-8
 Bu paket, makina adını IP numarasına (ya da tersi) çevirmek için
 kullanılan alan adı sunucusunu içerir. İş istasyonlarında bir önbellek
@@ -191,9 +172,6 @@ BIND (Berkeley Internet Name Domain) є реалізацією протокол�
 сервер, але звичайно запускається на одній машині в локальній мережі і
 використовується іншими (цим досягається більша ефективність
 використання кешу).
-
-Конфігураційні файли, ща настроюють BIND на роботу в режимі простого
-кешируючого серверу, включені в пакет caching-nameserver.
 
 %package plugins
 Summary:	Plugins for Bind DNS name server
@@ -383,23 +361,23 @@ BIND.
 %{__aclocal}
 %{__autoconf}
 %{__automake}
+# readline is picked explicitly; configure prefers libedit when both are present
 %configure \
 	CFLAGS="-D_GNU_SOURCE=1 %{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	%{?with_dnstap:--enable-dnstap} \
 	--enable-dnsrps \
 	%{!?with_doh:--disable-doh} \
-	%{!?with_epoll:--disable-epoll --disable-devpoll} \
 	--enable-full-report \
 	--enable-largefile \
 	%{?with_static_libs:--enable-static} \
-	%{?with_kerberos5:--with-gssapi} \
+	--with-gssapi%{!?with_kerberos5:=no} \
 	--with-jemalloc=yes \
 	--with-libidn2 \
 	--with-libxml2 \
-	%{?with_ssl:--with-openssl} \
-	%{?with_geoip:--with-maxminddb} \
+	%{?with_geoip:--with-maxminddb}%{!?with_geoip:--disable-geoip} \
 	--with-lmdb%{!?with_lmdb:=no} \
+	--with-readline=readline \
 	--disable-silent-rules
 
 %{__make}
