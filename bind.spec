@@ -96,7 +96,7 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(pre):	fileutils
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	psmisc >= 20.1
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
@@ -181,7 +181,7 @@ BIND (Berkeley Internet Name Domain) є реалізацією протокол�
 Summary:	Plugins for Bind DNS name server
 Summary(pl.UTF-8):	Wtyczki dla serwera nazw DNS Bind
 Group:		Networking/Utilities
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description plugins
 Plugins for extending of query processing functionality of Bind DNS name
@@ -203,8 +203,8 @@ Summary(tr.UTF-8):	DNS araçları - host, dig, dnsquery, nslookup
 Summary(uk.UTF-8):	Утиліти для надсилання запитів до серверів DNS
 Summary(zh_CN.UTF-8):	Internet 域名服务器实用工具
 Group:		Networking/Utilities
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-Requires:	iconv
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	iconv%{?_isa}
 
 %description utils
 Bind-utils contains a collection of utilities for querying DNS (Domain
@@ -268,10 +268,10 @@ Summary(ru.UTF-8):	Библиотеки, необходимые для bind
 Summary(uk.UTF-8):	Бібліотеки, необхідні для bind
 Summary(zh_CN.UTF-8):	Internet 域名服务器开发库
 Group:		Libraries
-Requires:	json-c >= 0.11
-Requires:	libuv >= 1.40.0
-Requires:	libxml2 >= 1:2.6.0
-%{?with_doh:Requires:	nghttp2-libs >= 1.6.0}
+Requires:	json-c%{?_isa} >= 0.11
+Requires:	libuv%{?_isa} >= 1.40.0
+Requires:	libxml2%{?_isa} >= 1:2.6.0
+%{?with_doh:Requires:	nghttp2-libs%{?_isa} >= 1.6.0}
 
 %description libs
 The bind-libs package contains all libraries required for running BIND
@@ -295,7 +295,7 @@ Summary(pt_BR.UTF-8):	Todos os arquivos de cabeçalho e bibliotecas para desenvo
 Summary(ru.UTF-8):	Хедеры и библиотеки разработчика для bind
 Summary(uk.UTF-8):	Хедери та бібліотеки програміста для bind
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
 The bind-devel package contains all the include files and symlinks
@@ -334,7 +334,7 @@ Summary(pt_BR.UTF-8):	Bibliotecas estáticas para desenvolvimento DNS
 Summary(ru.UTF-8):	Статические библиотеки разработчика для bind
 Summary(uk.UTF-8):	Статичні бібліотеки програміста для bind
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description static
 Static bind libraries.
@@ -358,7 +358,9 @@ BIND.
 
 %patch -P3 -p1
 %patch -P4 -p1
-%{?with_hip:%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic}
+%if %{with hip}
+%{__mv} bind-hip/hip_55.[ch] lib/dns/rdata/generic
+%endif
 
 %build
 %{__libtoolize}
@@ -390,7 +392,9 @@ BIND.
 %{__make}
 %{__make} -C doc/arm html
 
-%{?with_hip:%{__make} -C bind-hip}
+%if %{with hip}
+%{__make} -C bind-hip
+%endif
 
 %if %{with tests}
 %if %{with system_tests}
@@ -434,7 +438,9 @@ touch $RPM_BUILD_ROOT%{_var}/lib/named/named.{log,stats}
 install %{SOURCE12} $RPM_BUILD_ROOT%{systemdunitdir}/named.service
 install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
 
-%{?with_hip:install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}}
+%if %{with hip}
+install -p bind-hip/hi2dns $RPM_BUILD_ROOT%{_bindir}
+%endif
 
 # we don't want Makefiles in documentation...
 rm -rf _doc
@@ -535,8 +541,8 @@ fi
 %files plugins
 %defattr(644,root,root,755)
 %dir %{_libdir}/bind
-%attr(755,root,root) %{_libdir}/bind/filter-a.so
-%attr(755,root,root) %{_libdir}/bind/filter-aaaa.so
+%{_libdir}/bind/filter-a.so
+%{_libdir}/bind/filter-aaaa.so
 %{_mandir}/man8/filter-a.8*
 %{_mandir}/man8/filter-aaaa.8*
 
@@ -550,7 +556,9 @@ fi
 %attr(755,root,root) %{_bindir}/mdig
 %attr(755,root,root) %{_bindir}/nslookup
 %attr(755,root,root) %{_bindir}/nsupdate
-%{?with_hip:%attr(755,root,root) %{_bindir}/hi2dns}
+%if %{with hip}
+%attr(755,root,root) %{_bindir}/hi2dns
+%endif
 %{_mandir}/man1/arpaname.1*
 %{_mandir}/man1/delv.1*
 %{_mandir}/man1/dig.1*
@@ -575,19 +583,19 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libdns-%{version}.so
-%attr(755,root,root) %{_libdir}/libisc-%{version}.so
-%attr(755,root,root) %{_libdir}/libisccc-%{version}.so
-%attr(755,root,root) %{_libdir}/libisccfg-%{version}.so
-%attr(755,root,root) %{_libdir}/libns-%{version}.so
+%{_libdir}/libdns-%{version}.so
+%{_libdir}/libisc-%{version}.so
+%{_libdir}/libisccc-%{version}.so
+%{_libdir}/libisccfg-%{version}.so
+%{_libdir}/libns-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libdns.so
-%attr(755,root,root) %{_libdir}/libisc.so
-%attr(755,root,root) %{_libdir}/libisccc.so
-%attr(755,root,root) %{_libdir}/libisccfg.so
-%attr(755,root,root) %{_libdir}/libns.so
+%{_libdir}/libdns.so
+%{_libdir}/libisc.so
+%{_libdir}/libisccc.so
+%{_libdir}/libisccfg.so
+%{_libdir}/libns.so
 %{_libdir}/libdns.la
 %{_libdir}/libisc.la
 %{_libdir}/libisccc.la
