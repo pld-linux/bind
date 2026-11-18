@@ -23,13 +23,13 @@ Summary(tr.UTF-8):	DNS alan adı sunucusu
 Summary(uk.UTF-8):	BIND - cервер системи доменних імен (DNS)
 Summary(zh_CN.UTF-8):	Internet 域名服务器
 Name:		bind
-Version:	9.20.30
+Version:	9.20.31
 Release:	1
 Epoch:		7
 License:	MPL 2.0
 Group:		Networking/Daemons
 Source0:	https://ftp.isc.org/isc/bind9/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	c94a2934cd033905143aa0c26acad79a
+# Source0-md5:	7845b815e4fca7ea9824b77cb2d959ea
 Source1:	named.init
 Source2:	named.sysconfig
 Source3:	named.logrotate
@@ -38,7 +38,7 @@ Source4:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-non-english-ma
 Source6:	%{name}-hip.tar.gz
 # Source6-md5:	62a8a67f51ff8db9fe815205416a1f62
 Source7:	https://www.internic.net/domain/named.root
-# Source7-md5:	2ca2f4c310dec3ea9d959baf35da7774
+# Source7-md5:	51b7ca5941aad8c2932ae1f3fd08fc04
 Source8:	%{name}-127.0.0.zone
 Source9:	%{name}-localhost.zone
 Source10:	%{name}-named.conf
@@ -59,8 +59,6 @@ BuildRequires:	json-c-devel >= 0.11
 BuildRequires:	libatomic-devel
 BuildRequires:	libcap-devel
 BuildRequires:	libidn2-devel
-# note, there is no kyua in PLD yet (work in progress)
-%{?with_tests:%{!?with_system_tests:BuildRequires:	kyua}}
 BuildRequires:	libtool
 BuildRequires:	libuv-devel >= 1.40.0
 # any version for hi2dns (if with_hip), 2.6.0 for XML stats
@@ -70,7 +68,6 @@ BuildRequires:	libxml2-devel >= 1:2.6.0
 %{?with_doh:BuildRequires:	nghttp2-devel >= 1.6.0}
 BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	pkgconfig
-BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-sphinx_rtd_theme
 BuildRequires:	readline-devel
 BuildRequires:	rpm >= 4.4.9-56
@@ -83,6 +80,13 @@ BuildRequires:	zlib-devel
 %if %{with dnstap}
 BuildRequires:	fstrm-devel
 BuildRequires:	protobuf-c-devel
+%endif
+%if %{with system_tests}
+BuildRequires:	perl-base
+BuildRequires:	python3 >= 1:3.10
+BuildRequires:	python3-dns
+BuildRequires:	python3-pytest >= 7.0
+BuildRequires:	python3-pytest-xdist
 %endif
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -371,13 +375,16 @@ BIND.
 	--enable-full-report \
 	--enable-largefile \
 	%{?with_static_libs:--enable-static} \
+	--with-cmocka%{!?with_tests:=no} \
 	--with-gssapi%{!?with_kerberos5:=no} \
 	--with-jemalloc=yes \
+	--with-json-c \
 	--with-libidn2 \
 	--with-libxml2 \
 	%{?with_geoip:--with-maxminddb}%{!?with_geoip:--disable-geoip} \
 	--with-lmdb%{!?with_lmdb:=no} \
 	--with-readline=readline \
+	--with-zlib \
 	--disable-silent-rules
 
 %{__make}
@@ -387,9 +394,9 @@ BIND.
 
 %if %{with tests}
 %if %{with system_tests}
-%{__make} test-force
+%{__make} check
 %else
-sh unit/unittest.sh
+%{__make} -C tests check
 %endif
 %endif
 
@@ -484,6 +491,7 @@ fi
 
 %attr(755,root,root) %{_bindir}/dnssec-*
 %attr(755,root,root) %{_bindir}/named-*
+%exclude %{_bindir}/named-rrchecker
 %attr(755,root,root) %{_bindir}/nsec3hash
 %attr(755,root,root) %{_sbindir}/ddns-confgen
 %attr(755,root,root) %{_sbindir}/named
@@ -493,6 +501,7 @@ fi
 
 %{_mandir}/man1/dnssec-*.1*
 %{_mandir}/man1/named-*.1*
+%exclude %{_mandir}/man1/named-rrchecker.1*
 %{_mandir}/man1/nsec3hash.1*
 %{_mandir}/man5/named.conf.5*
 %{_mandir}/man5/rndc.conf.5*
